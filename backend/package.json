@@ -15,8 +15,7 @@
     "@strapi/plugin-users-permissions": "4.12.4",
     "@strapi/strapi": "4.12.4",
     "better-sqlite3": "8.5.0",
-    "pg": "^8.11.2",
-    "strapi-auto-uuid": "^0.0.8"
+    "pg": "^8.11.2"
   },
   "author": {
     "name": "A Strapi developer"
