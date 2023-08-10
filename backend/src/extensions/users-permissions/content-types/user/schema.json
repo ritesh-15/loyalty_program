@@ -9,8 +9,7 @@
     "displayName": "User"
   },
   "options": {
-    "draftAndPublish": false,
-    "timestamps": true
+    "draftAndPublish": false
   },
   "attributes": {
     "username": {
@@ -71,6 +70,19 @@
       "relation": "oneToMany",
       "target": "api::referral.referral",
       "mappedBy": "user_id"
+    },
+    "walletAddress": {
+      "type": "string",
+      "required": true
+    },
+    "brandId": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::brand.brand",
+      "inversedBy": "user"
+    },
+    "addresses": {
+      "type": "json"
     }
   }
 }
