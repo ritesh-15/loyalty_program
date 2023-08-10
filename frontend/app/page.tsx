@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import Navbar from './components/Navbar';
+import Image from "next/image"
+import Navbar from "./components/Navbar"
 
 export default function Home() {
   return (
@@ -10,5 +10,5 @@ export default function Home() {
         <h3 className="text-2xl">A web3 solution for ecommerce</h3>
       </div>
     </div>
-  );
+  )
 }
