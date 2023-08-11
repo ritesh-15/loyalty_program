@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "products": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product.product"
+    },
+    "sellerId": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::seller.seller"
+    },
+    "isPaymentDone": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
