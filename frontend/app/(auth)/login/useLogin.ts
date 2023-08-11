@@ -35,7 +35,10 @@ export default function useLogin() {
 
         if (res?.error) throw new Error(res.error)
 
+        // base on user role navigate to particular page
+
         console.log(res)
+
         navigate.push("/")
       } catch (error: any) {
         toast.error(error.message)
