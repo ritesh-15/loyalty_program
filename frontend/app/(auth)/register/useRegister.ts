@@ -7,6 +7,7 @@ import { AxiosError } from "axios"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { IUserSession } from "@/app/interfaces/IUser"
+import { useEffect } from "react"
 
 const singUpSchema = y.object({
   email: y
@@ -24,6 +25,25 @@ export default function useRegister() {
   const navigate = useRouter()
   const { data } = useSession()
   const user = data?.user as IUserSession
+
+  useEffect(() => {
+    if (user) redirectToPage()
+  }, [user])
+
+  // redirect to route
+  const redirectToPage = () => {
+    switch (user.data.role.name) {
+      case "Authenticated":
+        navigate.push("/")
+        break
+      case "Admin":
+        navigate.push("/admin")
+        break
+      default:
+        navigate.push("/")
+        break
+    }
+  }
 
   const initialValues = {
     email: "",
@@ -51,12 +71,7 @@ export default function useRegister() {
         if (res?.error) throw new Error(res.error)
 
         // base on user role navigate to particular page
-        switch (user.data.role.name) {
-          case "Authenticated":
-            navigate.push("/")
-          default:
-            navigate.push("/")
-        }
+        redirectToPage()
       } catch (error: any) {
         if (error instanceof AxiosError) {
           toast.error(error.response?.data.error.message)
