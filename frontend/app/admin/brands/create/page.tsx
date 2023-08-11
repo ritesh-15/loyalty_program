@@ -13,8 +13,9 @@ import * as y from "yup"
 import qs from "qs"
 import { ISelectUsers } from "@/app/interfaces/ISelectUser"
 import BrandService from "@/app/services/brand.service"
-import { redirect } from "next/navigation"
 import UploadService from "@/app/services/upload.service"
+import { IUploadFile } from "@/app/interfaces/IUplodFile"
+import { useRouter } from "next/navigation"
 
 const brandSchema = y.object({
   name: y.string().required("brand name is required"),
@@ -24,6 +25,7 @@ const brandSchema = y.object({
 export default function page() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
+  const router = useRouter()
 
   const initialValues = {
     name: "",
@@ -32,10 +34,11 @@ export default function page() {
 
   const [logo, setLogo] = useState<File | null>(null)
   const [selectedUser, setSelectedUser] = useState("")
+  const [isLoading, setIsLoding] = useState(false)
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (!files || files.length) return
+    if (!files || files.length === 0) return
     setLogo(files[0])
   }
 
@@ -62,19 +65,22 @@ export default function page() {
     {
       onSuccess: (data) => {
         toast.success("Brand created successfully!!")
-        redirect("/admin/brands")
+        setIsLoding(false)
+        router.push("/admin/brands")
       },
       onError: (error: any) => {
         toast.error(error.response.data.error.message)
+        setIsLoding(false)
       },
     }
   )
 
   const { mutateAsync: uploadBrandLogo } = useMutation(
-    (data: any) => UploadService.upload(data),
+    (data: any) => UploadService.upload<IUploadFile>(data),
     {
       onError: (error: any) => {
         toast.error(error.response.data.error.message)
+        setIsLoding(false)
       },
     }
   )
@@ -83,11 +89,13 @@ export default function page() {
     initialValues,
     validationSchema: brandSchema,
     onSubmit: async (values) => {
-      console.log(logo)
       if (!logo || !selectedUser) {
         toast.error("all fields are required!")
         return
       }
+
+      setIsLoding(true)
+
       // uplod brand logo
       const formData = new FormData()
       formData.append("api_key", process.env.NEXT_PUBLIC_API_KEY!!)
@@ -97,7 +105,14 @@ export default function page() {
 
       const uploadedFileResponse = await uploadBrandLogo(formData)
 
-      console.log(uploadedFileResponse)
+      await createBrand({
+        data: {
+          name: values.name,
+          description: values.description,
+          brandLogo: uploadedFileResponse.secure_url,
+          user: selectedUser,
+        },
+      })
     },
   })
 
@@ -171,7 +186,7 @@ export default function page() {
           />
         </div>
 
-        <Button type="submit" className="w-fit ml-auto">
+        <Button loading={isLoading} type="submit" className="w-fit ml-auto">
           Create
         </Button>
       </form>

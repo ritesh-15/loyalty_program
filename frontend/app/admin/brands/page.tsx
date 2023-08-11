@@ -1,8 +1,40 @@
+"use client"
+
 import Button from "@/app/components/button/Button"
+import { IUserSession } from "@/app/interfaces/IUser"
+import BrandService from "@/app/services/brand.service"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import React from "react"
+import { useQuery } from "react-query"
+import qs from "qs"
+import { IBrands } from "@/app/interfaces/IBrands"
+import Image from "next/image"
 
 export default function page() {
+  const { data: session } = useSession()
+  const user = session?.user as IUserSession
+
+  const query = qs.stringify(
+    {
+      fields: ["name", "brandLogo"],
+      populate: {
+        user: {
+          field: ["username"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  )
+
+  const { data: brands } = useQuery(
+    ["brands"],
+    () => BrandService.getBrands<IBrands>(user.token, query),
+    {
+      enabled: user ? true : false,
+    }
+  )
+
   return (
     <section className="mt-12 mx-4">
       <div className="flex items-center justify-between">
@@ -33,30 +65,42 @@ export default function page() {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              {brands?.data.map((brand) => (
+                <tr
+                  key={brand.id}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  Adidas
-                </th>
-                <td className="px-6 py-4">White</td>
-                <td className="px-6 py-4">12th August 2023</td>
-                <td className="flex items-center px-6 py-4 space-x-3">
-                  <Link
-                    href="#"
-                    className="font-medium text-primary dark:text-blue-500 hover:underline"
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    Edit
-                  </Link>
-                  <Link
-                    href="#"
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                  >
-                    Remove
-                  </Link>
-                </td>
-              </tr>
+                    {brand.attributes.name}
+                  </th>
+                  <td className="px-6 py-4">
+                    <Image
+                      height={25}
+                      width={25}
+                      src={brand.attributes.brandLogo}
+                      alt=""
+                    />
+                  </td>
+                  <td className="px-6 py-4">12th August 2023</td>
+                  <td className="flex items-center px-6 py-4 space-x-3">
+                    <Link
+                      href="#"
+                      className="font-medium text-primary dark:text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      href="#"
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    >
+                      Remove
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
