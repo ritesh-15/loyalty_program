@@ -2,6 +2,7 @@ import { IUserSession } from "@/app/interfaces/IUser"
 import { useFormik } from "formik"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import * as y from "yup"
 
@@ -21,15 +22,37 @@ export default function useLogin() {
   const { data } = useSession()
   const user = data?.user as IUserSession
 
+  useEffect(() => {
+    if (user) redirectToPage()
+  }, [user])
+
+  const [isLoading, setIsLoading] = useState(false)
+
   const initialValues = {
     email: "",
     password: "",
+  }
+
+  // redirect to route
+  const redirectToPage = () => {
+    switch (user.data.role.name) {
+      case "Authenticated":
+        navigate.push("/")
+        break
+      case "Admin":
+        navigate.push("/admin")
+        break
+      default:
+        navigate.push("/")
+        break
+    }
   }
 
   const { values, errors, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values) => {
+      setIsLoading(true)
       try {
         const res = await signIn("credentials", {
           ...values,
@@ -39,17 +62,17 @@ export default function useLogin() {
         if (res?.error) throw new Error(res.error)
 
         // base on user role navigate to particular page
-        switch (user.data.role.name) {
-          case "Authenticated":
-            navigate.push("/")
-          default:
-            navigate.push("/")
-        }
+        redirectToPage()
       } catch (error: any) {
         toast.error(error.message)
+      } finally {
+        setIsLoading(false)
       }
     },
   })
 
-  return { actions: { handleChange, handleSubmit }, states: { values, errors } }
+  return {
+    actions: { handleChange, handleSubmit },
+    states: { values, errors, isLoading },
+  }
 }
