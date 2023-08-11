@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import {FiShoppingCart} from 'react-icons/fi'
 import { FaUserAlt } from "react-icons/fa";
 import {Poppins} from 'next/font/google'
+import { useSession } from "next-auth/react";
+import { IUserSession } from "../interfaces/IUser";
+import Link from "next/link";
 
 
 const poppins = Poppins({
@@ -11,6 +14,11 @@ const poppins = Poppins({
 })
 
 const Navbar = () => {
+
+  const {data} = useSession()
+  const user = data?.user as IUserSession
+  // const user = null
+
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
@@ -19,7 +27,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full h-18 bg-white border-2 z-50">
+    <nav className="fixed w-full h-18 border-2 z-50 bg-white">
       <div className="flex items-center justify-between m-4 px-4">
         <div>
           <h1 className={`${poppins.className} text-4xl`}>MetaMarket</h1>
@@ -38,7 +46,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {isLoggedIn ? (
+          {user ? (
             <div className="relative">
               <button
                 className="flex items-center focus:outline-none"
@@ -69,10 +77,14 @@ const Navbar = () => {
           ) : (
             <div className="space-x-2">
               <button className="px-4 py-2 bg-white text-blue-500 rounded-lg">
+                <Link href={"/login"}>
                 Log In
+                </Link>
               </button>
               <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
+                <Link href={"/register"}>
                 Sign Up
+                </Link>
               </button>
             </div>
           )}
