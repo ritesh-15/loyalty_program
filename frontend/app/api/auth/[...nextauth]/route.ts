@@ -30,9 +30,13 @@ const authOptions: AuthOptions = {
             },
           })
 
-          return {
-            email: res.data.user.email,
+          const data = {
             ...roleData,
+            jwt: res.data.jwt,
+          }
+
+          return {
+            ...data,
           }
         } catch (err: any) {
           if (err instanceof AxiosError) {
@@ -49,9 +53,15 @@ const authOptions: AuthOptions = {
       return Promise.resolve({ ...token, ...user })
     },
     session: ({ session, token, user }) => {
-      console.log(user)
       // @ts-ignore
-      session.user.data = token.user
+      session.user.data = {
+        id: token.id,
+        username: token.username,
+        role: token.role,
+        walletAddress: token.walletAddress,
+        addresses: token.addresses,
+        email: token.email!!,
+      }
       // @ts-ignore
       session.user.token = token.jwt
 

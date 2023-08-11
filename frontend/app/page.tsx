@@ -1,4 +1,5 @@
-import Image from "next/image"
+"use client"
+
 import Navbar from "./components/Navbar"
 import { useSession } from "next-auth/react"
 
