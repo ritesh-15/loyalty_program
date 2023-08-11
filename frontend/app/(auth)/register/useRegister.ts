@@ -1,11 +1,12 @@
 import AuthService from "@/app/services/auth.service"
 import { useFormik } from "formik"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { useMutation } from "react-query"
 import * as y from "yup"
 import { AxiosError } from "axios"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { IUserSession } from "@/app/interfaces/IUser"
 
 const singUpSchema = y.object({
   email: y
@@ -21,6 +22,8 @@ const singUpSchema = y.object({
 
 export default function useRegister() {
   const navigate = useRouter()
+  const { data } = useSession()
+  const user = data?.user as IUserSession
 
   const initialValues = {
     email: "",
@@ -47,8 +50,13 @@ export default function useRegister() {
 
         if (res?.error) throw new Error(res.error)
 
-        // set the user data in global state and redirect user
-        navigate.push("/")
+        // base on user role navigate to particular page
+        switch (user.data.role.name) {
+          case "Authenticated":
+            navigate.push("/")
+          default:
+            navigate.push("/")
+        }
       } catch (error: any) {
         if (error instanceof AxiosError) {
           toast.error(error.response?.data.error.message)

@@ -1,15 +1,19 @@
 import Image from "next/image"
 import Navbar from "./components/Navbar"
+import CategoryCard from "./components/CategoryCard"
+import BrandCard from "./components/BrandCard"
+import Carasoul from "./components/Carasoul"
 import { useSession } from "next-auth/react"
 
 export default function Home() {
   return (
     <div>
-      <Navbar />
-      <div className="min-h-screen text-center p-24">
-        <h1 className="text-4xl m-4">Welcome to MetaMarket!</h1>
-        <h3 className="text-2xl">A web3 solution for ecommerce</h3>
-      </div>
+      {/* Page 1 */}
+      <Navbar/> 
+      <Carasoul/>
+      <BrandCard/>
+      {/* Page 2 */}
+      <CategoryCard/>
     </div>
   )
 }
