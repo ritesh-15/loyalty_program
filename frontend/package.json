@@ -27,6 +27,8 @@
     "qs": "^6.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-easy-swipe": "^0.0.23",
+    "react-icons": "^4.10.1",
     "react-hot-toast": "^2.4.1",
     "react-query": "^3.39.3",
     "tailwind-merge": "^1.14.0",
