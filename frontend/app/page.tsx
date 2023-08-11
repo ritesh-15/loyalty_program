@@ -1,8 +1,8 @@
-import Navbar from './components/Navbar';
-import Carasoul from './components/Carasoul';
-import BrandCard from './components/BrandCard';
-import CategoryCard from './components/CategoryCard';
 import Image from "next/image"
+import Navbar from "./components/Navbar"
+import CategoryCard from "./components/CategoryCard"
+import BrandCard from "./components/BrandCard"
+import Carasoul from "./components/Carasoul"
 import { useSession } from "next-auth/react"
 
 export default function Home() {

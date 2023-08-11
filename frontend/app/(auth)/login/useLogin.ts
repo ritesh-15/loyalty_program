@@ -1,5 +1,6 @@
+import { IUserSession } from "@/app/interfaces/IUser"
 import { useFormik } from "formik"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import * as y from "yup"
@@ -17,6 +18,8 @@ const loginSchema = y.object({
 
 export default function useLogin() {
   const navigate = useRouter()
+  const { data } = useSession()
+  const user = data?.user as IUserSession
 
   const initialValues = {
     email: "",
@@ -36,10 +39,12 @@ export default function useLogin() {
         if (res?.error) throw new Error(res.error)
 
         // base on user role navigate to particular page
-
-        console.log(res)
-
-        navigate.push("/")
+        switch (user.data.role.name) {
+          case "Authenticated":
+            navigate.push("/")
+          default:
+            navigate.push("/")
+        }
       } catch (error: any) {
         toast.error(error.message)
       }
