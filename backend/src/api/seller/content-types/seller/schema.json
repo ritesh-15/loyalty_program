@@ -4,7 +4,8 @@
   "info": {
     "singularName": "seller",
     "pluralName": "sellers",
-    "displayName": "Seller"
+    "displayName": "Seller",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -29,6 +30,12 @@
       "relation": "manyToMany",
       "target": "api::product.product",
       "mappedBy": "sellers"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "seller"
     }
   }
 }

@@ -83,6 +83,12 @@
     },
     "addresses": {
       "type": "json"
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::seller.seller",
+      "mappedBy": "user"
     }
   }
 }
