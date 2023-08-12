@@ -4,6 +4,7 @@ import CategoryCard from "./components/CategoryCard"
 import BrandCard from "./components/BrandCard"
 import Carasoul from "./components/Carasoul"
 import { useSession } from "next-auth/react"
+import ProductList from "./components/ProductList"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <BrandCard/>
       {/* Page 2 */}
       <CategoryCard/>
+      <ProductList/>
     </div>
   )
 }

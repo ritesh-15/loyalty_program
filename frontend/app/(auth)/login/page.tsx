@@ -41,7 +41,9 @@ export default function page() {
             />
           </div>
 
-          <Button type="submit">Login</Button>
+          <Button loading={states.isLoading} type="submit">
+            Login
+          </Button>
         </form>
 
         <div className="mt-4">
