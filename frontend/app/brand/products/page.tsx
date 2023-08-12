@@ -1,10 +1,12 @@
 "use client"
 
 import Button from "@/app/components/button/Button"
+import { api } from "@/app/config/axios"
 import { IUserSession } from "@/app/interfaces/IUser"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import qs from "qs"
+import { useQuery } from "react-query"
 
 export default function Products() {
   const { data: session } = useSession()
@@ -18,9 +20,31 @@ export default function Products() {
           fields: ["username"],
         },
       },
+      filters: {
+        brandId: {
+          id: {
+            $eq: user?.data.brandId?.id,
+          },
+        },
+      },
     },
     { encodeValuesOnly: true }
   )
+
+  const { data: products } = useQuery(
+    ["brand-products", user.data.brandId?.id],
+    () =>
+      api.get(`/products?${query}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }),
+    {
+      enabled: user !== undefined ? true : false,
+    }
+  )
+
+  console.log(products)
 
   return (
     <section className="mt-12 mx-4">

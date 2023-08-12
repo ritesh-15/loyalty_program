@@ -53,8 +53,6 @@ const authOptions: AuthOptions = {
             jwt: res.data.jwt,
           }
 
-          console.log(data)
-
           return {
             ...data,
           }
@@ -81,6 +79,8 @@ const authOptions: AuthOptions = {
         walletAddress: token.walletAddress,
         addresses: token.addresses,
         email: token.email!!,
+        brandId: token.brandId,
+        seller: token.seller,
       }
       // @ts-ignore
       session.user.token = token.jwt
