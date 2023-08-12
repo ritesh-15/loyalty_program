@@ -41,8 +41,8 @@ export default function AdminSidebar() {
       <h1 className="font-bold  text-xl">Metamarket</h1>
 
       <ul className="mt-8 flex flex-col gap-2">
-        {routes.map((route) => (
-          <Link href={route.redirectURL}>
+        {routes.map((route,key) => (
+          <Link href={route.redirectURL} key={key}>
             <li
               className={`text-lg hover:bg-gray-100 rounded-md flex items-center px-2 py-3 cursor-pointer gap-2 ${
                 isActive(route.redirectURL, route.isHomePage)

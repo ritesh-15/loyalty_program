@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 import Button from "@/app/components/button/Button"
 import { IUserSession } from "@/app/interfaces/IUser"
 import BrandService from "@/app/services/brand.service"
@@ -11,7 +10,7 @@ import qs from "qs"
 import { IBrands } from "@/app/interfaces/IBrands"
 import Image from "next/image"
 
-export default function page() {
+export default function Brands() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
