@@ -6,8 +6,13 @@ import { LiaSellsy } from "react-icons/lia"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BsCoin } from "react-icons/bs"
+import { useSession } from "next-auth/react"
+import { IUserSession } from "@/app/interfaces/IUser"
 
 export default function AdminSidebar() {
+  const { data: session } = useSession()
+  const user = session?.user as IUserSession
+
   const usePath = usePathname()
 
   const isActive = (
