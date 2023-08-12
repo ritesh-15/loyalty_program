@@ -2,7 +2,9 @@ import React from "react"
 import { AdminSidebar } from "../components/admin"
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "../utils/auth.utils"
-import { BsCoin, BsBox } from "react-icons/bs"
+import { BsCoin, BsBox, BsTruck } from "react-icons/bs"
+import { LiaSellsy } from "react-icons/lia"
+import { CiDeliveryTruck } from "react-icons/ci"
 
 export default async function BrandLayout({
   children,
@@ -25,6 +27,20 @@ export default async function BrandLayout({
       icon: <BsBox />,
       title: "Products",
       redirectURL: "/brand/products",
+      isHomePage: false,
+      optionalURL: undefined,
+    },
+    {
+      icon: <LiaSellsy />,
+      title: "Sellers",
+      redirectURL: "/brand/sellers",
+      isHomePage: false,
+      optionalURL: undefined,
+    },
+    {
+      icon: <BsTruck />,
+      title: "Orders",
+      redirectURL: "/brand/orders",
       isHomePage: false,
       optionalURL: undefined,
     },
