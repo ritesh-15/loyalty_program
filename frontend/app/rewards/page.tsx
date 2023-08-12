@@ -1,10 +1,15 @@
-"use client"
-import React, { useEffect } from "react";
+"use client";
+import React from "react";
 import { Poppins } from "next/font/google";
 import Navbar from "../components/Navbar";
 import { RxTokens } from "react-icons/rx";
 import { useSession } from "next-auth/react";
 import { IUserSession } from "../interfaces/IUser";
+import qs from "qs";
+import { useQuery } from "react-query";
+import RewardService from "../services/reward.service";
+import { IRewards } from "../interfaces/IRewards";
+import Image from "next/image";
 
 const poppins = Poppins({
   weight: "400",
@@ -23,10 +28,28 @@ const walletHistory = [
 ];
 
 const Rewards = () => {
+  const { data } = useSession();
+  const user = data?.user as IUserSession;
 
-  const {data} = useSession()
-  const user = data?.user as IUserSession
-  console.log(user)
+  const query = qs.stringify(
+    {
+      fields: ["discount", "points"],
+      populate: {
+        product: {
+          fields: ["name", "description", "images", "price"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+
+  const { data: rewards } = useQuery(
+    ["rewards"],
+    () => RewardService.getRewards<IRewards>(user.token, query),
+    {
+      enabled: user ? true : false,
+    }
+  );
 
   return (
     <section>
@@ -58,7 +81,7 @@ const Rewards = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-md">
+        {/* <div className="bg-white rounded-lg p-4 shadow-md">
           <h2 className="text-lg font-semibold mb-2">Wallet History</h2>
           <ul>
             {walletHistory.map((entry, index) => {
@@ -67,39 +90,78 @@ const Rewards = () => {
                   <li className="flex items-center justify-between mb-2">
                     <div className="text-gray-500">{entry.date}</div>
                     <div className="text-slate-800">{entry.product}</div>
-                    <div className={entry.value.charAt(0)==='+'?"text-green-500":"text-red-500"}>{entry.value}</div>
+                    <div
+                      className={
+                        entry.value.charAt(0) === "+"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }
+                    >
+                      {entry.value}
+                    </div>
                   </li>
                 </div>
               );
             })}
           </ul>
+        </div> */}
+
+        <div className="m-8">
+          <h1 className="text-3xl text-left left-10">
+            Exciting Rewards Only for you!
+          </h1>
         </div>
 
-        <section className="bg-white dark:bg-gray-900">
-          <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
-            <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-              We invest in the world’s potential
-            </h1>
-            <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400">
-              Here at Flowbite we focus on markets where technology, innovation,
-              and capital can unlock long-term value and drive economic growth.
-            </p>
-            <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-              <a
-                href="#"
-                className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
-              >
-                Get started
-              </a>
-              <a
-                href="#"
-                className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-              >
-                Learn more
-              </a>
-            </div>
-          </div>
-        </section>
+        <div className="grid grid-cols-4 gap-4 m-8">
+          {rewards?.data.map((reward, index) => {
+            return (
+              <div key={index}>
+                <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                  {reward.attributes.product.data.attributes.images && (
+                    <div className="flex justify-center items-center h-48">
+                      <a href="#">
+                        <Image
+                          className="rounded-t-lg"
+                          src={
+                            reward.attributes.product.data.attributes.images[0]
+                          }
+                          alt=""
+                          height={100}
+                          width={100}
+                        />
+                      </a>
+                    </div>
+                  )}
+                  <a href="#">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      {reward.attributes.discount}% worth{" "}
+                      {reward.attributes.points}$ Tokens
+                    </h5>
+                    <h3 className="text-xl font-sans">
+                      {reward.attributes.product.data.attributes.name}
+                    </h3>
+                  </a>
+                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    {reward.attributes.product.data.attributes.description}
+                    <br />
+                  </p>
+                  <a
+                    href="#"
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    {Math.floor(
+                      reward.attributes.product.data.attributes.price -
+                        (reward.attributes.discount *
+                          reward.attributes.product.data.attributes.price) /
+                          100
+                    )}{" "}
+                    rs. Only
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
