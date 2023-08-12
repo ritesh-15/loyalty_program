@@ -10,9 +10,16 @@ import { BsCoin } from "react-icons/bs"
 export default function AdminSidebar() {
   const usePath = usePathname()
 
-  const isActive = (path: string, isHomePage: boolean = false) => {
-    if (isHomePage) return usePath === path
-    return usePath.includes(path)
+  const isActive = (
+    path: string,
+    isHomePage: boolean = false,
+    optionalURL?: string
+  ) => {
+    if (isHomePage)
+      return usePath === path || (optionalURL && usePath.includes(optionalURL))
+    return (
+      usePath.includes(path) || (optionalURL && usePath.includes(optionalURL))
+    )
   }
 
   const routes = [
@@ -21,18 +28,21 @@ export default function AdminSidebar() {
       title: "Loylty Program",
       redirectURL: "/admin",
       isHomePage: true,
+      optionalURL: "/admin/transfer",
     },
     {
       icon: <LuStore />,
       title: "Brands",
       redirectURL: "/admin/brands",
       isHomePage: false,
+      optionalURL: undefined,
     },
     {
       icon: <LiaSellsy />,
       title: "Sellers",
       redirectURL: "/admin/sellers",
       isHomePage: false,
+      optionalURL: undefined,
     },
   ]
 
@@ -41,11 +51,11 @@ export default function AdminSidebar() {
       <h1 className="font-bold  text-xl">Metamarket</h1>
 
       <ul className="mt-8 flex flex-col gap-2">
-        {routes.map((route,key) => (
+        {routes.map((route, key) => (
           <Link href={route.redirectURL} key={key}>
             <li
               className={`text-lg hover:bg-gray-100 rounded-md flex items-center px-2 py-3 cursor-pointer gap-2 ${
-                isActive(route.redirectURL, route.isHomePage)
+                isActive(route.redirectURL, route.isHomePage, route.optionalURL)
                   ? "bg-primary text-white hover:bg-primary"
                   : ""
               }`}
