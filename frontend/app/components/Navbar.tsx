@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaUserAlt } from "react-icons/fa";
 import { Poppins } from "next/font/google";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { IUserSession } from "../interfaces/IUser";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,6 +21,15 @@ const Navbar = () => {
 
   const toggleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
+  };
+
+  const logout = async () => {
+    try {
+      await signOut();
+      toast.success("Logged out successfully!");
+    } catch (e) {
+      toast.error("Something went wrong while logging you out!");
+    }
   };
 
   return (
@@ -65,7 +75,10 @@ const Navbar = () => {
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       <Link href={"/rewards"}>Rewards</Link>
                     </li>
-                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                    <li
+                      onClick={logout}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    >
                       Logout
                     </li>
                   </ul>
@@ -83,8 +96,9 @@ const Navbar = () => {
             </div>
           )}
         </div>
+
         <div>
-          <Link href={"/products"}>View All</Link>
+          <Link href={"/products"}>Products</Link>
         </div>
         <div>
           <FiShoppingCart size={25} />

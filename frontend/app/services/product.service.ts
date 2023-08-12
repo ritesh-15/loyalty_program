@@ -20,6 +20,16 @@ class ProductService {
 
     return res.data;
   }
+
+  static async getProductById<T>(id:string,token: string, query?: string) {
+    const res = await api.get<T>(`/products/${id}?${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.data;
+  }
 }
 
 export default ProductService;
