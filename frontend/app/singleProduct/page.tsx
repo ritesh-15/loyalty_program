@@ -1,6 +1,12 @@
+'use client'
 import Wrapper from "../components/Wrapper";
 import ProductDetailCrousel from "../components/ProductDetailCrousel"
+import { useRouter } from "next/navigation";
 export default function SingleProduct() {
+    const router = useRouter();
+    const addToCart = async()=>{
+        router.push('cart');
+    }
     return (
         <div className="w-fullmd:py-20">
 
@@ -78,7 +84,7 @@ export default function SingleProduct() {
 
                         </div>
 
-                        <button className="py-4 w-full rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75">
+                        <button className="py-4 w-full rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75" onClick={addToCart}>
                             Add to cart
                         </button>
                         <button className="py-4 w-full rounded-full border border-black text-lg font-medium transition-transform flex items-center justify-center gap-2 active:scale-95 mb-10 hover:opacity-75">

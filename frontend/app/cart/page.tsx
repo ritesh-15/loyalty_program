@@ -10,7 +10,6 @@ import {message } from "antd";
 const Cart = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
     const handleOrder= async()=>{
         try {
             setLoading(true);

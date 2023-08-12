@@ -1,4 +1,6 @@
+'use client'
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const items = [
   {
@@ -54,6 +56,11 @@ const items = [
 ];
 
 const Orders = () => {
+  const router = useRouter();
+
+  const buyagain = async()=>{
+    router.push('/singleProduct')
+  }
   return (
     <div className='mx-auto w-3/5 px-6 mt-6'>
       {items.map((item, index) => (
@@ -81,7 +88,7 @@ const Orders = () => {
             </div>
             <div className='flex flex-col items-center justify-center'>
               {/* Buy Again button */}
-              <button className='mt-4 md:mt-2 bg-black text-white text-sm py-1 px-3 rounded-full transition-transform active:scale-95 mb-3 hover:opacity-75 ml-2'>
+              <button className='mt-4 md:mt-2 bg-black text-white text-sm py-1 px-3 rounded-full transition-transform active:scale-95 mb-3 hover:opacity-75 ml-2' onClick={buyagain}>
                 Buy Again
               </button>
             </div>
