@@ -10,12 +10,12 @@ const poppins = Poppins({
 const category = [
   { name: "Fashion", image: "/assets/c1.jpg" },
   { name: "Smartphones", image: "/assets/c2.jpg" },
-  { name: "Clothing", image: "/assets/c3.jpg" },
-  { name: "Electronics", image: "/assets/c4.jpg" },
+  { name: "Electronics", image: "/assets/c3.jpg" },
+  { name: "Grocery", image: "/assets/c4.jpg" },
   { name: "Home & Furniture", image: "/assets/c6.jpg" },
-  { name: "Toys", image: "/assets/c7.jpg" },
-  { name: "Grocery", image: "/assets/c8.jpg" },
-  { name: "Books", image: "/assets/c9.jpg" },
+  { name: "Clothing", image: "/assets/c7.jpg" },
+  { name: "Books", image: "/assets/c8.jpg" },
+  { name: "Smartphones", image: "/assets/c9.jpg" },
   //   { name: "Books", image: "/assets/c5.jpg" },
 ];
 

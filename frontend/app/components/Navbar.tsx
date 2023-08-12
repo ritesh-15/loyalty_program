@@ -17,9 +17,7 @@ const Navbar = () => {
 
   const {data} = useSession()
   const user = data?.user as IUserSession
-  // const user = null
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const toggleProfileDropdown = () => {
@@ -30,7 +28,10 @@ const Navbar = () => {
     <nav className="fixed w-full h-18 border-2 z-50 bg-white">
       <div className="flex items-center justify-between m-4 px-4">
         <div>
+          <Link href={"/"}>
+
           <h1 className={`${poppins.className} text-4xl`}>MetaMarket</h1>
+          </Link>
         </div>
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -65,7 +66,9 @@ const Navbar = () => {
                       Orders
                     </li>
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                      <Link href={'/rewards'}>
                       Rewards
+                      </Link>
                     </li>
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       Logout
