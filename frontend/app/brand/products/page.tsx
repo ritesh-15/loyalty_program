@@ -2,7 +2,9 @@
 
 import Button from "@/app/components/button/Button"
 import { api } from "@/app/config/axios"
+import { IBrandProducts } from "@/app/interfaces/IBrandProducts"
 import { IUserSession } from "@/app/interfaces/IUser"
+import ProductService from "@/app/services/product.service"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import qs from "qs"
@@ -32,19 +34,12 @@ export default function Products() {
   )
 
   const { data: products } = useQuery(
-    ["brand-products", user.data.brandId?.id],
-    () =>
-      api.get(`/products?${query}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }),
+    ["brand-products", user?.data.brandId?.id],
+    () => ProductService.getProducts<IBrandProducts>(user.token, query),
     {
       enabled: user !== undefined ? true : false,
     }
   )
-
-  console.log(products)
 
   return (
     <section className="mt-12 mx-4">
@@ -64,40 +59,47 @@ export default function Products() {
             <thead className="text-xs text-gray-700 uppercase bg-white">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Brand Name
+                  Product Name
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Logo
+                  Price
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Username
+                  Discount
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                ></th>
-                <td className="px-6 py-4"></td>
-                <td className="px-6 py-4"></td>
-                <td className="flex items-center px-6 py-4 space-x-3">
-                  <Link
-                    href={``}
-                    className="font-medium text-primary dark:text-blue-500 hover:underline"
+              {products?.data.map((product) => (
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    Edit
-                  </Link>
-                  <Link
-                    href="#"
-                    className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                  >
-                    Remove
-                  </Link>
-                </td>
-              </tr>
+                    {product.attributes.name}
+                  </th>
+                  <td className="px-6 py-4">{product.attributes.price}</td>
+                  <td className="px-6 py-4">
+                    {" "}
+                    {product.attributes.discount || 0}
+                  </td>
+                  <td className="flex items-center px-6 py-4 space-x-3">
+                    <Link
+                      href={``}
+                      className="font-medium text-primary dark:text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      href="#"
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    >
+                      Remove
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
