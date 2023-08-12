@@ -1,9 +1,31 @@
+'use client'
 import React from 'react'
 import Image from 'next/image'
 import Wrapper from '../components/Wrapper'
 import Link from 'next/link'
 import CartItem from '../components/CartItem'
+import { useState } from 'react'
+import {useRouter} from 'next/navigation'
+import {message } from "antd";
 const Cart = () => {
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const handleOrder= async()=>{
+        try {
+            setLoading(true);
+            router.push("/orderHistory");
+            
+            setLoading(false);
+            message.success("purchased successfully");
+            
+          } catch (error) {
+            setLoading(false);
+            message.error("something went wrong");
+          }
+
+
+    }
   return (
     <div className='py-20 w-full'>
         <Wrapper className="primary">
@@ -41,8 +63,9 @@ const Cart = () => {
                         <div className="text-sm md:text-md py-5 border-t mt-5"> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure unde fugiat dolorum, veritatis reiciendis obcaecati cupiditate consectetur nihil nisi deserunt sit voluptas eligendi, velit consequuntur asperiores beatae libero! Velit, sed.</div>
                     </div>
 
-                    <button className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75">
+                    <button className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75" onClick={handleOrder}>
                         Checkout
+                        {loading && <img src="/spinner.svg" />}
                     </button>
 
                 </div>
