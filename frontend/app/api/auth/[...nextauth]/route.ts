@@ -4,6 +4,7 @@ import { AxiosError } from "axios"
 import CredentialsProvider from "next-auth/providers/credentials"
 import NextAuth from "next-auth/next"
 import AuthService from "@/app/services/auth.service"
+import qs from "qs"
 
 const authOptions: AuthOptions = {
   providers: [
@@ -23,8 +24,25 @@ const authOptions: AuthOptions = {
             password: credentials?.password,
           })
 
+          const query = qs.stringify(
+            {
+              populate: {
+                role: {
+                  fields: ["name", "type"],
+                },
+                brandId: {
+                  fields: ["id", "name"],
+                },
+                seller: {
+                  fields: ["id", "name"],
+                },
+              },
+            },
+            { encodeValuesOnly: true }
+          )
+
           // find role of current user
-          const { data: roleData } = await api.get(`/users/me?populate=role`, {
+          const { data: roleData } = await api.get(`/users/me?${query}`, {
             headers: {
               Authorization: `Bearer ${res.data.jwt}`,
             },
@@ -74,7 +92,7 @@ const authOptions: AuthOptions = {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "production" ? false : true,
+  debug: true,
   session: {
     strategy: "jwt",
   },
