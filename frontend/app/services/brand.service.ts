@@ -11,6 +11,16 @@ class BrandService {
     return res.data
   }
 
+  static async getBrandByID<T>(id: string, token: string, query: string = "") {
+    const res = await api.get<T>(`/brands/${id}?${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return res.data
+  }
+
   static async getBrands<T>(token: string, query?: string) {
     const res = await api.get<T>(`/brands?${query}`, {
       headers: {
