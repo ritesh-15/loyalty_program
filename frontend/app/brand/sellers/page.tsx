@@ -32,13 +32,16 @@ export default function page() {
     { encodeValuesOnly: true }
   )
 
-  const { data: sellers } = useQuery(
+  const { data: sellers, isLoading } = useQuery(
     ["brand-sellers", user?.data.brandId?.id],
     () => SellerService.getSellers<ISellers>(user.token, query),
     {
-      enabled: user !== undefined ? true : false,
+      enabled: user?.data.brandId !== undefined ? true : false,
+      cacheTime: 0,
     }
   )
+
+  if (isLoading || !sellers) return <div>Loding...</div>
 
   return (
     <section className="mt-12 mx-4">
@@ -71,7 +74,7 @@ export default function page() {
             </thead>
 
             <tbody>
-              {sellers?.data.map((seller) => (
+              {sellers?.data?.map((seller) => (
                 <tr
                   key={seller.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
