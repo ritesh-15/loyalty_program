@@ -89,6 +89,12 @@
       "relation": "oneToOne",
       "target": "api::seller.seller",
       "mappedBy": "user"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "userId"
     }
   }
 }

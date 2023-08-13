@@ -4,26 +4,32 @@
   "info": {
     "singularName": "order",
     "pluralName": "orders",
-    "displayName": "Order"
+    "displayName": "Order",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "products": {
+    "userId": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "orders"
+    },
+    "totalAmount": {
+      "type": "integer",
+      "required": true
+    },
+    "numberOfTokens": {
+      "type": "integer"
+    },
+    "order_items": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::product.product"
-    },
-    "sellerId": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::seller.seller"
-    },
-    "isPaymentDone": {
-      "type": "boolean",
-      "default": false
+      "target": "api::order-item.order-item",
+      "mappedBy": "orderId"
     }
   }
 }
