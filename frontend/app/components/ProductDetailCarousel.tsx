@@ -10,6 +10,7 @@ type ProductDetailCarouselProps = {
 }
 
 const ProductDetailCarousel:React.FC<ProductDetailCarouselProps> = ({images}) => {
+  console.log(images.length) 
   return (
     <div className="text-white text-[20px] w-full max-w-[1360px] mx-auto sticky top-[50px]">
       <Carousel
