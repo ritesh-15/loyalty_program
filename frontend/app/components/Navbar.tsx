@@ -1,36 +1,36 @@
-"use client"
-import React, { useState } from "react"
-import { FiShoppingCart } from "react-icons/fi"
-import { FaUserAlt } from "react-icons/fa"
-import { Poppins } from "next/font/google"
-import { signOut, useSession } from "next-auth/react"
-import { IUserSession } from "../interfaces/IUser"
-import Link from "next/link"
-import { toast } from "react-hot-toast"
+"use client";
+import React, { useState } from "react";
+import { FiShoppingCart } from "react-icons/fi";
+import { FaUserAlt } from "react-icons/fa";
+import { Poppins } from "next/font/google";
+import { signOut, useSession } from "next-auth/react";
+import { IUserSession } from "../interfaces/IUser";
+import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: "400",
-})
+});
 
 const Navbar = () => {
-  const { data } = useSession()
-  const user = data?.user as IUserSession
+  const { data } = useSession();
+  const user = data?.user as IUserSession;
 
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false)
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const toggleProfileDropdown = () => {
-    setShowProfileDropdown(!showProfileDropdown)
-  }
+    setShowProfileDropdown(!showProfileDropdown);
+  };
 
   const logout = async () => {
     try {
-      await signOut()
-      toast.success("Logged out successfully!")
+      await signOut();
+      toast.success("Logged out successfully!");
     } catch (e) {
-      toast.error("Something went wrong while logging you out!")
+      toast.error("Something went wrong while logging you out!");
     }
-  }
+  };
 
   return (
     <nav className="fixed w-full h-18 border-2 z-50 bg-white">
@@ -96,12 +96,16 @@ const Navbar = () => {
             </div>
           )}
         </div>
+
+        <div>
+          <Link href={"/products"}>Products</Link>
+        </div>
         <div>
           <FiShoppingCart size={25} />
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
