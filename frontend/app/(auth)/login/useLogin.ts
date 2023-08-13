@@ -42,6 +42,12 @@ export default function useLogin() {
       case "Admin":
         navigate.push("/admin")
         break
+      case "Brand":
+        navigate.push("/brand")
+        break
+      case "Seller":
+        navigate.push("/seller")
+        break
       default:
         navigate.push("/")
         break
