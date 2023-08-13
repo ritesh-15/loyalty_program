@@ -27,4 +27,6 @@ export interface Attributes2 {
   username: string
 }
 
-export interface Meta {}
+export interface Meta {
+  
+}
