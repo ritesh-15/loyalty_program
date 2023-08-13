@@ -9,7 +9,17 @@ import { BsCoin } from "react-icons/bs"
 import { useSession } from "next-auth/react"
 import { IUserSession } from "@/app/interfaces/IUser"
 
-export default function AdminSidebar() {
+interface IProps {
+  routes: {
+    icon: React.JSX.Element
+    title: string
+    redirectURL: string
+    isHomePage: boolean
+    optionalURL?: string
+  }[]
+}
+
+export default function AdminSidebar({ routes }: IProps) {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
@@ -27,39 +37,15 @@ export default function AdminSidebar() {
     )
   }
 
-  const routes = [
-    {
-      icon: <BsCoin />,
-      title: "Loylty Program",
-      redirectURL: "/admin",
-      isHomePage: true,
-      optionalURL: "/admin/transfer",
-    },
-    {
-      icon: <LuStore />,
-      title: "Brands",
-      redirectURL: "/admin/brands",
-      isHomePage: false,
-      optionalURL: undefined,
-    },
-    {
-      icon: <LiaSellsy />,
-      title: "Sellers",
-      redirectURL: "/admin/sellers",
-      isHomePage: false,
-      optionalURL: undefined,
-    },
-  ]
-
   return (
-    <div className="z-50 h-full max-w-[300px] bg-white shadow-lg fixed top-0 bottom-0 left-0 md:relative border-r w-full p-4">
+    <div className="h-full max-w-[300px] bg-white shadow-lg fixed top-0 bottom-0 left-0 md:relative border-r w-full p-4">
       <h1 className="font-bold  text-xl">Metamarket</h1>
 
-      <ul className="mt-8 flex flex-col gap-2">
+      <ul className="mt-8 flex flex-col gap-3">
         {routes.map((route, key) => (
           <Link href={route.redirectURL} key={key}>
             <li
-              className={`text-lg hover:bg-gray-100 rounded-md flex items-center px-2 py-3 cursor-pointer gap-2 ${
+              className={` hover:bg-gray-100 rounded-md flex items-center px-2 py-3 cursor-pointer gap-3 ${
                 isActive(route.redirectURL, route.isHomePage, route.optionalURL)
                   ? "bg-primary text-white hover:bg-primary"
                   : ""
