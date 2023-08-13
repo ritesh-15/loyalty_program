@@ -33,13 +33,16 @@ export default function Products() {
     { encodeValuesOnly: true }
   )
 
-  const { data: products } = useQuery(
+  const { data: products, isLoading } = useQuery(
     ["brand-products", user?.data.brandId?.id],
     () => ProductService.getProducts<IBrandProducts>(user.token, query),
     {
-      enabled: user !== undefined ? true : false,
+      enabled: user?.data.brandId !== undefined ? true : false,
+      cacheTime: 0,
     }
   )
+
+  if (isLoading) return <div>Loding...</div>
 
   return (
     <section className="mt-12 mx-4">
