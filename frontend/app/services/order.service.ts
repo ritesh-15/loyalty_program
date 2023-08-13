@@ -1,8 +1,8 @@
 import { api } from "../config/axios"
 
 class OrderService {
-  static async getOrders<T>(token: string, query?: string) {
-    const res = await api.get<T>(`/orders?${query}`, {
+  static async getOrderItems<T>(token: string, query?: string) {
+    const res = await api.get<T>(`/order-items?${query}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

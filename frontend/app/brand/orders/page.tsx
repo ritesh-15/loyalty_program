@@ -1,3 +1,5 @@
+"use client"
+
 import { IUserSession } from "@/app/interfaces/IUser"
 import OrderService from "@/app/services/order.service"
 import { useSession } from "next-auth/react"
@@ -10,30 +12,40 @@ export default function page() {
 
   const query = qs.stringify(
     {
-      fields: ["name", "location"],
-      populate: {
-        user: {
-          fields: ["username"],
-        },
-      },
       filters: {
-        brands: {
+        brandId: {
           id: {
-            $in: user?.data.brandId?.id,
+            $eq: user?.data.brandId?.id,
           },
         },
       },
+      populate: {
+        orderId: {
+          populate: {
+            userId: {
+              fields: ["username", "walletAddress"],
+            },
+          },
+          fields: ["totalAmount", "numberOfTokens"],
+        },
+        productId: {
+          fields: ["price"],
+        },
+      },
+      fields: ["quantity"],
     },
     { encodeValuesOnly: true }
   )
 
   const { data: orders } = useQuery(
     ["brand-sellers", user?.data.brandId?.id],
-    () => OrderService.getOrders(user.token, query),
+    () => OrderService.getOrderItems(user.token, query),
     {
       enabled: user !== undefined ? true : false,
     }
   )
+
+  console.log(orders)
 
   return <div>page</div>
 }
