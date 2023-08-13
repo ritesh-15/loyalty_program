@@ -11,13 +11,17 @@ export interface Data {
   walletAddress: string
   addresses: any
   email: string
+  brandId?: RoleData
+  seller?: RoleData
 }
 
 export interface Role {
   id: number
   name: string
-  description: string
   type: string
-  createdAt: string
-  updatedAt: string
+}
+
+export interface RoleData {
+  id: number
+  name: string
 }
