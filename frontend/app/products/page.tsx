@@ -24,7 +24,6 @@ interface IProductWithSeller {
     location: string;
     id: number;
   };
-  // categories: ISellerWithProducts["data"][0]["attributes"]["products"]["data"][0]["attributes"]["categories"]["data"][0]["attributes"]["name"]
 }
 
 const ProductsPage = () => {
@@ -55,7 +54,6 @@ const ProductsPage = () => {
     {
       onSuccess: ({ data }) => {
         data.map((seller) => {
-          console.log(seller);
           setProducts((prev) => [
             ...prev,
             ...seller.attributes.products.data.map((product) => {
@@ -77,7 +75,6 @@ const ProductsPage = () => {
     }
   );
 
-  console.log(sellers);
 
   return (
     <section>

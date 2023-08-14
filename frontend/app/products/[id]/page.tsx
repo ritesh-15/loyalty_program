@@ -11,6 +11,8 @@ import { useQuery } from "react-query";
 import { ISingleProduct } from "@/app/interfaces/ISingleProduct";
 import { ToastContainer, toast } from "react-toastify";
 import Image from "next/image";
+import { ICartItem } from "@/app/interfaces/ICartItem";
+import { useCartStore } from "@/app/store/CartStore";
 
 interface SingleProductProps {
   params: {
@@ -22,33 +24,36 @@ interface SingleProductProps {
 export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
   const { data } = useSession();
   const user = data?.user as IUserSession;
-  const [product, setProduct] = useState<ISingleProduct["data"][0] | null>(
-    null
-  );
 
+  const [product, setProduct] = useState<ISingleProduct["data"][0] | null>();
   // const session =  getCurrentUser();
 
   const searchParams = useSearchParams();
   const sid = searchParams.get("sellerId");
   const pid = searchParams.get("productId");
 
-  console.log(sid, pid);
-
   const query = qs.stringify(
     {
       fields: ["name", "description", "price", "images"],
       populate: {
-        user: {
-          fields: ["username"],
-        },
         brandId: {
           fields: ["name", "brandLogo"],
+          populate: {
+            user: {
+              fields: ["username", "walletAddress"],
+            },
+          },
         },
         categories: {
           fields: ["name"],
         },
         sellers: {
           fields: ["name", "location", "user"],
+          populate: {
+            user: {
+              fields: ["username", "walletAddress"],
+            },
+          },
         },
       },
 
@@ -72,19 +77,45 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     { encodeValuesOnly: true }
   );
 
-  useQuery(
-    ["products"],
+  const prd = useQuery(
+    ["products", { sid, pid }],
     () => ProductService.getProducts<ISingleProduct>(user.token, query),
     {
       enabled: user ? true : false,
       onSuccess({ data }) {
-        console.log(data);
         if (data) {
           setProduct(data[0]);
         }
       },
     }
   );
+
+  const [addToCart,cartItems] = useCartStore((state) => [state.addToCart,state.cartItems]);
+
+  const handleCart = () => {
+    if (!product) return;
+    const cartItem: ICartItem = {
+      userId: user?.data.id,
+      userWalletAddress: user?.data.walletAddress,
+      sellerId: product?.attributes.sellers.data[0].attributes.user.data.id,
+      sellerWalletAddress:
+        product?.attributes.sellers.data[0].attributes.user.data.attributes
+          .walletAddress,
+      brandId: product?.attributes.brandId.data.attributes.user.data.id,
+      brandWalletAddress:
+        product?.attributes.brandId.data.attributes.user.data.attributes
+          .walletAddress,
+      name: product?.attributes.name,
+      productId: product?.id,
+      price: product?.attributes.price,
+      images: product?.attributes.images,
+    };
+
+    addToCart(cartItem);
+
+    console.log(cartItem);
+    console.log('cartItems ',cartItems)
+  };
 
   return (
     <div className="w-fullmd:py-20">
@@ -141,7 +172,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
 
             <button
               className="py-4 w-full rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
-              // onClick={addToCart}
+              onClick={handleCart}
             >
               Add to cart
             </button>

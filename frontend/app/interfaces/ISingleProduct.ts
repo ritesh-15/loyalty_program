@@ -30,6 +30,21 @@ export interface Data {
 export interface Attributes2 {
   name: string;
   brandLogo: string;
+  user: User;
+}
+
+export interface User {
+  data: Data2;
+}
+
+export interface Data2 {
+  id: number;
+  attributes: Attributes3;
+}
+
+export interface Attributes3 {
+  username: string;
+  walletAddress: string;
 }
 
 export interface Categories {
@@ -38,10 +53,10 @@ export interface Categories {
 
 export interface Daum2 {
   id: number;
-  attributes: Attributes3;
+  attributes: Attributes4;
 }
 
-export interface Attributes3 {
+export interface Attributes4 {
   name: string;
 }
 
@@ -51,12 +66,27 @@ export interface Sellers {
 
 export interface Daum3 {
   id: number;
-  attributes: Attributes4;
+  attributes: Attributes5;
 }
 
-export interface Attributes4 {
+export interface Attributes5 {
   name: string;
   location: string;
+  user: User2;
+}
+
+export interface User2 {
+  data: Data3;
+}
+
+export interface Data3 {
+  id: number;
+  attributes: Attributes6;
+}
+
+export interface Attributes6 {
+  username: string;
+  walletAddress: string;
 }
 
 export interface Meta {
