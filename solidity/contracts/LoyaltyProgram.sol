@@ -1,16 +1,23 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.9;
 
-import "./Token.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract LoyaltyProgram is Ownable {
-    Token private token;
+    using Counters for Counters.Counter;
+
+    IERC20 private token;
     address private _admin;
+    uint256 minimumOrderAmount;
+
+    uint256 initialIssuerTokens;
 
     // issuers can be brands or sellers or parters
     mapping(address => bool) private _allowedIssuers;
+
+    Counters.Counter public numberOfIssuers;
 
     // actions to the token mean how many tokens should be issues for particular actions
     mapping(string => uint256) private _actionToTokenRatio;
@@ -45,49 +52,99 @@ contract LoyaltyProgram is Ownable {
         uint256 timestamp
     );
 
-    constructor(address _tokenAddress) {
-        token = Token(_tokenAddress);
+    event IssuerRecord(
+        address indexed issuer,
+        uint256 tokens,
+        uint256 timestamp,
+        bool isAdded
+    );
+
+    event TokenToLoyalUser(
+        address indexed issuer,
+        address indexed user,
+        uint256 tokens,
+        uint256 timestamp
+    );
+
+    constructor(address _tokenAddress, uint256 _initialIssuerTokens) {
+        token = IERC20(_tokenAddress);
         _admin = msg.sender;
+        minimumOrderAmount = 2000;
+
+        initialIssuerTokens = _initialIssuerTokens * 10 ** 18;
+
+        token.approve(address(this), token.totalSupply());
 
         // set the actions like referral, purchase or any other
-        _actionToTokenRatio["PURCHASE"] = 1;
-        _actionToTokenRatio["REFERRAL"] = 5;
-        _actionToTokenRatio["LOYAL_USER_TOKENS"] = 50;
+        _actionToTokenRatio["PURCHASE"] = 0.25 * 10 ** 18;
+        _actionToTokenRatio["REFERRAL"] = 5 * 10 ** 18;
+        _actionToTokenRatio["LOYAL_USER_TOKENS"] = 10 * 10 ** 18;
     }
+
+    // get total number of allowed issuers
 
     // add issuer such as brands and sellers
     function addIssuer(address _address) external onlyOwner {
         _allowedIssuers[_address] = true;
+        numberOfIssuers.increment();
+
+        token.transferFrom(msg.sender, _address, initialIssuerTokens);
+
+        emit IssuerRecord(_address, initialIssuerTokens, block.timestamp, true);
     }
 
     // remove issuer such as brand ans sellers
     function removeIssuer(address _address) external onlyOwner {
         _allowedIssuers[_address] = false;
-    }
+        numberOfIssuers.decrement();
 
-    // issue token to users
-    function issueTokenToLoyalUser(uint256 _tokens) external onlyIssuer {
-        require(
-            _actionToTokenRatio["LOYAL_USER_TOKENS"] < _tokens,
-            "You can only issue less than 50 tokens to loyal users"
+        emit IssuerRecord(
+            _address,
+            initialIssuerTokens,
+            block.timestamp,
+            false
         );
     }
 
+    // issue token to users
+    function issueTokenToLoyalUser(
+        uint256 _tokens,
+        address _address
+    ) external onlyIssuer {
+        require(
+            _actionToTokenRatio["LOYAL_USER_TOKENS"] > _tokens,
+            "You can only issue less than 10 tokens to loyal users"
+        );
+        token.transferFrom(msg.sender, _address, _tokens);
+
+        emit TokenToLoyalUser(msg.sender, _address, _tokens, block.timestamp);
+    }
+
     // balance of account
-    function accountBalance(address _address) public returns (uint256) {
+    function accountBalance(address _address) public view returns (uint256) {
         return token.balanceOf(_address);
     }
 
     // purchase product action
-    function getTokensOnOrderPurchase(uint256 _orderAmount) external {
-        uint256 numberOfTokens = (_orderAmount *
-            _actionToTokenRatio["PURCHASE"]) / 100;
+    function getTokensOnOrderPurchase(
+        uint256 _orderAmount,
+        uint256 _numberOfTokens
+    ) external {
+        require(
+            _orderAmount >= minimumOrderAmount,
+            "Order amount must be greater than the minimum order amount"
+        );
+
+        require(
+            _numberOfTokens < 100 * 10 ** 18,
+            "Cannot allocated more than 100 tokens"
+        );
 
         // reward user for purchse
-        token.transferFrom(_admin, msg.sender, numberOfTokens);
+        token.transferFrom(_admin, msg.sender, _numberOfTokens);
 
         emit GetTokenOnOrder(
-            numberOfTokens,
+            _numberOfTokens,
             _orderAmount,
             msg.sender,
             block.timestamp
