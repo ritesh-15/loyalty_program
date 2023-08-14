@@ -26,6 +26,7 @@ describe("LoyaltyProgram", async () => {
     )
 
     loyaltyContractAddress = await loyaltyProgram.getAddress()
+    await loyaltyProgram.giveApproval()
   })
 
   it("initial tokens should be in admin account", async () => {
@@ -160,13 +161,71 @@ describe("LoyaltyProgram", async () => {
       const orderAmount = 3000
       const tokens = ethers.parseEther(`${(orderAmount * 0.25) / 100}`)
 
-      await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
+      await tokenContract.approve(loyaltyContractAddress, tokens)
 
       await expect(
         loyaltyProgram
           .connect(bob)
           .getTokensOnOrderPurchase(orderAmount, tokens)
       ).to.emit(loyaltyProgram, "GetTokenOnOrder")
+    })
+
+    it("should able to get the user account tokens", async () => {
+      const balance = await loyaltyProgram.accountBalance(bob)
+      const tokens = ethers.parseEther(`${(3000 * 0.25) / 100}`)
+
+      expect(
+        balance,
+        "number of tokens of user not matched with the tokens received"
+      ).to.equal(tokens)
+    })
+  })
+
+  describe("Buy product or claim reward", async () => {
+    it("should not able to claim reward if tokens are 0", async () => {
+      const token = ethers.parseEther("0")
+      await expect(
+        loyaltyProgram.buyProductOrClaimReward(token, brand)
+      ).to.be.revertedWith("Tokens should be greater than 0")
+    })
+
+    it("should not able to transfer tokens other than the issuer", async () => {
+      const token = ethers.parseEther("15")
+
+      await expect(
+        loyaltyProgram.buyProductOrClaimReward(token, john)
+      ).to.be.revertedWith(
+        "Transfer to must be allowed issuers (brand or seller)"
+      )
+    })
+
+    it("should  not able to traansfer tranfer the coin to brand", async () => {
+      const tokens = ethers.parseEther("18")
+
+      await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
+
+      await expect(
+        loyaltyProgram.connect(bob).buyProductOrClaimReward(tokens, brand)
+      ).to.be.revertedWith(
+        "User should have balance greater than number of tokens required!"
+      )
+    })
+
+    it("should able to traansfer tranfer the coin to brand", async () => {
+      const tokens = ethers.parseEther("6")
+
+      await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
+
+      await expect(
+        loyaltyProgram.connect(bob).buyProductOrClaimReward(tokens, brand)
+      ).to.be.emit(loyaltyProgram, "TokensTransferred")
+    })
+
+    it("should deduct the tokens from users account", async () => {
+      const balance = await loyaltyProgram.accountBalance(bob)
+      expect(balance, "user account balance not match").to.be.equal(
+        ethers.parseEther("1.5")
+      )
     })
   })
 })

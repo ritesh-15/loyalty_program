@@ -73,15 +73,17 @@ contract LoyaltyProgram is Ownable {
 
         initialIssuerTokens = _initialIssuerTokens * 10 ** 18;
 
-        token.approve(address(this), token.totalSupply());
-
         // set the actions like referral, purchase or any other
         _actionToTokenRatio["PURCHASE"] = 0.25 * 10 ** 18;
         _actionToTokenRatio["REFERRAL"] = 5 * 10 ** 18;
         _actionToTokenRatio["LOYAL_USER_TOKENS"] = 10 * 10 ** 18;
     }
 
-    // get total number of allowed issuers
+    // add approval for all the token to be transfered
+    function giveApproval() external onlyOwner {
+        bool result = token.approve(address(this), token.totalSupply());
+        require(result, "give approval for all the token to be transfered");
+    }
 
     // add issuer such as brands and sellers
     function addIssuer(address _address) external onlyOwner {
@@ -184,10 +186,7 @@ contract LoyaltyProgram is Ownable {
         );
     }
 
-    function settlement(
-        uint256 _tokens,
-        address _trasferFrom
-    ) internal onlyIssuer {
+    function settlement(uint256 _tokens, address _trasferFrom) internal {
         // calculate settelment tokens
         uint256 settlementTokens = (_tokens * 25) / 100;
 
