@@ -53,6 +53,8 @@ const authOptions: AuthOptions = {
             jwt: res.data.jwt,
           }
 
+          console.log(data)
+
           return {
             ...data,
           }
