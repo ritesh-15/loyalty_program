@@ -45,11 +45,6 @@ describe("LoyaltyProgram", async () => {
     })
 
     it("admin should able to add issuer", async () => {
-      await tokenContract.approve(
-        await loyaltyProgram.getAddress(),
-        ethers.parseEther(INITIAL_ISSUER_TOKENS.toString())
-      )
-
       await expect(loyaltyProgram.connect(admin).addIssuer(brand)).to.emit(
         loyaltyProgram,
         "IssuerRecord"

@@ -1,19 +1,19 @@
 import { toast } from "react-hot-toast"
 import { create } from "zustand"
-import { ethers } from "ethers"
 import { LOYALTY_PROGRAM_ADDRESS, TOKEN_CONTRACT_ADDRESS } from "@/lib/constant"
-import { LoyaltyProgram__factory } from "@/typechain-types/factories/contracts/LoyaltyProgram__factory"
-import { Token__factory } from "@/typechain-types/factories/contracts/Token__factory"
-import { LoyaltyProgram } from "@/typechain-types/contracts/LoyaltyProgram"
-import { Token } from "@/typechain-types/contracts/Token"
+import { ethers } from "ethers"
+import { abi as LoyaltyProgramABI } from "@/lib/LoyaltyProgram.json"
+import { abi as TokenABI } from "@/lib/Token.json"
 
 interface IWallet {
   walletAddress: string
   isConnected: boolean
   connectWallet: () => void
   checkIfWalletConnected: () => void
-  getLoyaltyProgramContract: () => LoyaltyProgram
-  getTokenContract: () => Token
+  getLoyaltyProgramContract: () => any
+  getLoyaltyProgramContractSigned: () => any
+  getTokenContract: () => any
+  getTokenContractSigned: () => any
 }
 
 let eth: any = null
@@ -74,8 +74,9 @@ export const useWallet = create<IWallet>((set, get) => ({
       "https://polygon-mumbai.g.alchemy.com/v2/5rHFCUzjNhiqyDZSHVWGrBBzRgmieG-y"
     )
 
-    const contract = LoyaltyProgram__factory.connect(
+    const contract = new ethers.Contract(
       LOYALTY_PROGRAM_ADDRESS,
+      LoyaltyProgramABI,
       provider
     )
 
@@ -86,7 +87,31 @@ export const useWallet = create<IWallet>((set, get) => ({
       "https://polygon-mumbai.g.alchemy.com/v2/5rHFCUzjNhiqyDZSHVWGrBBzRgmieG-y"
     )
 
-    const contract = Token__factory.connect(TOKEN_CONTRACT_ADDRESS, provider)
+    const contract = new ethers.Contract(
+      TOKEN_CONTRACT_ADDRESS,
+      TokenABI,
+      provider
+    )
+
+    return contract
+  },
+  getLoyaltyProgramContractSigned: async () => {
+    const provider = new ethers.BrowserProvider(eth)
+    const signer = await provider.getSigner()
+    return new ethers.Contract(
+      LOYALTY_PROGRAM_ADDRESS,
+      LoyaltyProgramABI,
+      signer
+    )
+  },
+  getTokenContractSigned: async () => {
+    const provider = new ethers.BrowserProvider(eth)
+    const signer = await provider.getSigner()
+    const contract = new ethers.Contract(
+      TOKEN_CONTRACT_ADDRESS,
+      TokenABI,
+      signer
+    )
 
     return contract
   },

@@ -7,10 +7,11 @@ import { toast } from "react-hot-toast"
 import { useWallet } from "../store/WalletStore"
 import { ethers } from "ethers"
 import { FiAnchor } from "react-icons/fi"
+import Button from "../components/button/Button"
 
 export default function page() {
   const { walletAddress } = useWallet()
-  const { getAccountBalance, totalSupply, settlementTransactions } =
+  const { getAccountBalance, totalSupply, settlementTransactions, approval } =
     useLoyaltyContract()
   const [loading, setLoading] = useState(true)
 
@@ -18,6 +19,15 @@ export default function page() {
     accountBalance: "",
     supply: "",
   })
+
+  const giveApproval = async () => {
+    try {
+      await approval()
+      toast.success("done")
+    } catch (e) {
+      toast.error("something went wrong")
+    }
+  }
 
   useEffect(() => {
     if (!walletAddress) return
@@ -37,6 +47,7 @@ export default function page() {
           supply: ethers.formatEther(supply.toString()),
         })
       } catch (error: any) {
+        console.log(error.message)
         toast.error("Something went wrong")
       } finally {
         setLoading(false)
@@ -72,8 +83,10 @@ export default function page() {
         </div>
       </div>
 
+      <Button onClick={giveApproval}>Give approval</Button>
+
       <div className="mt-12">
-        <h1 className="text-xl font-bold">Settlement transactions</h1>
+        <h1 className="text-xl font-bold">Issuers</h1>
       </div>
     </section>
   )
