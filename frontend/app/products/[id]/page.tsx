@@ -92,6 +92,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
 
   const [addToCart,cartItems] = useCartStore((state) => [state.addToCart,state.cartItems]);
 
+  
   const handleCart = () => {
     if (!product) return;
     const cartItem: ICartItem = {
@@ -105,16 +106,17 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
       brandWalletAddress:
         product?.attributes.brandId.data.attributes.user.data.attributes
           .walletAddress,
-      name: product?.attributes.name,
-      productId: product?.id,
-      price: product?.attributes.price,
-      images: product?.attributes.images,
-    };
-
-    addToCart(cartItem);
-
-    console.log(cartItem);
-    console.log('cartItems ',cartItems)
+          name: product?.attributes.name,
+          productId: product?.id,
+          price: product?.attributes.price,
+          images: product?.attributes.images,
+          quantity: 1,
+        };
+        
+        addToCart(cartItem);
+        
+        console.log("state ",useCartStore.getState().cartItems)
+        console.log('cartItems ',cartItems)
   };
 
   return (

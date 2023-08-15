@@ -9,4 +9,5 @@ export interface ICartItem {
   productId: number;
   price: number;
   images?: string[];
+  quantity: number;
 }

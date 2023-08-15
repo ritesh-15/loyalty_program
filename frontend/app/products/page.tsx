@@ -53,6 +53,7 @@ const ProductsPage = () => {
     () => SellerService.getSellers<ISellerWithProducts>(user.token, query),
     {
       onSuccess: ({ data }) => {
+        console.log('data ',data)
         data.map((seller) => {
           setProducts((prev) => [
             ...prev,
@@ -75,6 +76,8 @@ const ProductsPage = () => {
     }
   );
 
+  console.log(sellers)
+
 
   return (
     <section>
@@ -87,7 +90,7 @@ const ProductsPage = () => {
             <h2 className="text-4xl">Products</h2>
 
             <div className="m-4 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-              {products.map((product, index) => {
+              {products && products.map((product, index) => {
                 return (
                   <div className="m-4" key={index}>
                     <Link
