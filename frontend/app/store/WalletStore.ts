@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast"
 import { create } from "zustand"
-import { ethers } from "ethers"
+import {ethers} from 'ethers'
 import { LOYALTY_PROGRAM_ADDRESS, TOKEN_CONTRACT_ADDRESS } from "@/lib/constant"
 import { LoyaltyProgram__factory } from "@/typechain-types/factories/contracts/LoyaltyProgram__factory"
 import { Token__factory } from "@/typechain-types/factories/contracts/Token__factory"
