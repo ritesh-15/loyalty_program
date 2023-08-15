@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { IUserSession } from "@/app/interfaces/IUser"
 import { useEffect } from "react"
+import { useWallet } from "@/app/store/WalletStore"
 
 const singUpSchema = y.object({
   email: y
@@ -23,6 +24,8 @@ const singUpSchema = y.object({
 
 export default function useRegister() {
   const navigate = useRouter()
+  const { walletAddress } = useWallet()
+
   const { data } = useSession()
   const user = data?.user as IUserSession
 
@@ -56,9 +59,14 @@ export default function useRegister() {
     validationSchema: singUpSchema,
     onSubmit: async (values) => {
       try {
+        if (!walletAddress) {
+          toast.error("Please connect your meta mask wallet account")
+          return
+        }
+
         await register({
           username: values.name,
-          walletAddress: "temp",
+          walletAddress,
           ...values,
         })
 
