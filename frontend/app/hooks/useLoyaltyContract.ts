@@ -7,14 +7,17 @@ export default function useLoyaltyContract() {
   const contract = getLoyaltyProgramContract()
   const tokenContract = getTokenContract()
 
-  const getAccountBalance = async (address: string) => {
-    const balance = await contract.accountBalance(address)
-    return balance
+  const getAccountBalance = (address: string) => {
+    return contract.accountBalance(address)
   }
 
-  const totalSupply = async () => {
-    return await tokenContract.totalSupply()
+  const totalSupply = () => {
+    return tokenContract.totalSupply()
   }
 
-  return { getAccountBalance, totalSupply }
+  const settlementTransactions = () => {
+    return contract.queryFilter(contract.filters["SettlementRecord"]())
+  }
+
+  return { getAccountBalance, totalSupply, settlementTransactions }
 }

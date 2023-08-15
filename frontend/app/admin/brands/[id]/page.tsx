@@ -1,12 +1,21 @@
+"use client"
+
 import Button from "@/app/components/button/Button"
+import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
 import { IBrandDetails } from "@/app/interfaces/IBrandDetails"
+import { IUserSession } from "@/app/interfaces/IUser"
 import BrandService from "@/app/services/brand.service"
-import { getCurrentUser } from "@/app/utils/auth.utils"
+import { useWallet } from "@/app/store/WalletStore"
+import { ethers } from "ethers"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import qs from "qs"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 import { CiUser } from "react-icons/ci"
 import { FaCoins, FaEthereum, FaBitcoin } from "react-icons/fa"
+import { useQuery } from "react-query"
 
 interface IProps {
   params: {
@@ -14,39 +23,76 @@ interface IProps {
   }
 }
 
-export default async function BrandDetails({ params }: IProps) {
-  const session = await getCurrentUser()
+export default function BrandDetails({ params }: IProps) {
+  const { data: session } = useSession()
+  const user = session?.user as IUserSession
+
+  const { walletAddress } = useWallet()
+  const { getAccountBalance, totalSupply, settlementTransactions } =
+    useLoyaltyContract()
+  const [loading, setLoading] = useState(true)
+
+  const [stats, setStats] = useState({
+    accountBalance: "",
+    supply: "",
+  })
 
   const query = qs.stringify(
     {
       fields: ["name", "brandLogo"],
       populate: {
         user: {
-          fields: ["username"],
+          fields: ["username", "walletAddress"],
         },
       },
     },
     { encodeValuesOnly: true }
   )
 
-  const brand = await BrandService.getBrandByID<IBrandDetails>(
-    params.id,
-    session?.token!!,
-    query
+  const { data: brand } = useQuery(
+    ["brand", params.id],
+    () =>
+      BrandService.getBrandByID<IBrandDetails>(params.id, user?.token!!, query),
+    {
+      enabled: user ? true : false,
+    }
   )
+
+  useEffect(() => {
+    if (!walletAddress || !brand) return
+    ;(async () => {
+      try {
+        const [balance, supply] = await Promise.all([
+          getAccountBalance(
+            brand.data.attributes.user.data.attributes.walletAddress
+          ),
+          totalSupply(),
+        ])
+
+        setStats({
+          accountBalance: ethers.formatEther(`${balance}`),
+          supply: ethers.formatEther(supply.toString()),
+        })
+      } catch (error: any) {
+        toast.error("Something went wrong")
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [walletAddress, brand])
 
   return (
     <section className="mt-12 mx-4 bg-white rounded-md shadow-md p-4">
       <div className="">
         <Image
-          src={brand.data.attributes.brandLogo}
+          src={brand?.data.attributes.brandLogo || ""}
           alt=""
           width={150}
           height={150}
         />
 
         <h1 className="text-2xl font-bold mt-4">
-          {brand.data.attributes.name}
+          {brand?.data.attributes.name}
         </h1>
 
         <p className="mt-2">
@@ -58,7 +104,7 @@ export default async function BrandDetails({ params }: IProps) {
 
         <div className="flex items-center p-2 rounded-md border  gap-2 w-fit mt-4">
           <CiUser className="text-2xl" />
-          <span>{brand.data.attributes.user.data.attributes.username}</span>
+          <span>{brand?.data.attributes.user.data.attributes.username}</span>
         </div>
       </div>
 
@@ -71,22 +117,16 @@ export default async function BrandDetails({ params }: IProps) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 mt-8 gap-6">
+        <div className="grid grid-cols-2 mt-8 gap-6">
           <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
             <FaCoins className="text-5xl text-yellow-500" />
-            <p className="mt-4">200</p>
+            <p className="mt-4">{stats.accountBalance}</p>
             <span className="font-semibold">Number of tokens</span>
           </div>
 
           <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
-            <FaEthereum className="text-5xl text-yellow-500" />
-            <p className="mt-4">0.5 ETH</p>
-            <span className="font-semibold">Token Value</span>
-          </div>
-
-          <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
             <FaBitcoin className="text-5xl text-yellow-500" />
-            <p className="mt-4">10000000</p>
+            <p className="mt-4">{stats.supply}</p>
             <span className="font-semibold">Total Supply</span>
           </div>
         </div>
