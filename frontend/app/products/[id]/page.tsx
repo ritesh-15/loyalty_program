@@ -9,10 +9,12 @@ import ProductService from "@/app/services/product.service";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "react-query";
 import { ISingleProduct } from "@/app/interfaces/ISingleProduct";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
+import {toast} from 'react-hot-toast'
 import Image from "next/image";
 import { ICartItem } from "@/app/interfaces/ICartItem";
 import { useCartStore } from "@/app/store/CartStore";
+import Navbar from "@/app/components/Navbar";
 
 interface SingleProductProps {
   params: {
@@ -114,22 +116,22 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
         };
         
         addToCart(cartItem);
-        
-        console.log("state ",useCartStore.getState().cartItems)
-        console.log('cartItems ',cartItems)
+        toast.success("Added to cart")
   };
 
   return (
-    <div className="w-fullmd:py-20">
+    <div>
       {/* <Navbar/> */}
-      <ToastContainer />
+
+    <div className="w-full md:py-20">
+      {/* <ToastContainer /> */}
       <Wrapper className="pt-20 ">
         <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[100px] ">
           {/* left column start */}
           <div className="w-full  md:w-auto flex-[1.5] max-w-[500px] lg-max-w-full mx-auto lg:mx-0">
             {product?.attributes.images && (
               <ProductDetailCarousel images={product.attributes.images} />
-            )}
+              )}
             {/* {   } */}
           </div>
           {/* left column end */}
@@ -138,12 +140,12 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
             <div className="font-semibold flex flex-row space-x-4 mb-1 text-black/[0.6]">
               {product?.attributes.brandId.data.attributes.brandLogo && (
                 <Image
-                  src={product?.attributes.brandId.data.attributes.brandLogo}
+                src={product?.attributes.brandId.data.attributes.brandLogo}
                   alt=""
                   width={50}
                   height={50}
-                />
-              )}
+                  />
+                  )}
               <span className="text-lg">
                 {product?.attributes.brandId.data.attributes.name}
               </span>
@@ -175,7 +177,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
             <button
               className="py-4 w-full rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
               onClick={handleCart}
-            >
+              >
               Add to cart
             </button>
             {/* <button className="py-4 w-full rounded-full border border-black text-lg font-medium transition-transform flex items-center justify-center gap-2 active:scale-95 mb-10 hover:opacity-75">
@@ -193,6 +195,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
         </div>
       </Wrapper>
     </div>
+              </div>
   );
 };
 
