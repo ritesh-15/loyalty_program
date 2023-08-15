@@ -70,8 +70,11 @@ const Navbar = () => {
                       Profile
                     </li>
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                    <Link href={'/orders'}>
                       Orders
+                    </Link>
                     </li>
+                    
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       <Link href={"/rewards"}>Rewards</Link>
                     </li>
@@ -101,7 +104,10 @@ const Navbar = () => {
           <Link href={"/products"}>Products</Link>
         </div>
         <div>
+          <Link href={'/cart'}>
+
           <FiShoppingCart size={25} />
+          </Link>
         </div>
       </div>
     </nav>

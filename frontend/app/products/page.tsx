@@ -48,12 +48,11 @@ const ProductsPage = () => {
     },
   });
 
-  const { data: sellers } = useQuery(
+   useQuery(
     ["sellers"],
     () => SellerService.getSellers<ISellerWithProducts>(user.token, query),
     {
       onSuccess: ({ data }) => {
-        console.log('data ',data)
         data.map((seller) => {
           setProducts((prev) => [
             ...prev,
@@ -76,7 +75,6 @@ const ProductsPage = () => {
     }
   );
 
-  console.log(sellers)
 
 
   return (
