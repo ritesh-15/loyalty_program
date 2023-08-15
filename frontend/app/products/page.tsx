@@ -77,6 +77,8 @@ const ProductsPage = () => {
           </div>
         </div>
       </div>
+
+                
     </section>
   );
 };
