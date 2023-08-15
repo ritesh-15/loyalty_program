@@ -1,35 +1,29 @@
-"use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { Poppins } from "next/font/google";
-import Navbar from "../components/Navbar";
-import { useSession } from "next-auth/react";
-import { IUserSession } from "../interfaces/IUser";
-import qs from "qs";
-import { useQuery } from "react-query";
-import ImageSlideshow from "../components/ImageSlideshow";
-import Link from "next/link";
-import SellerService from "../services/sellers.service";
-import { ISellerWithProducts } from "../interfaces/ISellerWithProducts";
-
-const poppins = Poppins({
-  weight: "400",
-  subsets: ["latin"],
-});
+"use client"
+import React, { useState } from "react"
+import Image from "next/image"
+import Navbar from "../components/Navbar"
+import { useSession } from "next-auth/react"
+import { IUserSession } from "../interfaces/IUser"
+import qs from "qs"
+import { useQuery } from "react-query"
+import Link from "next/link"
+import SellerService from "../services/sellers.service"
+import { ISellerWithProducts } from "../interfaces/ISellerWithProducts"
 
 interface IProductWithSeller {
-  product: ISellerWithProducts["data"][0]["attributes"]["products"]["data"][0];
+  product: ISellerWithProducts["data"][0]["attributes"]["products"]["data"][0]
   seller: {
-    name: string;
-    location: string;
-    id: number;
-  };
+    name: string
+    location: string
+    id: number
+  }
 }
 
 const ProductsPage = () => {
-  const { data } = useSession();
-  const user = data?.user as IUserSession;
-  const [products, setProducts] = useState<IProductWithSeller[]>([]);
+  const { data } = useSession()
+  const user = data?.user as IUserSession
+
+  const [products, setProducts] = useState<IProductWithSeller[]>([])
 
   const query = qs.stringify({
     fields: ["name", "location", "user"],
@@ -46,14 +40,13 @@ const ProductsPage = () => {
         },
       },
     },
-  });
+  })
 
-  const { data: sellers } = useQuery(
-    ["sellers"],
+  useQuery(
+    ["products-sellers"],
     () => SellerService.getSellers<ISellerWithProducts>(user.token, query),
     {
       onSuccess: ({ data }) => {
-        console.log('data ',data)
         data.map((seller) => {
           setProducts((prev) => [
             ...prev,
@@ -65,32 +58,28 @@ const ProductsPage = () => {
                   name: seller.attributes.name,
                   location: seller.attributes.location,
                 },
-                
-              };
+              }
             }),
-          ]);
-        });
+          ])
+        })
       },
       enabled: user ? true : false,
-      staleTime: Infinity,
+      // staleTime: Infinity,
     }
-  );
-
-  console.log(sellers)
-
+  )
 
   return (
     <section>
       <Navbar />
       <div className="p-28">
-        <h1 className={`${poppins.className} text-4xl`}>Show all products</h1>
+        <h1 className={`text-4xl`}>Show all products</h1>
 
         <div className="bg-white">
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <h2 className="text-4xl">Products</h2>
 
             <div className="m-4 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-              {products && products.map((product, index) => {
+              {products?.map((product, index) => {
                 return (
                   <div className="m-4" key={index}>
                     <Link
@@ -129,21 +118,21 @@ const ProductsPage = () => {
                           (category, id) => {
                             return (
                               <div key={id}>{category.attributes.name}</div>
-                            );
+                            )
                           }
                         )}
                       </div>
                       {product.product.id} -- {product.seller.id}
                     </Link>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ProductsPage;
+export default ProductsPage

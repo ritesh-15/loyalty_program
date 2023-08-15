@@ -1,36 +1,36 @@
-"use client";
-import Wrapper from "@/app/components/Wrapper";
-import ProductDetailCarousel from "@/app/components/ProductDetailCarousel";
-import React, { useState } from "react";
-import { useSession } from "next-auth/react";
-import { IUserSession } from "@/app/interfaces/IUser";
-import qs from "qs";
-import ProductService from "@/app/services/product.service";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "react-query";
-import { ISingleProduct } from "@/app/interfaces/ISingleProduct";
-import { ToastContainer, toast } from "react-toastify";
-import Image from "next/image";
-import { ICartItem } from "@/app/interfaces/ICartItem";
-import { useCartStore } from "@/app/store/CartStore";
+"use client"
+import Wrapper from "@/app/components/Wrapper"
+import ProductDetailCarousel from "@/app/components/ProductDetailCarousel"
+import React, { useState } from "react"
+import { useSession } from "next-auth/react"
+import { IUserSession } from "@/app/interfaces/IUser"
+import qs from "qs"
+import ProductService from "@/app/services/product.service"
+import { useSearchParams } from "next/navigation"
+import { useQuery } from "react-query"
+import { ISingleProduct } from "@/app/interfaces/ISingleProduct"
+import { ToastContainer, toast } from "react-toastify"
+import Image from "next/image"
+import { ICartItem } from "@/app/interfaces/ICartItem"
+import { useCartStore } from "@/app/store/CartStore"
 
 interface SingleProductProps {
   params: {
-    sellerId: number;
-    productId: number;
-  };
+    sellerId: number
+    productId: number
+  }
 }
 
 export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
-  const { data } = useSession();
-  const user = data?.user as IUserSession;
+  const { data } = useSession()
+  const user = data?.user as IUserSession
 
-  const [product, setProduct] = useState<ISingleProduct["data"][0] | null>();
+  const [product, setProduct] = useState<ISingleProduct["data"][0] | null>()
   // const session =  getCurrentUser();
 
-  const searchParams = useSearchParams();
-  const sid = searchParams.get("sellerId");
-  const pid = searchParams.get("productId");
+  const searchParams = useSearchParams()
+  const sid = searchParams.get("sellerId")
+  const pid = searchParams.get("productId")
 
   const query = qs.stringify(
     {
@@ -75,26 +75,28 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
       },
     },
     { encodeValuesOnly: true }
-  );
+  )
 
-  const prd = useQuery(
-    ["products", { sid, pid }],
+  useQuery(
+    ["products", sid, pid],
     () => ProductService.getProducts<ISingleProduct>(user.token, query),
     {
       enabled: user ? true : false,
       onSuccess({ data }) {
         if (data) {
-          setProduct(data[0]);
+          setProduct(data[0])
         }
       },
     }
-  );
+  )
 
-  const [addToCart,cartItems] = useCartStore((state) => [state.addToCart,state.cartItems]);
+  const [addToCart, cartItems] = useCartStore((state) => [
+    state.addToCart,
+    state.cartItems,
+  ])
 
-  
   const handleCart = () => {
-    if (!product) return;
+    if (!product) return
     const cartItem: ICartItem = {
       userId: user?.data.id,
       userWalletAddress: user?.data.walletAddress,
@@ -106,18 +108,15 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
       brandWalletAddress:
         product?.attributes.brandId.data.attributes.user.data.attributes
           .walletAddress,
-          name: product?.attributes.name,
-          productId: product?.id,
-          price: product?.attributes.price,
-          images: product?.attributes.images,
-          quantity: 1,
-        };
-        
-        addToCart(cartItem);
-        
-        console.log("state ",useCartStore.getState().cartItems)
-        console.log('cartItems ',cartItems)
-  };
+      name: product?.attributes.name,
+      productId: product?.id,
+      price: product?.attributes.price,
+      images: product?.attributes.images,
+      quantity: 1,
+    }
+
+    addToCart(cartItem)
+  }
 
   return (
     <div className="w-fullmd:py-20">
@@ -193,7 +192,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
         </div>
       </Wrapper>
     </div>
-  );
-};
+  )
+}
 
-export default SingleProduct;
+export default SingleProduct

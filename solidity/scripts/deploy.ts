@@ -1,27 +1,27 @@
-import { ethers } from "hardhat";
+import { ethers } from "hardhat"
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const INTIAL_TOKNE_SUPPLY = 70000000000
+  const INITIAL_TOKEN_SUPPLY_TO_ISSUER = 500
 
-  const lockedAmount = ethers.parseEther("0.001");
+  const TokenContract = await ethers.getContractFactory("Token")
+  const tokenContract = await TokenContract.deploy(INTIAL_TOKNE_SUPPLY)
+  const tokenContractAddresss = await tokenContract.getAddress()
 
-  const lock = await ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  const LoyaltyProgramContract = await ethers.getContractFactory(
+    "LoyaltyProgram"
+  )
+  const loyaltyProgramContract = await LoyaltyProgramContract.deploy(
+    tokenContractAddresss,
+    ethers.parseEther(INITIAL_TOKEN_SUPPLY_TO_ISSUER.toString())
+  )
+  const loyaltyProgramAddress = await loyaltyProgramContract.getAddress()
 
-  await lock.waitForDeployment();
-
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+  console.log(`Token Contract Address: ${tokenContractAddresss}`)
+  console.log(`Loaylty Program Contract Address: ${loyaltyProgramAddress}`)
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+  console.error(error)
+  process.exitCode = 1
+})

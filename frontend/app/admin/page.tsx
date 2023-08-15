@@ -1,7 +1,38 @@
-import React from "react"
-import { FaBitcoin, FaCoins, FaEthereum } from "react-icons/fa"
+"use client"
 
-export default async function page() {
+import React, { useEffect, useState } from "react"
+import { FaBitcoin, FaCoins, FaEthereum } from "react-icons/fa"
+import useLoyaltyContract from "../hooks/useLoyaltyContract"
+import { toast } from "react-hot-toast"
+import { useWallet } from "../store/WalletStore"
+import { ethers } from "ethers"
+
+export default function page() {
+  const { walletAddress } = useWallet()
+  const { getAccountBalance, totalSupply } = useLoyaltyContract()
+
+  const [stats, setStats] = useState({
+    accountBalance: "",
+    supply: "",
+  })
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const [balance, supply] = await Promise.all([
+          getAccountBalance(walletAddress),
+          totalSupply(),
+        ])
+        setStats({
+          accountBalance: ethers.formatEther(`${balance}`),
+          supply: ethers.formatEther(supply.toString()),
+        })
+      } catch (error: any) {
+        toast.error("Something went wrong")
+      }
+    })()
+  }, [walletAddress])
+
   return (
     <section className="mt-12 mx-4">
       <div className="">
@@ -12,7 +43,7 @@ export default async function page() {
       <div className="grid grid-cols-3 mt-12 gap-6">
         <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
           <FaCoins className="text-5xl text-yellow-500" />
-          <p className="mt-4">10000000</p>
+          <p className="mt-4">{stats.accountBalance}</p>
           <span className="font-semibold">Total Supply</span>
         </div>
 
@@ -24,7 +55,7 @@ export default async function page() {
 
         <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
           <FaBitcoin className="text-5xl text-yellow-500" />
-          <p className="mt-4">10000000</p>
+          <p className="mt-4">{stats.supply}</p>
           <span className="font-semibold">Total Supply</span>
         </div>
       </div>
