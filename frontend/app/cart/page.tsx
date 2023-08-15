@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Wrapper from "../components/Wrapper";
 import Link from "next/link";
@@ -8,105 +8,41 @@ import CartItem from "../components/CartItem";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "../store/CartStore";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  useStripe,
-  useElements,
-  CardElement,
-} from "@stripe/react-stripe-js";
-
-const stripePromise = loadStripe(
-  `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
-);
-interface HandleOrderData {
-  paymentMethodId: string;
-}
-
-const PaymentForm = ({
-  handleOrder,
-}: {
-  handleOrder: (data: HandleOrderData) => void;
-}) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-
-  const handlePayment = async () => {
-    if (!stripe || !elements) {
-      // Handle Stripe or Elements not being ready
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // Create a PaymentMethod
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        // Handle the absence of cardElement, e.g., if the CardElement is not loaded properly
-        setLoading(false);
-        return;
-      }
-
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: "card",
-        card: cardElement,
-      });
-
-      if (error) {
-        console.error("Error creating PaymentMethod:", error);
-        setLoading(false);
-        return;
-      }
-
-      // Call the handleOrder function to complete the payment
-      handleOrder({ paymentMethodId: paymentMethod.id });
-      setLoading(false);
-    } catch (error) {
-      console.error("Payment error:", error);
-      setLoading(false);
-      toast.error("Payment Failed");
-    }
-  };
-
-  return (
-    <div>
-      <CardElement />
-      <button
-        className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
-        onClick={handlePayment}
-        disabled={loading}
-      >
-        Checkout
-      </button>
-    </div>
-  );
-};
-
+import { ICartItem } from "../interfaces/ICartItem";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 
 const Cart = () => {
   const [loading, setLoading] = useState(false);
+  const [total,setTotal] = useState(0)
   const router = useRouter();
+  
+  const cartItems:ICartItem[] = useCartStore.getState().cartItems
+  console.log(cartItems)
 
-  const handleOrder = async ({ paymentMethodId }: HandleOrderData) => {
-    try {
-      setLoading(true);
+  useEffect(()=>{
+    let p = 0;
+    cartItems.map((item)=>{
+      p += item.price * item.quantity;
+    })
+    setTotal(p)
+  },[])
+  
 
-      // Simulate order processing delay (replace with actual logic)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+  const handleOrder = () => {
+    
+  }
 
-      // Handling the rest of the order processing and payment
-      // ...
-
-      setLoading(false);
-      toast.success("Payment successful");
-    } catch (error) {
-      setLoading(false);
-      toast.error("Something went wrong");
-    }
+  const handleIncrement = (item:ICartItem) => {
+    console.log('increment')
+    item.quantity = item.quantity+1;
   };
+
+  const handleDecrement = (item: ICartItem) => {
+    console.log("increment");  
+    item.quantity = Math.max(item.quantity - 1, 1);
+  };
+
 
   return (
     <div className="py-20 w-full">
@@ -116,51 +52,109 @@ const Cart = () => {
             Shopping Cart
           </div>
         </div>
+
         <div className="flex flex-col lg:flex-row gap-12 py-10">
           {/* CART ITEMS */}
           <div className="flex-[2]">
-            <div className="text-lg font-bold">Cart Items</div>
-            <CartItem />
-            <CartItem />
-            <CartItem />
+            {cartItems?.map((item, index) => {
+              return (
+                <div key={index}>
+                  <div className="flex py-5 gap-3 md:gap-5 border-b">
+                    <div className="shrink-0 aspect-square w-[50px] md:w-[120px]">
+                      {item.images && (
+                        <Image
+                          src={item.images[0]}
+                          height={200}
+                          width={200}
+                          alt=""
+                        />
+                      )}
+                    </div>
+
+                    <div className="w-full flex flex-col">
+                      <div className="flex flex-col md:flex-row justify-between">
+                        <div className="text-lg md:text-2xl font-semibold text-black/[0.8]">
+                          {item.name}
+                        </div>
+
+                        <div className="text-sm md:text-md font-bold text-black/[0.5] mt-2">
+                          Amount : ₹{item.price}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mt-4">
+                        <div className="text-sm md:text-md font-medium text-black/[0.5] block ">
+                          BrandId - {item.brandId}
+                        </div>
+                        <div className="text-sm md:text-md font-medium text-black/[0.5] block ">
+                          SellerId - {item.sellerId}
+                        </div>
+
+                        <RiDeleteBin6Line className="cursor-pointer text-black/[0.5] hover:text-black text-[16px] md:text-[20px]" />
+                      </div>
+
+                      <div className="flex items-center justify-between mt-4">
+                        <div className="flex items-center gap-2 md:gap-10 text-black/[0.5] text-sm  md:text-md">
+                          <div className="flex items-center gap-1">
+                            <div className="font-semibold">Quantity:</div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  item.quantity = Math.max(
+                                    item.quantity - 1,
+                                    0
+                                  );
+                                }}
+                                className="hover:text-black bg-gray-300 px-2 py-1 rounded"
+                              >
+                                -
+                              </button>
+                              <span>{item.quantity}</span>
+                              <button
+                                onClick={() => {
+                                  item.quantity = item.quantity + 1;
+                                }}
+                                className="hover:text-black bg-gray-300 px-2 py-1 rounded"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+          {/* Cart items end */}
 
-          {/* CART SUMMARY */}
-          <div className="flex-[1]">
-            <div className="text-lg font-bold">Summary</div>
+          {/* Cart Summary */}
+          {cartItems.length !== 0 && (
+            <div className="flex-[1]">
+              <div className="text-lg font-bold">Summary</div>
 
-            <div className="p-5 my-5 bg-black/[0.05] rounded-xl">
-              <div className="flex justify-between">
-                <div className="uppercase text-md md:text-lg font-medium text-black">
-                  Subtotal
+              <div className="p-5 my-5 bg-black/[0.05] rounded-xl">
+                <div className="flex justify-between">
+                  <div className="uppercase text-md md:text-lg font-medium text-black">
+                    Subtotal
+                  </div>
+                  <div className="text-md md:text-lg font-medium text-black">
+                    Total : ₹{total}
+                  </div>
                 </div>
-                <div className="text-md md:text-lg font-medium text-black">
-                  $6000
-                </div>
-              </div>
-              <div className="text-sm md:text-md py-5 border-t mt-5">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure
-                unde fugiat dolorum, veritatis reiciendis obcaecati cupiditate
-                consectetur nihil nisi deserunt sit voluptas eligendi, velit
-                consequuntur asperiores beatae libero! Velit, sed.
+                <button onClick={handleOrder}>Place Order</button>
               </div>
             </div>
-
-            <Elements stripe={stripePromise}>
-              <PaymentForm handleOrder={handleOrder} />
-            </Elements>
-          </div>
+          )} 
+          {/* Summary */}
         </div>
 
         <div className="flex-[2] flex flex-col items-center pb-[50px] md:-mt-14">
-          <Image
-            src="/empty.jpg"
-            alt=""
-            width={300}
-            height={300}
-            className="w-[300px] md:w-[400px]"
-          />
-          <span className="text-xl font-bold">Your cart is empty</span>
+          {cartItems.length === 0 && (
+            <span className="text-xl font-bold">Your cart is empty</span>
+          )}
           <span className="text-center mt-4">
             Looks like you haven&apos t added anything to your cart. <br />
             Go ahead and explore!

@@ -8,16 +8,13 @@ interface CartState {
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
   getCart: () => void;
+  incrementQuantity: (pid: number, sid: number) => void;
+  decrementQuantity: (pid: number, sid: number) => void;
 }
 
 
 export const useCartStore = create<CartState>((set, get) => ({
   cartItems: [],
-  // addToCart: (item) => {
-  //   set((state)=>({
-  //     cartItems: [...state.cartItems,item],
-  //   }))
-  // },
   addToCart: (item) => set((state) => {
     const existingItem = state.cartItems.find(cartItem => cartItem.productId === item.productId);
     if (existingItem) {
@@ -42,5 +39,11 @@ export const useCartStore = create<CartState>((set, get) => ({
     })),
     getCart: () => {
       
-    }
+    },
+    incrementQuantity(pid, sid) {
+      this.cartItems[0].quantity = this.cartItems[0].quantity+1  
+    },
+    decrementQuantity: (pid,sid) => {
+
+    },
 }));
