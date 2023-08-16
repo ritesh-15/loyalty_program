@@ -22,24 +22,24 @@ export default function useLoyaltyContract() {
     return tokenContract.totalSupply()
   }
 
-  const settlementTransactions = async () => {
-    const contract = await getLoyaltyProgramContract()
+  const settlementTransactions = () => {
+    const contract = getLoyaltyProgramContract()
     return contract.queryFilter(contract.filters["SettlementRecord"]())
+  }
+
+  const issuerTransactions = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["IssuerRecord"]())
+  }
+
+  const numberOfIssuers = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.numberOfIssuers()
   }
 
   const addIssuer = async (address: string, accountddress: string) => {
     const contract = await getLoyaltyProgramContractSigned()
-    const tx = await contract.addIssuer(address, { from: accountddress })
-    return tx
-  }
-
-  const approval = async () => {
-    const contract = await getTokenContractSigned()
-    const tx = await contract.approve(
-      LOYALTY_PROGRAM_ADDRESS,
-      ethers.parseEther("70000000000")
-    )
-    return tx
+    return contract.addIssuer(address, { from: accountddress })
   }
 
   return {
@@ -47,6 +47,7 @@ export default function useLoyaltyContract() {
     totalSupply,
     settlementTransactions,
     addIssuer,
-    approval,
+    issuerTransactions,
+    numberOfIssuers,
   }
 }

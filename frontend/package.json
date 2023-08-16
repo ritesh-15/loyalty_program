@@ -25,6 +25,7 @@
     "ethers": "^6.7.1",
     "formik": "^2.4.3",
     "lucide-react": "^0.265.0",
+    "moment": "^2.29.4",
     "next": "13.4.13",
     "next-auth": "^4.22.5",
     "postcss": "8.4.27",

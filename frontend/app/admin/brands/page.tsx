@@ -17,7 +17,7 @@ import { LOYALTY_PROGRAM_ADDRESS } from "@/lib/constant"
 import { ethers } from "ethers"
 
 export default function Brands() {
-  const { walletAddress, getTokenContractSigned } = useWallet()
+  const { walletAddress } = useWallet()
   const { addIssuer } = useLoyaltyContract()
   const [loading, setLoading] = useState(false)
 
@@ -46,18 +46,10 @@ export default function Brands() {
 
   const handleAddIssuer = async (address: string) => {
     setLoading(true)
-    const token = await getTokenContractSigned()
     try {
-      // const tx = await token.approve(
-      //   LOYALTY_PROGRAM_ADDRESS,
-      //   ethers.parseEther("70000000000")
-      // )
-
-      // await tx.wait()
-
       await addIssuer(address, walletAddress)
+      toast.success("Issuer added successfully!")
     } catch (err) {
-      console.log(err)
       toast.error("Something went wrong")
     } finally {
       setLoading(false)
