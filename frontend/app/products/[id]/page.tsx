@@ -9,12 +9,10 @@ import ProductService from "@/app/services/product.service"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
 import { ISingleProduct } from "@/app/interfaces/ISingleProduct"
-// import { ToastContainer, toast } from "react-toastify";
 import { toast } from "react-hot-toast"
 import Image from "next/image"
 import { ICartItem } from "@/app/interfaces/ICartItem"
 import { useCartStore } from "@/app/store/CartStore"
-import Navbar from "@/app/components/Navbar"
 
 interface SingleProductProps {
   params: {
@@ -92,7 +90,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     }
   )
 
-  const [addToCart, cartItems] = useCartStore((state) => [
+  const [addToCart] = useCartStore((state) => [
     state.addToCart,
     state.cartItems,
   ])
@@ -102,11 +100,11 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     const cartItem: ICartItem = {
       userId: user?.data.id,
       userWalletAddress: user?.data.walletAddress,
-      sellerId: product?.attributes.sellers.data[0].attributes.user.data.id,
+      sellerId: product?.attributes.sellers.data[0].id,
       sellerWalletAddress:
         product?.attributes.sellers.data[0].attributes.user.data.attributes
           .walletAddress,
-      brandId: product?.attributes.brandId.data.attributes.user.data.id,
+      brandId: product?.attributes.brandId.data.id,
       brandWalletAddress:
         product?.attributes.brandId.data.attributes.user.data.attributes
           .walletAddress,

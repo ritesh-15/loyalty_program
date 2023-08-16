@@ -42,6 +42,14 @@ export default function useLoyaltyContract() {
     return contract.addIssuer(address, { from: accountddress })
   }
 
+  const getTokenOnOrder = async (address: string, numberOfTokens: number) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.getTokensOnOrderPurchase(
+      address,
+      ethers.parseEther(`${numberOfTokens}`)
+    )
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -49,5 +57,6 @@ export default function useLoyaltyContract() {
     addIssuer,
     issuerTransactions,
     numberOfIssuers,
+    getTokenOnOrder,
   }
 }
