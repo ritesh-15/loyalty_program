@@ -27,8 +27,13 @@ const Cart = () => {
     })
     setTotal(p)
   },[])
-  
 
+  const [addToCart, incrementQuantity] = useCartStore((state) => [
+    state.addToCart,
+    state.incrementQuantity,
+  ]);
+  
+  
   const handleOrder = () => {
     
   }
@@ -100,10 +105,7 @@ const Cart = () => {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => {
-                                  item.quantity = Math.max(
-                                    item.quantity - 1,
-                                    0
-                                  );
+                                  incrementQuantity
                                 }}
                                 className="hover:text-black bg-gray-300 px-2 py-1 rounded"
                               >
