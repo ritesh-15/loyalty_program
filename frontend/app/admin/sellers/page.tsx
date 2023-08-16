@@ -1,25 +1,33 @@
 "use client"
 
+import brand from "@/app/brand/page"
 import Button from "@/app/components/button/Button"
+import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
 import { ISellers } from "@/app/interfaces/ISellers"
 import { IUserSession } from "@/app/interfaces/IUser"
 import SellerService from "@/app/services/sellers.service"
+import { useWallet } from "@/app/store/WalletStore"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import qs from "qs"
-import React from "react"
+import React, { useState } from "react"
+import toast from "react-hot-toast"
 import { useQuery } from "react-query"
 
 export default function Sellers() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
+  const { walletAddress } = useWallet()
+  const { addIssuer } = useLoyaltyContract()
+  const [loading, setLoading] = useState(false)
+
   const query = qs.stringify(
     {
       fields: ["name", "location"],
       populate: {
         user: {
-          fields: ["username"],
+          fields: ["username", "walletAddress"],
         },
       },
     },
@@ -33,6 +41,18 @@ export default function Sellers() {
       enabled: user ? true : false,
     }
   )
+
+  const handleAddIssuer = async (address: string) => {
+    setLoading(true)
+    try {
+      await addIssuer(address, walletAddress)
+      toast.success("Issuer added successfully!")
+    } catch (err) {
+      toast.error("Something went wrong")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <section className="mt-12 mx-4">
@@ -87,12 +107,17 @@ export default function Sellers() {
                     >
                       Edit
                     </Link>
-                    <Link
-                      href="#"
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    <Button
+                      loading={loading}
+                      onClick={() =>
+                        handleAddIssuer(
+                          seller.attributes.user.data.attributes.walletAddress
+                        )
+                      }
+                      className="w-fit"
                     >
-                      Remove
-                    </Link>
+                      Add Issuer
+                    </Button>
                   </td>
                 </tr>
               ))}

@@ -1,17 +1,17 @@
-import { create } from "zustand";
-import { ICartItem } from "../interfaces/ICartItem";
+import { create } from "zustand"
+import { ICartItem } from "../interfaces/ICartItem"
 
 interface CartState {
-  cartItems: ICartItem[];
-  addToCart: (cart: ICartItem) => void;
+  cartItems: ICartItem[]
+  addToCart: (cart: ICartItem) => void
   // how to remove single product from cart
-  removeFromCart: (productId: number) => void;
-  clearCart: () => void;
-  getCart: () => void;
-  incrementQuantity: (item:ICartItem) => void;
-  decrementQuantity: (item:ICartItem) => void;
+  removeFromCart: (productId: number) => void
+  clearCart: () => void
+  getCart: () => void
+  incrementQuantity: (pid: number, sid: number) => void
+  decrementQuantity: (pid: number, sid: number) => void
+  total: number
 }
-
 
 export const useCartStore = create<CartState>((set, get) => ({
   cartItems: [],
@@ -19,47 +19,82 @@ export const useCartStore = create<CartState>((set, get) => ({
     set((state) => {
       const existingItem = state.cartItems.find(
         (cartItem) => cartItem.productId === item.productId
-      );
+      )
       if (existingItem) {
+        let total = state.total
         const updatedCartItems = state.cartItems.map((cartItem) => {
           if (cartItem.productId === item.productId) {
-            return { ...cartItem, quantity: cartItem.quantity + 1 };
+            total = cartItem.price + state.total
+            return {
+              ...cartItem,
+              quantity: cartItem.quantity + 1,
+            }
           }
-          return cartItem;
-        });
-        return { cartItems: updatedCartItems };
+          return cartItem
+        })
+        return { cartItems: updatedCartItems, total }
       } else {
-        return { cartItems: [...state.cartItems, { ...item, quantity: 1 }] };
+        const total = item.price * item.quantity + state.total
+        return {
+          cartItems: [...state.cartItems, { ...item, quantity: 1 }],
+          total,
+        }
       }
     }),
   clearCart: () => {
-    set({ cartItems: [] });
-    console.log("cart cleared ");
+    set({ cartItems: [], total: 0 })
+    console.log("cart cleared ")
   },
   removeFromCart: (productId) =>
-    set((state) => ({
-      cartItems: state.cartItems.filter((item) => item.productId !== productId),
-    })),
+    set((state) => {
+      const product = state.cartItems.find(
+        (item) => item.productId === productId
+      )
+      let total = state.total
+      if (product) total = state.total - product?.quantity * product?.price
+      return {
+        cartItems: state.cartItems.filter(
+          (item) => item.productId !== productId
+        ),
+        total,
+      }
+    }),
   getCart: () => {},
-  incrementQuantity: (item) =>{
-    set((state) => ({
-      cartItems: state.cartItems.map((cartItem) =>
-        cartItem.productId === item.productId &&
-        cartItem.sellerId === item.sellerId
-          ? { ...cartItem, quantity: item.quantity + 1 }
-          : cartItem
-      ),
-    }))
-    console.log('added quantity')
+  incrementQuantity: (pid, sid) => {
+    set((state) => {
+      const items = state.cartItems
+      let total = state.total
+      items.forEach((item) => {
+        if (item.productId === pid && item.sellerId === sid) {
+          item.quantity += 1
+          total += item.price
+        }
+      })
+      return {
+        cartItems: items,
+        total,
+      }
+    })
   },
-  decrementQuantity: (item) =>
-    set((state) => ({
-      cartItems: state.cartItems.map((cartItem) =>
-        cartItem.productId === item.productId &&
-        cartItem.sellerId === item.sellerId 
-        // && cartItem.quantity > 0
-          ? { ...cartItem, quantity: Math.max(cartItem.quantity-1,0) }
-          : cartItem
-      ),
-    })),
-}));
+  decrementQuantity: (pid, sid) => {
+    set((state) => {
+      const items = state.cartItems
+      let total = state.total
+      items.forEach((item) => {
+        if (
+          item.productId === pid &&
+          item.sellerId === sid &&
+          item.quantity > 1
+        ) {
+          item.quantity -= 1
+          total -= item.price
+        }
+      })
+      return {
+        cartItems: items,
+        total,
+      }
+    })
+  },
+  total: 0,
+}))

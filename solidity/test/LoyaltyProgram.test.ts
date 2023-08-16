@@ -25,8 +25,13 @@ describe("LoyaltyProgram", async () => {
       INITIAL_ISSUER_TOKENS
     )
 
+    console.log(ethers.parseEther("100"))
+
     loyaltyContractAddress = await loyaltyProgram.getAddress()
-    await loyaltyProgram.giveApproval()
+    await tokenContract.approve(
+      loyaltyContractAddress,
+      ethers.parseEther(INITIAL_TOKENS.toString())
+    )
   })
 
   it("initial tokens should be in admin account", async () => {
@@ -45,11 +50,6 @@ describe("LoyaltyProgram", async () => {
     })
 
     it("admin should able to add issuer", async () => {
-      await tokenContract.approve(
-        await loyaltyProgram.getAddress(),
-        ethers.parseEther(INITIAL_ISSUER_TOKENS.toString())
-      )
-
       await expect(loyaltyProgram.connect(admin).addIssuer(brand)).to.emit(
         loyaltyProgram,
         "IssuerRecord"

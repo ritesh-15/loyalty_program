@@ -4,13 +4,23 @@ import { IUserSession } from "@/app/interfaces/IUser"
 import BrandService from "@/app/services/brand.service"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 import { useQuery } from "react-query"
 import qs from "qs"
 import { IBrands } from "@/app/interfaces/IBrands"
 import Image from "next/image"
+import { formatWalletAddress } from "@/app/utils/formatWalletAddress"
+import { useWallet } from "@/app/store/WalletStore"
+import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
+import { toast } from "react-hot-toast"
+import { LOYALTY_PROGRAM_ADDRESS } from "@/lib/constant"
+import { ethers } from "ethers"
 
 export default function Brands() {
+  const { walletAddress } = useWallet()
+  const { addIssuer } = useLoyaltyContract()
+  const [loading, setLoading] = useState(false)
+
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
@@ -19,7 +29,7 @@ export default function Brands() {
       fields: ["name", "brandLogo"],
       populate: {
         user: {
-          fields: ["username"],
+          fields: ["username", "walletAddress"],
         },
       },
     },
@@ -33,6 +43,18 @@ export default function Brands() {
       enabled: user ? true : false,
     }
   )
+
+  const handleAddIssuer = async (address: string) => {
+    setLoading(true)
+    try {
+      await addIssuer(address, walletAddress)
+      toast.success("Issuer added successfully!")
+    } catch (err) {
+      toast.error("Something went wrong")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <section className="mt-12 mx-4">
@@ -60,6 +82,9 @@ export default function Brands() {
                 <th scope="col" className="px-6 py-3">
                   Username
                 </th>
+                <th scope="col" className="px-6 py-3">
+                  Wallet address
+                </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
@@ -86,6 +111,11 @@ export default function Brands() {
                   <td className="px-6 py-4">
                     {brand.attributes.user.data.attributes.username}
                   </td>
+                  <td className="px-6 py-4">
+                    {formatWalletAddress(
+                      brand.attributes.user.data.attributes.walletAddress
+                    )}
+                  </td>
                   <td className="flex items-center px-6 py-4 space-x-3">
                     <Link
                       href={`/admin/brands/${brand.id}`}
@@ -93,12 +123,17 @@ export default function Brands() {
                     >
                       Edit
                     </Link>
-                    <Link
-                      href="#"
-                      className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    <Button
+                      loading={loading}
+                      onClick={() =>
+                        handleAddIssuer(
+                          brand.attributes.user.data.attributes.walletAddress
+                        )
+                      }
+                      className="w-fit"
                     >
-                      Remove
-                    </Link>
+                      Add Issuer
+                    </Button>
                   </td>
                 </tr>
               ))}
