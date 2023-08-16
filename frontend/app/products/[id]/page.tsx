@@ -81,7 +81,7 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
 
   useQuery(
     ["products", sid, pid],
-    () => ProductService.getProducts<ISingleProduct>(user.token, query),
+    () => ProductService.getProducts(user.token, query),
     {
       enabled: user ? true : false,
       onSuccess({ data }) {
