@@ -28,25 +28,15 @@ const Cart = () => {
     setTotal(p)
   },[])
 
-  const [addToCart, incrementQuantity] = useCartStore((state) => [
-    state.addToCart,
-    state.incrementQuantity,
-  ]);
+  const [incrementQuantity, decrementQuantity] = useCartStore(
+    (state) => [state.incrementQuantity,state.decrementQuantity]
+  );
   
   
   const handleOrder = () => {
     
   }
 
-  const handleIncrement = (item:ICartItem) => {
-    console.log('increment')
-    item.quantity = item.quantity+1;
-  };
-
-  const handleDecrement = (item: ICartItem) => {
-    console.log("increment");  
-    item.quantity = Math.max(item.quantity - 1, 1);
-  };
 
 
   return (
@@ -105,7 +95,8 @@ const Cart = () => {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => {
-                                  incrementQuantity
+                                  incrementQuantity;
+                                  console.log("Quantity: ")
                                 }}
                                 className="hover:text-black bg-gray-300 px-2 py-1 rounded"
                               >
@@ -114,7 +105,7 @@ const Cart = () => {
                               <span>{item.quantity}</span>
                               <button
                                 onClick={() => {
-                                  item.quantity = item.quantity + 1;
+                                  decrementQuantity
                                 }}
                                 className="hover:text-black bg-gray-300 px-2 py-1 rounded"
                               >

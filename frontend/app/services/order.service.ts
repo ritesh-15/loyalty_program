@@ -1,4 +1,4 @@
-import { api } from "../config/axios"
+import { api } from "../config/axios";
 
 class OrderService {
   static async getOrderItems<T>(token: string, query?: string) {
@@ -6,10 +6,20 @@ class OrderService {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
-    return res.data
+    return res.data;
+  }
+
+  static async getOrders<T>(token: string, query?: string) {
+    const res = await api.get<T>(`/orders?${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.data;
   }
 }
 
-export default OrderService
+export default OrderService;
