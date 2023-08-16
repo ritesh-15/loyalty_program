@@ -37,6 +37,12 @@
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "seller"
+    },
+    "rewards": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::reward.reward",
+      "mappedBy": "seller"
     }
   }
 }

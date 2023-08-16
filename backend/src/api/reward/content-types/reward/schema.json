@@ -4,7 +4,8 @@
   "info": {
     "singularName": "reward",
     "pluralName": "rewards",
-    "displayName": "Reward"
+    "displayName": "Reward",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -23,6 +24,12 @@
     "points": {
       "type": "integer",
       "required": true
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "rewards"
     }
   }
 }
