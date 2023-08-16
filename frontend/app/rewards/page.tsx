@@ -26,8 +26,12 @@ const Rewards = () => {
   const [isOrderPlacing, setIsOrderPlacing] = useState(false)
 
   const router = useRouter()
-  const { buyProductWithTokens, getAccountBalance, approveTokens } =
-    useLoyaltyContract()
+  const {
+    buyProductWithTokens,
+    getAccountBalance,
+    approveTokens,
+    getAllowance,
+  } = useLoyaltyContract()
 
   const [stats, setStats] = useState({
     balance: "",
@@ -100,7 +104,7 @@ const Rewards = () => {
   }
 
   const tranferTokenToBrand = (tokens: number, brandAddress: string) => {
-    return buyProductWithTokens(tokens.toString(), brandAddress)
+    return buyProductWithTokens(tokens, brandAddress)
   }
 
   const handleOrder = async (product: IRewards["data"][0]) => {
@@ -108,8 +112,13 @@ const Rewards = () => {
     try {
       const tokens = product.attributes.points
 
-      const tx = await approveTokens(`${tokens}`)
+      const tx = await approveTokens(tokens)
+
       await tx.wait()
+
+      const a = await getAllowance()
+
+      console.log(`Allowance is ${ethers.formatEther(a)}`)
 
       await tranferTokenToBrand(
         tokens,

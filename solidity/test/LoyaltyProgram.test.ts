@@ -3,33 +3,40 @@ import { LoyaltyProgram, Token } from "../typechain-types"
 import { ethers } from "hardhat"
 
 describe("LoyaltyProgram", async () => {
-  let admin: any, brand: any, john: any, seller: any, bob: any
+  let admin: any, brand: any, john: any, seller: any, bob: any, tom: any
   let loyaltyProgram: LoyaltyProgram
   let tokenContract: Token
   let loyaltyContractAddress: string
 
-  const INITIAL_TOKENS = 4000000
-  const INITIAL_ISSUER_TOKENS = 50
+  const INITIAL_TOKENS = 4000000000
+  const INITIAL_ISSUER_TOKENS = 100
 
+  // ;[admin, brand, john, bob, seller] = await ethers.getSigners()
   beforeEach(async () => {
-    ;[admin, brand, john, bob, seller] = await ethers.getSigners()
+    ;[admin, brand, john, bob, seller, tom] = await ethers.getSigners()
+
+    if (tokenContract) {
+      await tokenContract.approve(
+        loyaltyContractAddress,
+        ethers.parseEther(INITIAL_TOKENS.toString())
+      )
+    }
   })
 
-  it("should able to deploy the contract", async () => {
+  it("should able to deploy contract", async () => {
     const TokenContract = await ethers.getContractFactory("Token")
-    tokenContract = await TokenContract.connect(admin).deploy(INITIAL_TOKENS)
+    tokenContract = await TokenContract.deploy(
+      ethers.parseEther(INITIAL_TOKENS.toString())
+    )
 
     const LoyaltyProgram = await ethers.getContractFactory("LoyaltyProgram")
+
     loyaltyProgram = await LoyaltyProgram.deploy(
       await tokenContract.getAddress(),
-      INITIAL_ISSUER_TOKENS
+      ethers.parseEther(INITIAL_ISSUER_TOKENS.toString())
     )
 
     loyaltyContractAddress = await loyaltyProgram.getAddress()
-    await tokenContract.approve(
-      loyaltyContractAddress,
-      ethers.parseEther(INITIAL_TOKENS.toString())
-    )
   })
 
   it("initial tokens should be in admin account", async () => {
@@ -143,7 +150,7 @@ describe("LoyaltyProgram", async () => {
 
   describe("get tokens on orders", async () => {
     it("should not able to earn tokens if order amount is less than minimum order amount", async () => {
-      const orderAmount = 1000
+      const orderAmount = 500
       const tokens = ethers.parseEther(`${(orderAmount * 0.25) / 100}`)
 
       await expect(
@@ -159,7 +166,10 @@ describe("LoyaltyProgram", async () => {
       const orderAmount = 3000
       const tokens = ethers.parseEther(`${(orderAmount * 0.25) / 100}`)
 
-      await tokenContract.approve(loyaltyContractAddress, tokens)
+      // await tokenContract.approve(loyaltyContractAddress, tokens)
+
+      const a = await tokenContract.allowance(admin, loyaltyContractAddress)
+      console.log(ethers.formatEther(a))
 
       await expect(
         loyaltyProgram
@@ -209,12 +219,8 @@ describe("LoyaltyProgram", async () => {
       )
     })
 
-    it("should able to traansfer tranfer the coin to brand", async () => {
+    it("should able to tranfer the coin to brand", async () => {
       const tokens = ethers.parseEther("7")
-
-      const balance = await loyaltyProgram.accountBalance(bob)
-
-      console.log(loyaltyContractAddress)
 
       await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
 
@@ -228,6 +234,26 @@ describe("LoyaltyProgram", async () => {
       expect(balance, "user account balance not match").to.be.equal(
         ethers.parseEther("0.5")
       )
+    })
+  })
+
+  describe("Referral reward", () => {
+    it("should not call referral reward if not admin", async () => {
+      await expect(
+        loyaltyProgram.connect(tom).referralReward(tom)
+      ).to.be.rejectedWith("Ownable: caller is not the owner")
+    })
+
+    it("should able to call if admin", async () => {
+      await expect(loyaltyProgram.referralReward(tom)).to.emit(
+        loyaltyProgram,
+        "Refferal"
+      )
+    })
+
+    it("should able to get the reward at user account", async () => {
+      const balance = await loyaltyProgram.accountBalance(tom)
+      expect(balance).to.be.equal(ethers.parseEther("10"))
     })
   })
 })

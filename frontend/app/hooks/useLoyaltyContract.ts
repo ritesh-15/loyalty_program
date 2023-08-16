@@ -51,17 +51,23 @@ export default function useLoyaltyContract() {
     )
   }
 
-  const buyProductWithTokens = async (tokens: string, transferTo: string) => {
+  const buyProductWithTokens = async (tokens: number, transferTo: string) => {
     const contract = await getLoyaltyProgramContractSigned()
-    return contract.buyProductOrClaimReward(tokens, transferTo)
+    return contract.buyProductOrClaimReward(
+      ethers.parseEther(tokens.toString()),
+      transferTo
+    )
   }
 
-  const approveTokens = async (tokens: string) => {
+  const approveTokens = async (tokens: number) => {
     const contract = await getTokenContractSigned()
-    // const amount = ethers.parseEther(tokens)
-    return contract.approve(LOYALTY_PROGRAM_ADDRESS, tokens, {
-      from: walletAddress,
-    })
+    const amount = ethers.parseEther(tokens.toString())
+    return contract.approve(LOYALTY_PROGRAM_ADDRESS, amount)
+  }
+
+  const getAllowance = async () => {
+    const c = await getTokenContractSigned()
+    return c.allowance(walletAddress, LOYALTY_PROGRAM_ADDRESS)
   }
 
   return {
@@ -74,5 +80,6 @@ export default function useLoyaltyContract() {
     getTokenOnOrder,
     buyProductWithTokens,
     approveTokens,
+    getAllowance,
   }
 }

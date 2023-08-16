@@ -2,10 +2,12 @@ import { ethers } from "hardhat"
 
 async function main() {
   const INTIAL_TOKNE_SUPPLY = 70000000000000
-  const INITIAL_TOKEN_SUPPLY_TO_ISSUER = 100
+  const INITIAL_TOKEN_SUPPLY_TO_ISSUER = 200
 
   const TokenContract = await ethers.getContractFactory("Token")
-  const tokenContract = await TokenContract.deploy(INTIAL_TOKNE_SUPPLY)
+  const tokenContract = await TokenContract.deploy(
+    ethers.parseEther(INTIAL_TOKNE_SUPPLY.toString())
+  )
   const tokenContractAddresss = await tokenContract.getAddress()
 
   const LoyaltyProgramContract = await ethers.getContractFactory(
@@ -13,7 +15,7 @@ async function main() {
   )
   const loyaltyProgramContract = await LoyaltyProgramContract.deploy(
     tokenContractAddresss,
-    INITIAL_TOKEN_SUPPLY_TO_ISSUER
+    ethers.parseEther(INITIAL_TOKEN_SUPPLY_TO_ISSUER.toString())
   )
   const loyaltyProgramAddress = await loyaltyProgramContract.getAddress()
 

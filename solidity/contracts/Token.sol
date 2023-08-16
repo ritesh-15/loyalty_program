@@ -9,14 +9,17 @@ contract Token is ERC20, Ownable {
     string NAME = "Flipkart Coin";
     string SYMBOL = "FC";
     uint256 DECIMALS = 18;
-    uint256 _totalSupply = 0;
 
     constructor(uint256 initialSupply) ERC20(NAME, SYMBOL) {
-        _totalSupply = initialSupply * 10 ** uint256(DECIMALS);
-        _mint(msg.sender, _totalSupply);
+        _mint(msg.sender, initialSupply);
     }
 
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount);
+    function burn(address _address, uint256 _amount) external {
+        require(
+            balanceOf(_address) >= _amount,
+            "user does not have enough balance"
+        );
+
+        _burn(_address, _amount);
     }
 }
