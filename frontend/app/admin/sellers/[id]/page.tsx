@@ -1,12 +1,21 @@
+"use client"
+
 import Button from "@/app/components/button/Button"
+import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
 import { ISellerDetails } from "@/app/interfaces/ISellerDetails"
+import { IUserSession } from "@/app/interfaces/IUser"
 import SellerService from "@/app/services/sellers.service"
-import { getCurrentUser } from "@/app/utils/auth.utils"
+import { useWallet } from "@/app/store/WalletStore"
+import { ethers } from "ethers"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import qs from "qs"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 import { CiUser } from "react-icons/ci"
-import { FaCoins, FaEthereum, FaBitcoin } from "react-icons/fa"
+import { FaCoins, FaBitcoin } from "react-icons/fa"
+import { useQuery } from "react-query"
 
 interface IProps {
   params: {
@@ -14,15 +23,25 @@ interface IProps {
   }
 }
 
-export default async function SellerDetails({ params }: IProps) {
-  const session = await getCurrentUser()
+export default function SellerDetails({ params }: IProps) {
+  const { data: session } = useSession()
+  const user = session?.user as IUserSession
+
+  const { walletAddress } = useWallet()
+  const { getAccountBalance, totalSupply } = useLoyaltyContract()
+  const [loading, setLoading] = useState(true)
+
+  const [stats, setStats] = useState({
+    accountBalance: "",
+    supply: "",
+  })
 
   const query = qs.stringify(
     {
       fields: ["name", "location"],
       populate: {
         user: {
-          fields: ["username"],
+          fields: ["username", "walletAddress"],
         },
         brands: {
           fields: ["name", "brandLogo"],
@@ -32,24 +51,61 @@ export default async function SellerDetails({ params }: IProps) {
     { encodeValuesOnly: true }
   )
 
-  const seller = await SellerService.getSellerByID<ISellerDetails>(
-    params.id,
-    session?.token!!,
-    query
+  const { data: seller } = useQuery(
+    ["seller", params.id],
+    () =>
+      SellerService.getSellerByID<ISellerDetails>(
+        params.id,
+        user?.token,
+        query
+      ),
+    {
+      enabled: user ? true : false,
+    }
   )
+
+  useEffect(() => {
+    if (!walletAddress || !seller) return
+    ;(async () => {
+      try {
+        const [balance, supply] = await Promise.all([
+          getAccountBalance(
+            seller.data.attributes.user.data.attributes.walletAddress
+          ),
+          totalSupply(),
+        ])
+
+        setStats({
+          accountBalance: ethers.formatEther(`${balance}`),
+          supply: ethers.formatEther(supply.toString()),
+        })
+      } catch (error: any) {
+        toast.error("Something went wrong")
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [walletAddress, seller])
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <section className="mt-12 mx-4 bg-white rounded-md shadow-md p-4">
       <div className="">
         <h1 className="text-2xl font-bold mt-4">
-          {seller.data.attributes.name}
+          {seller?.data.attributes.name}
         </h1>
 
-        <p className="mt-2">{seller.data.attributes.location}</p>
+        <p className="mt-2">{seller?.data.attributes.location}</p>
 
         <div className="flex items-center p-2 rounded-md border  gap-2 w-fit mt-4">
           <CiUser className="text-2xl" />
-          <span>{seller.data.attributes.user.data.attributes.username}</span>
+          <span>{seller?.data.attributes.user.data.attributes.username}</span>
         </div>
       </div>
 
@@ -62,22 +118,16 @@ export default async function SellerDetails({ params }: IProps) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 mt-8 gap-6">
+        <div className="grid grid-cols-2 mt-8 gap-6">
           <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
             <FaCoins className="text-5xl text-yellow-500" />
-            <p className="mt-4">200</p>
+            <p className="mt-4">{stats.accountBalance}</p>
             <span className="font-semibold">Number of tokens</span>
           </div>
 
           <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
-            <FaEthereum className="text-5xl text-yellow-500" />
-            <p className="mt-4">0.5 ETH</p>
-            <span className="font-semibold">Token Value</span>
-          </div>
-
-          <div className="flex w-full items-center bg-white flex-col p-4 rounded-md shadow-md">
             <FaBitcoin className="text-5xl text-yellow-500" />
-            <p className="mt-4">10000000</p>
+            <p className="mt-4">{stats.supply}</p>
             <span className="font-semibold">Total Supply</span>
           </div>
         </div>
@@ -138,7 +188,7 @@ export default async function SellerDetails({ params }: IProps) {
               </tr>
             </thead>
             <tbody>
-              {seller.data.attributes.brands?.data.map((brand) => (
+              {seller?.data.attributes.brands?.data.map((brand) => (
                 <tr
                   key={brand.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"

@@ -25,6 +25,7 @@ export interface Data {
 
 export interface Attributes2 {
   username: string
+  walletAddress: string
 }
 
 export interface Meta {

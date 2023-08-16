@@ -28,8 +28,7 @@ export default function BrandDetails({ params }: IProps) {
   const user = session?.user as IUserSession
 
   const { walletAddress } = useWallet()
-  const { getAccountBalance, totalSupply, settlementTransactions } =
-    useLoyaltyContract()
+  const { getAccountBalance, totalSupply } = useLoyaltyContract()
   const [loading, setLoading] = useState(true)
 
   const [stats, setStats] = useState({
@@ -80,6 +79,13 @@ export default function BrandDetails({ params }: IProps) {
       }
     })()
   }, [walletAddress, brand])
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <section className="mt-12 mx-4 bg-white rounded-md shadow-md p-4">

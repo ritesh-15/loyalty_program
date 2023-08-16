@@ -1,7 +1,10 @@
 import { toast } from "react-hot-toast"
 import { create } from "zustand"
-import {ethers} from 'ethers'
 import { LOYALTY_PROGRAM_ADDRESS, TOKEN_CONTRACT_ADDRESS } from "@/lib/constant"
+import { ethers } from "ethers"
+import { abi as LoyaltyProgramABI } from "@/lib/LoyaltyProgram.json"
+import { abi as TokenABI } from "@/lib/Token.json"
+
 import { LoyaltyProgram__factory } from "@/typechain-types/factories/contracts/LoyaltyProgram__factory"
 import { Token__factory } from "@/typechain-types/factories/contracts/Token__factory"
 import { LoyaltyProgram } from "@/typechain-types/contracts/LoyaltyProgram"
@@ -13,7 +16,9 @@ interface IWallet {
   connectWallet: () => void
   checkIfWalletConnected: () => void
   getLoyaltyProgramContract: () => LoyaltyProgram
+  getLoyaltyProgramContractSigned: () => Promise<LoyaltyProgram>
   getTokenContract: () => Token
+  getTokenContractSigned: () => Promise<Token>
 }
 
 let eth: any = null
@@ -89,5 +94,15 @@ export const useWallet = create<IWallet>((set, get) => ({
     const contract = Token__factory.connect(TOKEN_CONTRACT_ADDRESS, provider)
 
     return contract
+  },
+  getLoyaltyProgramContractSigned: async () => {
+    const provider = new ethers.BrowserProvider(eth)
+    const signer = await provider.getSigner()
+    return LoyaltyProgram__factory.connect(LOYALTY_PROGRAM_ADDRESS, signer)
+  },
+  getTokenContractSigned: async () => {
+    const provider = new ethers.BrowserProvider(eth)
+    const signer = await provider.getSigner()
+    return Token__factory.connect(TOKEN_CONTRACT_ADDRESS, signer)
   },
 }))

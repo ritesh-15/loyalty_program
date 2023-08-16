@@ -10,6 +10,26 @@ class OrderService {
 
     return res.data
   }
+
+  static async createOrder(token: string, data: any) {
+    const res = await api.post(`/orders`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return res.data
+  }
+
+  static async createOrderItem(token: string, data: any) {
+    const res = await api.post(`/order-items`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return res.data
+  }
 }
 
 export default OrderService
