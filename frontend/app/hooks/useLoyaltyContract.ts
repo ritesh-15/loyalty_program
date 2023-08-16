@@ -50,6 +50,14 @@ export default function useLoyaltyContract() {
     )
   }
 
+  const buyProductWithTokens = async (tokens: string, transferTo: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.buyProductOrClaimReward(
+      ethers.parseEther(tokens),
+      transferTo
+    )
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -58,5 +66,6 @@ export default function useLoyaltyContract() {
     issuerTransactions,
     numberOfIssuers,
     getTokenOnOrder,
+    buyProductWithTokens,
   }
 }

@@ -16,7 +16,7 @@ export default function Modal({ children, open }: IProps) {
         }
       )}
     >
-      <div className="bg-white p-4 max-w-[750px] w-full shadow-md rounded-md">
+      <div className="bg-white p-4 max-w-[550px] w-full shadow-md rounded-md">
         {children}
       </div>
     </div>
