@@ -26,7 +26,8 @@ const Rewards = () => {
   const [isOrderPlacing, setIsOrderPlacing] = useState(false)
 
   const router = useRouter()
-  const { buyProductWithTokens, getAccountBalance } = useLoyaltyContract()
+  const { buyProductWithTokens, getAccountBalance, approveTokens } =
+    useLoyaltyContract()
 
   const [stats, setStats] = useState({
     balance: "",
@@ -46,6 +47,14 @@ const Rewards = () => {
                   fields: ["walletAddress"],
                 },
               },
+            },
+          },
+        },
+        seller: {
+          fields: ["id"],
+          populate: {
+            user: {
+              fields: ["walletAddress"],
             },
           },
         },
@@ -98,8 +107,12 @@ const Rewards = () => {
     setIsOrderPlacing(true)
     try {
       const tokens = product.attributes.points
+
+      const tx = await approveTokens(`${tokens}`)
+      await tx.wait()
+
       await tranferTokenToBrand(
-        product.attributes.points,
+        tokens,
         product.attributes.product.data.attributes.brandId.data.attributes.user
           .data.attributes.walletAddress
       )
@@ -117,15 +130,15 @@ const Rewards = () => {
 
       // TODO
 
-      // await createOrderItem({
-      //   data: {
-      //     orderId: order.data.id,
-      //     productId: product.attributes.product.data.id,
-      //     sellerId: product.attributes.product.data.attributes.,
-      //     brandId: item.brandId,
-      //     quantity: item.quantity,
-      //   },
-      // })
+      await createOrderItem({
+        data: {
+          orderId: order.data.id,
+          productId: product.attributes.product.data.id,
+          sellerId: product.attributes.seller.data.id,
+          brandId: product.attributes.product.data.attributes.brandId.data.id,
+          quantity: 1,
+        },
+      })
 
       router.push("/orders")
       toast.success("Order placed successfully!!")
@@ -135,8 +148,6 @@ const Rewards = () => {
       setIsOrderPlacing(false)
     }
   }
-
-  console.log(rewards)
 
   return (
     <>
@@ -229,7 +240,7 @@ const Rewards = () => {
         </div>
       </section>
 
-      <Modal open={false}>
+      <Modal open={isOrderPlacing}>
         <div className="flex items-center flex-col justify-center">
           <h1 className="text-xl font-bold">Processing your order...</h1>
           <p className="mt-1 max-w-[75%] text-center">

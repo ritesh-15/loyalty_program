@@ -25,8 +25,6 @@ describe("LoyaltyProgram", async () => {
       INITIAL_ISSUER_TOKENS
     )
 
-    console.log(ethers.parseEther("100"))
-
     loyaltyContractAddress = await loyaltyProgram.getAddress()
     await tokenContract.approve(
       loyaltyContractAddress,
@@ -202,7 +200,7 @@ describe("LoyaltyProgram", async () => {
     it("should  not able to traansfer tranfer the coin to brand", async () => {
       const tokens = ethers.parseEther("18")
 
-      await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
+      // await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
 
       await expect(
         loyaltyProgram.connect(bob).buyProductOrClaimReward(tokens, brand)
@@ -212,7 +210,11 @@ describe("LoyaltyProgram", async () => {
     })
 
     it("should able to traansfer tranfer the coin to brand", async () => {
-      const tokens = ethers.parseEther("6")
+      const tokens = ethers.parseEther("7")
+
+      const balance = await loyaltyProgram.accountBalance(bob)
+
+      console.log(loyaltyContractAddress)
 
       await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
 
@@ -224,7 +226,7 @@ describe("LoyaltyProgram", async () => {
     it("should deduct the tokens from users account", async () => {
       const balance = await loyaltyProgram.accountBalance(bob)
       expect(balance, "user account balance not match").to.be.equal(
-        ethers.parseEther("1.5")
+        ethers.parseEther("0.5")
       )
     })
   })

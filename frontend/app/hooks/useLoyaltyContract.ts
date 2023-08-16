@@ -10,6 +10,7 @@ export default function useLoyaltyContract() {
     getTokenContract,
     getLoyaltyProgramContractSigned,
     getTokenContractSigned,
+    walletAddress,
   } = useWallet()
 
   const getAccountBalance = async (address: string) => {
@@ -52,10 +53,15 @@ export default function useLoyaltyContract() {
 
   const buyProductWithTokens = async (tokens: string, transferTo: string) => {
     const contract = await getLoyaltyProgramContractSigned()
-    return contract.buyProductOrClaimReward(
-      ethers.parseEther(tokens),
-      transferTo
-    )
+    return contract.buyProductOrClaimReward(tokens, transferTo)
+  }
+
+  const approveTokens = async (tokens: string) => {
+    const contract = await getTokenContractSigned()
+    // const amount = ethers.parseEther(tokens)
+    return contract.approve(LOYALTY_PROGRAM_ADDRESS, tokens, {
+      from: walletAddress,
+    })
   }
 
   return {
@@ -67,5 +73,6 @@ export default function useLoyaltyContract() {
     numberOfIssuers,
     getTokenOnOrder,
     buyProductWithTokens,
+    approveTokens,
   }
 }
