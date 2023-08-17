@@ -224,7 +224,7 @@ const Rewards = () => {
                     <a href="#">
                       <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                         {reward.attributes.discount}% worth{" "}
-                        {reward.attributes.points}$ Tokens
+                        {reward.attributes.points} FC Tokens
                       </h5>
                       <h3 className="text-xl font-sans">
                         {reward.attributes.product.data.attributes.name}
@@ -253,7 +253,7 @@ const Rewards = () => {
         <div className="flex items-center flex-col justify-center">
           <h1 className="text-xl font-bold">Processing your order...</h1>
           <p className="mt-1 max-w-[75%] text-center">
-            You got {modalState.discount} by making use of {modalState.tokens}{" "}
+            You got {modalState.discount}% by making use of {modalState.tokens}{" "}
             FC your tokens congratulations!
           </p>
           <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin mt-4"></div>

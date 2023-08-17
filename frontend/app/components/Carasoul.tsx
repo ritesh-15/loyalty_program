@@ -33,14 +33,14 @@ export default function Carousel() {
   
 
   return (
-    <div className="p-28 pb-8">
+    <div className="p-28 pb-8 -z-0">
       <AiOutlineLeft
         onClick={handlePrevSlide}
-        className="absolute left-2 m-auto text-5xl  mt-40 cursor-pointer text-gray-400 z-20"
+        className="absolute left-2 m-auto text-5xl  mt-40 cursor-pointer text-gray-400"
       />
       <AiOutlineRight
         onClick={handleNextSlide}
-        className="absolute right-2 m-auto text-5xl mt-40 cursor-pointer text-gray-400 z-20"
+        className="absolute right-2 m-auto text-5xl mt-40 cursor-pointer text-gray-400"
       />
       <div className="w-full h-[50vh] flex overflow-hidden relative m-auto">
         <Swipe

@@ -3,7 +3,7 @@ import { api } from "../config/axios";
 class ReferralService {
   // for admin
   static async getReferral<T>(token: string, query?: string) {
-    const res = await api.get<T>(`/referral?${query}`, {
+    const res = await api.get<T>(`/referrals?${query}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -13,7 +13,7 @@ class ReferralService {
 
   static async createReferral(token: string, data: any) {
     console.log(data);
-    const res = await api.post("/referral", data, {
+    const res = await api.post("/referrals", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
