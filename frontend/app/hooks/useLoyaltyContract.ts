@@ -73,6 +73,11 @@ export default function useLoyaltyContract() {
     return contract.queryFilter(contract.filters["TokensTransferred"]())
   }
 
+  const getTokenEarnedOnPurchase = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["GetTokenOnOrder"]())
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -85,5 +90,6 @@ export default function useLoyaltyContract() {
     approveTokens,
     getAllowance,
     getHistoryForPurchase,
+    getTokenEarnedOnPurchase,
   }
 }
