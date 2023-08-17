@@ -10,15 +10,16 @@ export default function useLoyaltyContract() {
     getTokenContract,
     getLoyaltyProgramContractSigned,
     getTokenContractSigned,
+    walletAddress,
   } = useWallet()
 
-  const getAccountBalance = async (address: string) => {
-    const contract = await getLoyaltyProgramContract()
+  const getAccountBalance = (address: string) => {
+    const contract = getLoyaltyProgramContract()
     return contract.accountBalance(address)
   }
 
-  const totalSupply = async () => {
-    const tokenContract = await getTokenContract()
+  const totalSupply = () => {
+    const tokenContract = getTokenContract()
     return tokenContract.totalSupply()
   }
 
@@ -50,6 +51,33 @@ export default function useLoyaltyContract() {
     )
   }
 
+  const buyProductWithTokens = async (tokens: number, transferTo: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    const amount = ethers.parseEther(tokens.toString())
+    return contract.buyProductOrClaimReward(amount, transferTo)
+  }
+
+  const approveTokens = async (tokens: number) => {
+    const contract = await getTokenContractSigned()
+    const amount = ethers.parseEther(tokens.toString())
+    return contract.approve(LOYALTY_PROGRAM_ADDRESS, amount)
+  }
+
+  const getAllowance = async () => {
+    const c = getTokenContract()
+    return c.allowance(walletAddress, LOYALTY_PROGRAM_ADDRESS)
+  }
+
+  const getHistoryForPurchase = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["TokensTransferred"]())
+  }
+
+  const getTokenEarnedOnPurchase = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["GetTokenOnOrder"]())
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -58,5 +86,10 @@ export default function useLoyaltyContract() {
     issuerTransactions,
     numberOfIssuers,
     getTokenOnOrder,
+    buyProductWithTokens,
+    approveTokens,
+    getAllowance,
+    getHistoryForPurchase,
+    getTokenEarnedOnPurchase,
   }
 }

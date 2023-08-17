@@ -29,14 +29,19 @@ export interface LoyaltyProgramInterface extends Interface {
       | "accountBalance"
       | "addIssuer"
       | "buyProductOrClaimReward"
+      | "decayPeriod"
       | "getTokensOnOrderPurchase"
-      | "giveApproval"
+      | "initialIssuerTokens"
       | "issueTokenToLoyalUser"
       | "numberOfIssuers"
       | "owner"
+      | "referralReward"
       | "removeIssuer"
       | "renounceOwnership"
+      | "settlementRate"
       | "transferOwnership"
+      | "updateDecayPeriod"
+      | "updateSettlementRate"
   ): FunctionFragment;
 
   getEvent(
@@ -44,7 +49,9 @@ export interface LoyaltyProgramInterface extends Interface {
       | "GetTokenOnOrder"
       | "IssuerRecord"
       | "OwnershipTransferred"
+      | "Refferal"
       | "SettlementRecord"
+      | "TokenDecayed"
       | "TokenToLoyalUser"
       | "TokensTransferred"
   ): EventFragment;
@@ -62,11 +69,15 @@ export interface LoyaltyProgramInterface extends Interface {
     values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "decayPeriod",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getTokensOnOrderPurchase",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "giveApproval",
+    functionFragment: "initialIssuerTokens",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -79,6 +90,10 @@ export interface LoyaltyProgramInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "referralReward",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeIssuer",
     values: [AddressLike]
   ): string;
@@ -87,8 +102,20 @@ export interface LoyaltyProgramInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "settlementRate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateDecayPeriod",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateSettlementRate",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -101,11 +128,15 @@ export interface LoyaltyProgramInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "decayPeriod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getTokensOnOrderPurchase",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "giveApproval",
+    functionFragment: "initialIssuerTokens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -118,6 +149,10 @@ export interface LoyaltyProgramInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "referralReward",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeIssuer",
     data: BytesLike
   ): Result;
@@ -126,7 +161,19 @@ export interface LoyaltyProgramInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "settlementRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateDecayPeriod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateSettlementRate",
     data: BytesLike
   ): Result;
 }
@@ -194,6 +241,24 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace RefferalEvent {
+  export type InputTuple = [
+    user: AddressLike,
+    tokens: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [user: string, tokens: bigint, timestamp: bigint];
+  export interface OutputObject {
+    user: string;
+    tokens: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace SettlementRecordEvent {
   export type InputTuple = [
     tranferFrom: AddressLike,
@@ -207,6 +272,24 @@ export namespace SettlementRecordEvent {
   ];
   export interface OutputObject {
     tranferFrom: string;
+    tokens: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TokenDecayedEvent {
+  export type InputTuple = [
+    user: AddressLike,
+    tokens: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [user: string, tokens: bigint, timestamp: bigint];
+  export interface OutputObject {
+    user: string;
     tokens: bigint;
     timestamp: bigint;
   }
@@ -323,13 +406,15 @@ export interface LoyaltyProgram extends BaseContract {
     "nonpayable"
   >;
 
+  decayPeriod: TypedContractMethod<[], [bigint], "view">;
+
   getTokensOnOrderPurchase: TypedContractMethod<
     [_orderAmount: BigNumberish, _numberOfTokens: BigNumberish],
     [void],
     "nonpayable"
   >;
 
-  giveApproval: TypedContractMethod<[], [void], "nonpayable">;
+  initialIssuerTokens: TypedContractMethod<[], [bigint], "view">;
 
   issueTokenToLoyalUser: TypedContractMethod<
     [_tokens: BigNumberish, _address: AddressLike],
@@ -341,6 +426,12 @@ export interface LoyaltyProgram extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  referralReward: TypedContractMethod<
+    [_refferedBy: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   removeIssuer: TypedContractMethod<
     [_address: AddressLike],
     [void],
@@ -349,8 +440,22 @@ export interface LoyaltyProgram extends BaseContract {
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
+  settlementRate: TypedContractMethod<[], [bigint], "view">;
+
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  updateDecayPeriod: TypedContractMethod<
+    [_period: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  updateSettlementRate: TypedContractMethod<
+    [_newRate: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -373,6 +478,9 @@ export interface LoyaltyProgram extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "decayPeriod"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getTokensOnOrderPurchase"
   ): TypedContractMethod<
     [_orderAmount: BigNumberish, _numberOfTokens: BigNumberish],
@@ -380,8 +488,8 @@ export interface LoyaltyProgram extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "giveApproval"
-  ): TypedContractMethod<[], [void], "nonpayable">;
+    nameOrSignature: "initialIssuerTokens"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "issueTokenToLoyalUser"
   ): TypedContractMethod<
@@ -396,14 +504,26 @@ export interface LoyaltyProgram extends BaseContract {
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "referralReward"
+  ): TypedContractMethod<[_refferedBy: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "removeIssuer"
   ): TypedContractMethod<[_address: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "settlementRate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateDecayPeriod"
+  ): TypedContractMethod<[_period: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateSettlementRate"
+  ): TypedContractMethod<[_newRate: BigNumberish], [void], "nonpayable">;
 
   getEvent(
     key: "GetTokenOnOrder"
@@ -427,11 +547,25 @@ export interface LoyaltyProgram extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "Refferal"
+  ): TypedContractEvent<
+    RefferalEvent.InputTuple,
+    RefferalEvent.OutputTuple,
+    RefferalEvent.OutputObject
+  >;
+  getEvent(
     key: "SettlementRecord"
   ): TypedContractEvent<
     SettlementRecordEvent.InputTuple,
     SettlementRecordEvent.OutputTuple,
     SettlementRecordEvent.OutputObject
+  >;
+  getEvent(
+    key: "TokenDecayed"
+  ): TypedContractEvent<
+    TokenDecayedEvent.InputTuple,
+    TokenDecayedEvent.OutputTuple,
+    TokenDecayedEvent.OutputObject
   >;
   getEvent(
     key: "TokenToLoyalUser"
@@ -482,6 +616,17 @@ export interface LoyaltyProgram extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
+    "Refferal(address,uint256,uint256)": TypedContractEvent<
+      RefferalEvent.InputTuple,
+      RefferalEvent.OutputTuple,
+      RefferalEvent.OutputObject
+    >;
+    Refferal: TypedContractEvent<
+      RefferalEvent.InputTuple,
+      RefferalEvent.OutputTuple,
+      RefferalEvent.OutputObject
+    >;
+
     "SettlementRecord(address,uint256,uint256)": TypedContractEvent<
       SettlementRecordEvent.InputTuple,
       SettlementRecordEvent.OutputTuple,
@@ -491,6 +636,17 @@ export interface LoyaltyProgram extends BaseContract {
       SettlementRecordEvent.InputTuple,
       SettlementRecordEvent.OutputTuple,
       SettlementRecordEvent.OutputObject
+    >;
+
+    "TokenDecayed(address,uint256,uint256)": TypedContractEvent<
+      TokenDecayedEvent.InputTuple,
+      TokenDecayedEvent.OutputTuple,
+      TokenDecayedEvent.OutputObject
+    >;
+    TokenDecayed: TypedContractEvent<
+      TokenDecayedEvent.InputTuple,
+      TokenDecayedEvent.OutputTuple,
+      TokenDecayedEvent.OutputObject
     >;
 
     "TokenToLoyalUser(address,address,uint256,uint256)": TypedContractEvent<

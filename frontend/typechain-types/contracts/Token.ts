@@ -29,10 +29,10 @@ export interface TokenInterface extends Interface {
       | "allowance"
       | "approve"
       | "balanceOf"
+      | "burn"
       | "decimals"
       | "decreaseAllowance"
       | "increaseAllowance"
-      | "mint"
       | "name"
       | "owner"
       | "renounceOwnership"
@@ -59,6 +59,10 @@ export interface TokenInterface extends Interface {
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "burn",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -66,10 +70,6 @@ export interface TokenInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "increaseAllowance",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mint",
     values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -99,6 +99,7 @@ export interface TokenInterface extends Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -108,7 +109,6 @@ export interface TokenInterface extends Interface {
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -237,6 +237,12 @@ export interface Token extends BaseContract {
 
   balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
+  burn: TypedContractMethod<
+    [_address: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   decimals: TypedContractMethod<[], [bigint], "view">;
 
   decreaseAllowance: TypedContractMethod<
@@ -248,12 +254,6 @@ export interface Token extends BaseContract {
   increaseAllowance: TypedContractMethod<
     [spender: AddressLike, addedValue: BigNumberish],
     [boolean],
-    "nonpayable"
-  >;
-
-  mint: TypedContractMethod<
-    [to: AddressLike, amount: BigNumberish],
-    [void],
     "nonpayable"
   >;
 
@@ -307,6 +307,13 @@ export interface Token extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "burn"
+  ): TypedContractMethod<
+    [_address: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "decimals"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -321,13 +328,6 @@ export interface Token extends BaseContract {
   ): TypedContractMethod<
     [spender: AddressLike, addedValue: BigNumberish],
     [boolean],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "mint"
-  ): TypedContractMethod<
-    [to: AddressLike, amount: BigNumberish],
-    [void],
     "nonpayable"
   >;
   getFunction(
