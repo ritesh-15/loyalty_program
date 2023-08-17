@@ -80,6 +80,11 @@ const Navbar = () => {
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       <Link href={"/rewards"}>Rewards</Link>
                     </li>
+
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                      <Link href={"/referral"}>Refer a friend</Link>
+                    </li>
+
                     <li
                       onClick={logout}
                       className="px-4 py-2 cursor-pointer hover:bg-gray-100"
@@ -112,7 +117,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
 export default Navbar
