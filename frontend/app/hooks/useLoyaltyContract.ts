@@ -78,6 +78,31 @@ export default function useLoyaltyContract() {
     return contract.queryFilter(contract.filters["GetTokenOnOrder"]())
   }
 
+  const getSettlementsTransactions = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["SettlementRecord"]())
+  }
+
+  const getInitialIssuerTokens = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.initialIssuerTokens()
+  }
+
+  const getDecayPeriod = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.decayPeriod()
+  }
+
+  const getSettlementRate = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.settlementRate()
+  }
+
+  const updateSettlementRate = async (value: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.updateSettlementRate(value)
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -91,5 +116,10 @@ export default function useLoyaltyContract() {
     getAllowance,
     getHistoryForPurchase,
     getTokenEarnedOnPurchase,
+    getSettlementsTransactions,
+    getInitialIssuerTokens,
+    getDecayPeriod,
+    getSettlementRate,
+    updateSettlementRate,
   }
 }
