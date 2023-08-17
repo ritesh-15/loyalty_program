@@ -17,6 +17,7 @@ import Modal from "../components/Modal"
 import OrderService from "../services/order.service"
 import { useRouter } from "next/navigation"
 import Button from "../components/button/Button"
+import Link from "next/link"
 
 const Rewards = () => {
   const { data } = useSession()
@@ -26,12 +27,8 @@ const Rewards = () => {
   const [isOrderPlacing, setIsOrderPlacing] = useState(false)
 
   const router = useRouter()
-  const {
-    buyProductWithTokens,
-    getAccountBalance,
-    approveTokens,
-    getAllowance,
-  } = useLoyaltyContract()
+  const { buyProductWithTokens, getAccountBalance, approveTokens } =
+    useLoyaltyContract()
 
   const [modalState, setModalState] = useState({
     discount: 0,
@@ -111,7 +108,7 @@ const Rewards = () => {
   const handleOrder = async (product: IRewards["data"][0]) => {
     setIsOrderPlacing(true)
     try {
-      const tokens = 7
+      const tokens = product.attributes.points
       const discount = calculateDiscount(
         product.attributes.product.data.attributes.price,
         product.attributes.discount
@@ -125,10 +122,6 @@ const Rewards = () => {
       const tx = await approveTokens(tokens)
 
       await tx.wait()
-
-      const allowance = await getAllowance()
-
-      console.log(`allownace is ${ethers.formatEther(allowance)}`)
 
       await buyProductWithTokens(
         tokens,
@@ -159,7 +152,6 @@ const Rewards = () => {
       router.push("/orders")
       toast.success("Order placed successfully!!")
     } catch (err: any) {
-      console.log(err.message)
       toast.error("Someting unexpected error occured please try again")
     } finally {
       setIsOrderPlacing(false)
@@ -171,19 +163,21 @@ const Rewards = () => {
       <section>
         <Navbar />
         <div className="p-28">
-          <div className="text-center grid grid-cols-2 gap-96">
+          <div className="text-center flex items-center justify-between">
             <div className="flex flex-row text-4xl">
               <RxTokens />
               <p className="translate-x-4 font-serif ">Rewards</p>
             </div>
 
             <div>
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                View wallet history
-              </button>
+              <Link href="/rewards/history">
+                <Button
+                  className="w-fit bg-transparent border border-primary text-primary"
+                  type="button"
+                >
+                  View wallet history
+                </Button>
+              </Link>
             </div>
           </div>
 
