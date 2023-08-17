@@ -9,50 +9,7 @@ const items = [
     orderedAt: "July 15, 2023",
     deliveredAt: "July 20, 2023",
     imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  {
-    name: "Jorden retro 5g",
-    category: "Men's Golf shoes",
-    orderedAt: "July 15, 2023",
-    deliveredAt: "July 20, 2023",
-    imageSrc: "/img1.png",
-  },
-  // Add more item objects here
+  }
 ];
 
 const Orders = () => {

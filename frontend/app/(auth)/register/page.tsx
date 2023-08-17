@@ -1,18 +1,22 @@
-"use client"
+"use client";
+import Button from "@/app/components/button/Button";
+import React, { useState } from "react";
+import useRegister from "./useRegister";
+import Input from "@/app/components/input/Input";
+import Link from "next/link";
+import ConnectToMetamaskModal from "@/app/components/ConnectToMetamaskModal";
+import Modal from "@/app/components/Modal";
+import { useWallet } from "@/app/store/WalletStore";
+import { formatWalletAddress } from "@/app/utils/formatWalletAddress";
 
-import Button from "@/app/components/button/Button"
-import React from "react"
-import useRegister from "./useRegister"
-import Input from "@/app/components/input/Input"
-import Link from "next/link"
-import ConnectToMetamaskModal from "@/app/components/ConnectToMetamaskModal"
-import Modal from "@/app/components/Modal"
-import { useWallet } from "@/app/store/WalletStore"
-import { formatWalletAddress } from "@/app/utils/formatWalletAddress"
+export default function Register() {
+  const { actions, states } = useRegister();
+  const { isConnected, walletAddress } = useWallet();
+  const [referral, setReferral] = useState<boolean>(false);
 
-export default function page() {
-  const { actions, states } = useRegister()
-  const { isConnected, walletAddress } = useWallet()
+  const toggleReferrel = () => {
+    setReferral(!referral);
+  };
 
   return (
     <>
@@ -64,6 +68,25 @@ export default function page() {
               />
             </div>
 
+            {referral ? (
+              <div className="mb-4">
+                <Input
+                  placeholder="*********"
+                  title="Referral code"
+                  type="text"
+                  name="password"
+                />
+              </div>
+            ) : (
+              <div className="mb-4 flex flex-col gap-1 p-2 w-fit">
+                <Input
+                  title="Have referral code"
+                  onChange={toggleReferrel}
+                  type="checkbox"
+                />
+              </div>
+            )}
+
             {walletAddress && (
               <div className="mb-4 flex flex-col gap-1 p-2 rounded-md border w-fit">
                 <span>Connected wallet address</span>
@@ -89,5 +112,5 @@ export default function page() {
         <ConnectToMetamaskModal />
       </Modal>
     </>
-  )
+  );
 }

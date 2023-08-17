@@ -13,7 +13,7 @@ import qs from "qs"
 import { useState } from "react"
 import { useQuery } from "react-query"
 
-export default function page() {
+export default function Orders() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
