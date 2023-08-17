@@ -11,7 +11,6 @@ describe("LoyaltyProgram", async () => {
   const INITIAL_TOKENS = 4000000000
   const INITIAL_ISSUER_TOKENS = 100
 
-  // ;[admin, brand, john, bob, seller] = await ethers.getSigners()
   beforeEach(async () => {
     ;[admin, brand, john, bob, seller, tom] = await ethers.getSigners()
 

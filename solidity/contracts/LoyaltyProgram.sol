@@ -219,9 +219,12 @@ contract LoyaltyProgram is Ownable {
             "User should have balance greater than number of tokens required!"
         );
 
+        uint256 settlementTokens = (_tokens * settlementRate) / 100;
+        uint256 tokensToBrand = _tokens - settlementTokens;
+
         // transfer the tokens from user to brand or seller
         require(
-            token.transferFrom(msg.sender, _transferTo, _tokens),
+            token.transferFrom(msg.sender, _transferTo, tokensToBrand),
             "Tokens not trasfered to the brand or seller account!"
         );
 
@@ -232,7 +235,7 @@ contract LoyaltyProgram is Ownable {
         _lastTokenUsedByUser[msg.sender] = block.timestamp;
 
         // initial the settlement between the brand and platform (i.e transfer some tokens from brand to platform)
-        settlement(_tokens, _transferTo);
+        settlement(settlementTokens, msg.sender);
 
         emit TokensTransferred(
             msg.sender,
@@ -273,10 +276,8 @@ contract LoyaltyProgram is Ownable {
 
     function settlement(uint256 _tokens, address _trasferFrom) internal {
         // calculate settelment tokens
-        uint256 settlementTokens = (_tokens * settlementRate) / 100;
-
         require(
-            token.transferFrom(_trasferFrom, _admin, settlementTokens),
+            token.transferFrom(_trasferFrom, _admin, _tokens),
             "Tokens not trasfered to the admin account!"
         );
 

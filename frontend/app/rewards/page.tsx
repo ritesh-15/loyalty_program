@@ -33,6 +33,11 @@ const Rewards = () => {
     getAllowance,
   } = useLoyaltyContract()
 
+  const [modalState, setModalState] = useState({
+    discount: 0,
+    tokens: 0,
+  })
+
   const [stats, setStats] = useState({
     balance: "",
   })
@@ -100,27 +105,32 @@ const Rewards = () => {
   )
 
   const calculateDiscount = (price: number, discount: number) => {
-    Math.floor(price - (discount * price) / 100)
-  }
-
-  const tranferTokenToBrand = (tokens: number, brandAddress: string) => {
-    return buyProductWithTokens(tokens, brandAddress)
+    return Math.floor(price - (discount * price) / 100)
   }
 
   const handleOrder = async (product: IRewards["data"][0]) => {
     setIsOrderPlacing(true)
     try {
-      const tokens = product.attributes.points
+      const tokens = 7
+      const discount = calculateDiscount(
+        product.attributes.product.data.attributes.price,
+        product.attributes.discount
+      )
+
+      setModalState({
+        discount: product.attributes.discount,
+        tokens,
+      })
 
       const tx = await approveTokens(tokens)
 
       await tx.wait()
 
-      const a = await getAllowance()
+      const allowance = await getAllowance()
 
-      console.log(`Allowance is ${ethers.formatEther(a)}`)
+      console.log(`allownace is ${ethers.formatEther(allowance)}`)
 
-      await tranferTokenToBrand(
+      await buyProductWithTokens(
         tokens,
         product.attributes.product.data.attributes.brandId.data.attributes.user
           .data.attributes.walletAddress
@@ -129,10 +139,7 @@ const Rewards = () => {
       const order = await createOrder({
         data: {
           userId: user.data.id,
-          totalAmount: calculateDiscount(
-            product.attributes.product.data.attributes.price,
-            product.attributes.discount
-          ),
+          totalAmount: discount,
           numberOfTokens: parseInt(`${tokens}`),
         },
       })
@@ -152,6 +159,7 @@ const Rewards = () => {
       router.push("/orders")
       toast.success("Order placed successfully!!")
     } catch (err: any) {
+      console.log(err.message)
       toast.error("Someting unexpected error occured please try again")
     } finally {
       setIsOrderPlacing(false)
@@ -233,11 +241,9 @@ const Rewards = () => {
                       <br />
                     </p>
                     <span>
-                      {Math.floor(
-                        reward.attributes.product.data.attributes.price -
-                          (reward.attributes.discount *
-                            reward.attributes.product.data.attributes.price) /
-                            100
+                      {calculateDiscount(
+                        reward.attributes.product.data.attributes.price,
+                        reward.attributes.discount
                       )}
                     </span>
                     <Button onClick={() => handleOrder(reward)}>Buy now</Button>
@@ -253,7 +259,8 @@ const Rewards = () => {
         <div className="flex items-center flex-col justify-center">
           <h1 className="text-xl font-bold">Processing your order...</h1>
           <p className="mt-1 max-w-[75%] text-center">
-            You got 25% by making use of 25 FC your tokens congratulations!
+            You got {modalState.discount} by making use of {modalState.tokens}{" "}
+            FC your tokens congratulations!
           </p>
           <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin mt-4"></div>
         </div>
