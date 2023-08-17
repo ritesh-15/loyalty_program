@@ -11,8 +11,12 @@ class ReferralService {
     return res.data;
   }
 
+  static async checkReferral<T>(query?: string) {
+    const res = await api.get<T>(`referrals?${query}`);
+    return res.data;
+  }
+
   static async createReferral(token: string, data: any) {
-    console.log(data);
     const res = await api.post("/referrals", data, {
       headers: {
         Authorization: `Bearer ${token}`,

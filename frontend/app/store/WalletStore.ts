@@ -71,7 +71,6 @@ export const useWallet = create<IWallet>((set, get) => ({
       set({
         isConnected: false,
       })
-      toast.error("Could not connect to wallet")
     }
   },
   getLoyaltyProgramContract: () => {

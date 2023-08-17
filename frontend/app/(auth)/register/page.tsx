@@ -8,14 +8,40 @@ import ConnectToMetamaskModal from "@/app/components/ConnectToMetamaskModal";
 import Modal from "@/app/components/Modal";
 import { useWallet } from "@/app/store/WalletStore";
 import { formatWalletAddress } from "@/app/utils/formatWalletAddress";
+import { useQuery } from "react-query";
+import qs from "qs";
+import ReferralService from "@/app/services/referral.service";
 
 export default function Register() {
   const { actions, states } = useRegister();
   const { isConnected, walletAddress } = useWallet();
   const [referral, setReferral] = useState<boolean>(false);
+  const [referralId, setReferralId] = useState("");
+
+  const query = qs.stringify({
+    fields: ["user_id", "refferId", "isAccountCreated"],
+    filters: {
+      refferId: {
+        $eq: referralId,
+      },
+    },
+  });
+
+  useQuery(["referral"], () => ReferralService.checkReferral(query), {
+    onSuccess({ data }) {
+      console.log("first");
+      if (data) {
+        console.log(data);
+      }
+    },
+    onError(error) {
+      console.log("error", error);
+    },
+    enabled: referral ? true : false,
+  });
 
   const toggleReferrel = () => {
-    setReferral(!referral);
+    setReferral(true);
   };
 
   return (
@@ -28,7 +54,7 @@ export default function Register() {
           </p>
 
           <form
-            onSubmit={actions.handleSubmit}
+            // onSubmit={actions.handleSubmit}
             action=""
             className="mt-4 w-full"
           >
@@ -71,10 +97,14 @@ export default function Register() {
             {referral ? (
               <div className="mb-4">
                 <Input
-                  placeholder="*********"
+                  placeholder="referral_code"
                   title="Referral code"
                   type="text"
-                  name="password"
+                  name="Referral"
+                  onChange={(e) => {
+                    setReferralId(e.target.value);
+                  }}
+                  value={referralId}
                 />
               </div>
             ) : (
@@ -94,9 +124,19 @@ export default function Register() {
               </div>
             )}
 
-            <Button loading={states.isLoading} type="submit">
-              Register
+            <Button
+              className="m-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                toggleReferrel;
+              }}
+            >
+              Check Referral Code
             </Button>
+
+            {/* <Button loading={states.isLoading} type="submit">
+              Register
+            </Button> */}
           </form>
 
           <div className="mt-4">
