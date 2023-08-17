@@ -220,6 +220,7 @@ const Cart = () => {
         </div>
       </Wrapper>
     </div>
+    </>
   );
 };
 

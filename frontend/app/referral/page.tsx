@@ -60,7 +60,9 @@ const Page = () => {
 
                 <div className="flex">
                     {/* 3rd div */}
-                    <div className="bg-blue-100 h-40 w-[30%] rounded-lg p-4 mr-4 transition-transform"></div>
+                    <div className="bg-blue-100 h-40 w-[30%] rounded-lg p-4 mr-4 transition-transform">
+                        
+                    </div>
 
                     {/* 4th div */}
                     <div className="bg-blue-100 h-40 w-[70%] rounded-lg p-4 transition-transform"></div>
