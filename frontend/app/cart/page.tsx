@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import Image from "next/image"
-import Wrapper from "../components/Wrapper"
-import Link from "next/link"
-import { useCartStore } from "../store/CartStore"
-import { RiDeleteBin6Line } from "react-icons/ri"
-import { IUserSession } from "../interfaces/IUser"
-import { useSession } from "next-auth/react"
-import { toast } from "react-hot-toast"
-import useLoyaltyContract from "../hooks/useLoyaltyContract"
-import Button from "../components/button/Button"
-import { useMutation } from "react-query"
-import OrderService from "../services/order.service"
-import Modal from "../components/Modal"
-import { useRouter } from "next/navigation"
+import React, { useState } from "react";
+import Image from "next/image";
+import Wrapper from "../components/Wrapper";
+import Link from "next/link";
+import { useCartStore } from "../store/CartStore";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { IUserSession } from "../interfaces/IUser";
+import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
+import useLoyaltyContract from "../hooks/useLoyaltyContract";
+import Button from "../components/button/Button";
+import { useMutation } from "react-query";
+import OrderService from "../services/order.service";
+import Modal from "../components/Modal";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
-  const { data: session } = useSession()
-  const user = session?.user as IUserSession
+  const { data: session } = useSession();
+  const user = session?.user as IUserSession;
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const { getTokenOnOrder } = useLoyaltyContract()
-  const [loading, setLoading] = useState(false)
-  const [numberOfTokens, setNumberOfTokens] = useState(0)
+  const { getTokenOnOrder } = useLoyaltyContract();
+  const [loading, setLoading] = useState(false);
+  const [numberOfTokens, setNumberOfTokens] = useState(0);
 
   const {
     incrementQuantity,
@@ -33,29 +33,29 @@ const Cart = () => {
     removeFromCart,
     cartItems,
     clearCart,
-  } = useCartStore()
+  } = useCartStore();
 
   const transferTokensToUserAccount = async (numberOfTokens: number) => {
     try {
-      await getTokenOnOrder(user.data.walletAddress, numberOfTokens)
+      await getTokenOnOrder(user.data.walletAddress, numberOfTokens);
     } catch (e: any) {
-      toast.error("Couldn't transfer tokens to your account")
+      toast.error("Couldn't transfer tokens to your account");
     }
-  }
+  };
 
   const { mutateAsync: createOrder } = useMutation((data: any) =>
     OrderService.createOrder(user.token, data)
-  )
+  );
 
   const { mutateAsync: createOrderItem } = useMutation((data: any) =>
     OrderService.createOrderItem(user.token, data)
-  )
+  );
 
   const handleOrder = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const tokens = (subTotal * 0.5) / 100
-      setNumberOfTokens(tokens)
+      const tokens = (subTotal * 0.5) / 100;
+      setNumberOfTokens(tokens);
 
       const order = await createOrder({
         data: {
@@ -63,7 +63,7 @@ const Cart = () => {
           totalAmount: subTotal,
           numberOfTokens: parseInt(`${tokens}`),
         },
-      })
+      });
 
       const orderItems = cartItems.map((item) => {
         return createOrderItem({
@@ -74,21 +74,21 @@ const Cart = () => {
             brandId: item.brandId,
             quantity: item.quantity,
           },
-        })
-      })
+        });
+      });
 
-      await Promise.all([...orderItems, transferTokensToUserAccount(tokens)])
+      await Promise.all([...orderItems, transferTokensToUserAccount(tokens)]);
 
-      clearCart()
+      clearCart();
 
-      router.push("/orders")
-      toast.success("Order placed successfully!!")
+      router.push("/orders");
+      toast.success("Order placed successfully!!");
     } catch (err: any) {
-      toast.error("Someting unexpected error occured please try again")
+      toast.error("Someting unexpected error occured please try again");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -152,7 +152,7 @@ const Cart = () => {
                                     decrementQuantity(
                                       item.productId,
                                       item.sellerId
-                                    )
+                                    );
                                   }}
                                   className="hover:text-black bg-gray-300 px-2 py-1 rounded"
                                 >
@@ -164,7 +164,7 @@ const Cart = () => {
                                     incrementQuantity(
                                       item.productId,
                                       item.sellerId
-                                    )
+                                    );
                                   }}
                                   className="hover:text-black bg-gray-300 px-2 py-1 rounded"
                                 >
@@ -177,7 +177,7 @@ const Cart = () => {
                       </div>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
 
@@ -205,12 +205,15 @@ const Cart = () => {
 
           <div className="flex-[2] flex flex-col items-center pb-[50px] md:-mt-14">
             {cartItems.length === 0 && (
-              <span className="text-xl font-bold">Your cart is empty</span>
+              <div className="text-center text-xl  m-36">
+                <p className="font-bold">Your cart is empty</p>
+                <p className="text-center mt-4">
+                  Looks like you have not anything added anything to your cart.{" "}
+                  <br />
+                  Go ahead and explore!
+                </p>
+              </div>
             )}
-            <span className="text-center mt-4">
-              Looks like you haven&apos t added anything to your cart. <br />
-              Go ahead and explore!
-            </span>
             <Link
               href="/"
               className="py-4 px-8 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75 mt-8"
@@ -233,7 +236,7 @@ const Cart = () => {
         </div>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;
