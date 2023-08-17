@@ -9,6 +9,7 @@ import { useQuery } from "react-query"
 import Link from "next/link"
 import SellerService from "../services/sellers.service"
 import { ISellerWithProducts } from "../interfaces/ISellerWithProducts"
+import { getDiscountedPricePercentage } from "../utils/helper";
 
 interface IProductWithSeller {
   product: ISellerWithProducts["data"][0]["attributes"]["products"]["data"][0]
@@ -22,6 +23,7 @@ interface IProductWithSeller {
 const ProductsPage = () => {
   const { data } = useSession()
   const user = data?.user as IUserSession
+  const original_price = 5000
 
   const [products, setProducts] = useState<IProductWithSeller[]>([])
 
@@ -78,14 +80,14 @@ const ProductsPage = () => {
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <h2 className="text-4xl">Products</h2>
 
-            <div className="m-4 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
+            <div className="m-4 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8 ">
               {products?.map((product, index) => {
                 return (
-                  <div className="m-4" key={index}>
+                  <div className="m-4 hover:scale-105 cursor-pointer transition-transform" key={index}>
                     <Link
                       href={`/products/[id]?sellerId=${product.seller.id}&productId=${product.product.id}`}
                     >
-                      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 ">
                         <div className="flex justify-center items-center h-48">
                           {product.product.attributes.images && (
                             <Image
@@ -98,17 +100,31 @@ const ProductsPage = () => {
                         </div>
                       </div>
                       <div>
-                        <h3 className="mt-4 text-sm text-gray-700">
+                        <h3 className="mt-4 text-md text-gray-700">
                           {product.product.attributes.name}
                         </h3>
-                        <p className="mt-1 text-lg font-medium text-gray-900">
-                          ₹{product.product.attributes.price}
-                        </p>
+                        <div className="text-sm flex flex-row justify-between text-black/[0.5]">
+                          <p>{product.seller.name}</p>
+                          <p>{product.seller.location}</p>
+                        </div>
+                        <div className="flex items-center">
+                          <p className="mr-2 text-lg font-semibold">
+                            &#8377;{product.product.attributes.price}
+                          </p>
+                          <p className="text-base font-medium line-through">
+                            &#8377;{`${original_price}`}
+                          </p>
+                          <p className="ml-auto text-base font-medium text-green-500">
+                            {getDiscountedPricePercentage(
+                              original_price,
+                              product.product.attributes.price
+                            )}
+                            % off
+                          </p>
+                        </div>
+
                       </div>
-                      <div className="flex flex-row justify-between">
-                        <p>{product.seller.name}</p>
-                        <p>{product.seller.location}</p>
-                      </div>
+
                       <div>
                         {
                           product.product.attributes.brandId.data.attributes
@@ -122,7 +138,7 @@ const ProductsPage = () => {
                           }
                         )} */}
                       </div>
-                      {product.product.id} -- {product.seller.id}
+                      {/* {product.product.id} -- {product.seller.id} */}
                     </Link>
                   </div>
                 )
@@ -132,7 +148,7 @@ const ProductsPage = () => {
         </div>
       </div>
 
-                
+
     </section>
   )
 }

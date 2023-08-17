@@ -26,7 +26,7 @@ const Cart = () => {
       p += item.price * item.quantity;
     })
     setTotal(p)
-  },[])
+  },[cartItems])
 
   const [addToCart, incrementQuantity] = useCartStore((state) => [
     state.addToCart,
