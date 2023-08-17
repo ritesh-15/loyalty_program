@@ -14,6 +14,7 @@ import Button from "../components/button/Button";
 import { useMutation } from "react-query";
 import OrderService from "../services/order.service";
 import Modal from "../components/Modal";
+import { getDiscountedPricePercentage } from "../utils/helper"
 import { useRouter } from "next/navigation";
 
 const Cart = () => {
@@ -21,7 +22,7 @@ const Cart = () => {
   const user = session?.user as IUserSession;
 
   const router = useRouter();
-
+  const original_price = 5000
   const { getTokenOnOrder } = useLoyaltyContract();
   const [loading, setLoading] = useState(false);
   const [numberOfTokens, setNumberOfTokens] = useState(0);
@@ -119,12 +120,13 @@ const Cart = () => {
 
                       <div className="w-full flex flex-col">
                         <div className="flex flex-col md:flex-row justify-between">
-                          <div className="text-lg md:text-2xl font-semibold text-black/[0.8]">
+                          <div className="text-lg md:text-xl font-semibold text-black/[0.8]">
                             {item.name}
                           </div>
 
-                          <div className="text-sm md:text-md font-bold text-black/[0.5] mt-2">
+                          <div className="text-sm md:text-md font-bold text-black/[0.6] mt-2">
                             Amount : ₹{item.price}
+
                           </div>
                         </div>
 
@@ -190,8 +192,20 @@ const Cart = () => {
                     <div className="uppercase text-md md:text-lg font-medium text-black">
                       Subtotal
                     </div>
-                    <div className="text-md md:text-lg font-medium text-black">
-                      Total : ₹{subTotal}
+                    <div className="flex text-black/[0.8] mt-1">
+                      <p className="mr-2 text-base font-bold ">
+                        &#8377;{subTotal}
+                      </p>
+                      <p className="text-base  font-medium line-through ">
+                        &#8377;{`${original_price}`}
+                      </p>
+                    <div className="text-green-500 ml-2">
+                    ({getDiscountedPricePercentage(
+                              original_price,
+                              subTotal
+                            )}
+                            % off)
+                    </div>
                     </div>
                   </div>
                   <Button className="mt-4" onClick={handleOrder}>
