@@ -7,6 +7,7 @@ import { signOut, useSession } from "next-auth/react"
 import { IUserSession } from "../interfaces/IUser"
 import Link from "next/link"
 import { toast } from "react-hot-toast"
+import {useRouter} from "next/navigation"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -16,6 +17,8 @@ const poppins = Poppins({
 const Navbar = () => {
   const { data } = useSession()
   const user = data?.user as IUserSession
+
+  const router = useRouter();
 
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
 
@@ -27,6 +30,7 @@ const Navbar = () => {
     try {
       await signOut()
       toast.success("Logged out successfully!")
+      router.push('/')
     } catch (e) {
       toast.error("Something went wrong while logging you out!")
     }
@@ -64,7 +68,7 @@ const Navbar = () => {
                 <FaUserAlt size={25} />
               </button>
               {showProfileDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
                   <ul className="py-1">
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       Profile
@@ -76,6 +80,11 @@ const Navbar = () => {
                     <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
                       <Link href={"/rewards"}>Rewards</Link>
                     </li>
+
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
+                      <Link href={"/referral"}>Refer a friend</Link>
+                    </li>
+
                     <li
                       onClick={logout}
                       className="px-4 py-2 cursor-pointer hover:bg-gray-100"
@@ -108,7 +117,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
 export default Navbar

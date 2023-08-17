@@ -9,7 +9,7 @@ import { useWallet } from "@/app/store/WalletStore"
 import ConnectToMetamaskModal from "@/app/components/ConnectToMetamaskModal"
 import { formatWalletAddress } from "@/app/utils/formatWalletAddress"
 
-export default function page() {
+export default function Login() {
   const { actions, states } = useLogin()
   const { isConnected, walletAddress } = useWallet()
 
