@@ -10,6 +10,11 @@ class SellerService {
     return res.data
   }
 
+  static async fetchProducts<T>(query?: string) {
+    const res = await api.get<T>(`/sellers?${query}`)
+    return res.data
+  }
+
   static async getSellerByID<T>(id: string, token: string, query: string = "") {
     const res = await api.get<T>(`/sellers/${id}?${query}`, {
       headers: {

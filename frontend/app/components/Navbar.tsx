@@ -36,7 +36,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 shadow-md bg-white">
+    <nav className="fixed left-0 right-0 top-0 z-20 shadow-md bg-white">
       <div className="flex items-center justify-between m-4 max-w-[1300px] mx-auto w-[95%]">
         <div>
           <Link href={"/"}>
@@ -45,7 +45,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="bg-gray-200 px-2 py-4 rounded-md flex items-center gap-2">
+          <div className="bg-gray-100 px-2 p-4 rounded-full flex items-center gap-2">
             <GoSearch className="text-xl" />
             <input
               type="text"
@@ -100,9 +100,6 @@ const Navbar = () => {
             )}
           </div>
 
-          <div>
-            <Link href={"/products"}>Products</Link>
-          </div>
           <div>
             <Link className="relative w-fit h-fit" href={"/cart"}>
               <CiShoppingCart className="text-3xl" />

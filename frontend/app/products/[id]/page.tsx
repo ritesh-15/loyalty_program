@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast"
 import Image from "next/image"
 import { ICartItem } from "@/app/interfaces/ICartItem"
 import { useCartStore } from "@/app/store/CartStore"
+import Button from "@/app/components/button/Button"
 
 interface SingleProductProps {
   params: {
@@ -24,9 +25,6 @@ interface SingleProductProps {
 export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
   const { data } = useSession()
   const user = data?.user as IUserSession
-
-  const [product, setProduct] = useState<ISingleProduct["data"][0] | null>()
-  // const session =  getCurrentUser();
 
   const searchParams = useSearchParams()
   const sid = searchParams.get("sellerId")
@@ -77,15 +75,15 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     { encodeValuesOnly: true }
   )
 
-  useQuery(
-    ["products", sid, pid],
-    () => ProductService.getProducts(user.token, query),
+  const { data: product, isLoading } = useQuery(
+    ["single-product", { sid, pid }],
+    () => ProductService.fetchProduct<ISingleProduct>(query),
     {
-      enabled: user ? true : false,
-      onSuccess({ data }) {
-        if (data) {
-          setProduct(data[0])
-        }
+      onError(err) {
+        toast.error("Someting went wrong while fetching product")
+      },
+      select: ({ data }) => {
+        return data[0]
       },
     }
   )
@@ -119,83 +117,72 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     toast.success("Added to cart")
   }
 
-  return (
-    <div>
-      {/* <Navbar/> */}
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center mt-16">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
-      <div className="w-full md:py-20">
-        {/* <ToastContainer /> */}
-        <Wrapper className="pt-20 ">
-          <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[100px] ">
-            {/* left column start */}
-            <div className="w-full  md:w-auto flex-[1.5] max-w-[500px] lg-max-w-full mx-auto lg:mx-0">
+  return (
+    <>
+      <section className="mt-16">
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="max-w-[450px]">
               {product?.attributes.images && (
                 <ProductDetailCarousel images={product.attributes.images} />
               )}
-              {/* {   } */}
             </div>
-            {/* left column end */}
-            {/* right column start */}
-            <div className="flex-[1] py-3">
-              <div className="font-semibold flex flex-row space-x-4 mb-1 text-black/[0.6]">
+
+            <div className="flex-1">
+              <div className="flex items-center gap-1 mb-2">
                 {product?.attributes.brandId.data.attributes.brandLogo && (
                   <Image
                     src={product?.attributes.brandId.data.attributes.brandLogo}
                     alt=""
                     width={50}
                     height={50}
+                    className="object-contain"
                   />
                 )}
-                <span className="text-lg">
+                <span className="text-sm font-semibold">
                   {product?.attributes.brandId.data.attributes.name}
                 </span>
               </div>
 
-              {/* PRODUCT TITLE */}
-              <div className="text-[34px] font-semibold mb-2 leading-tight">
+              <div className="text-4xl font-semibold mb-2">
                 {product?.attributes.name}
               </div>
 
-              {/* PRODUCT SELLER */}
-              <div className="text-sm font-semibold mb-5 text-black/[0.6]">
+              <div className="text-sm font-light mb-2">
                 {product?.attributes.sellers.data[0].attributes.name} -{" "}
                 <span>
                   {product?.attributes.sellers.data[0].attributes.location}
                 </span>
               </div>
-              {/* PRODUCT PRIZE */}
-              <div className="text-lg font-semibold">
+
+              <div className="text-xl font-bold">
                 ₹{product?.attributes.price}
               </div>
-              <div className="text-md font-medium text-black/[0.5]">
-                inc. of all taxes
-              </div>
-              <div className="text-md font-medium text-black/[0.5] mb-20">
+              <div className="text-md font-light">inc. of all taxes</div>
+              <div className="text-md font-light mb-4">
                 {`(Also include all aplicable duties)`}
               </div>
 
-              <button
-                className="py-4 w-full rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75"
-                onClick={handleCart}
-              >
-                Add to cart
-              </button>
-              {/* <button className="py-4 w-full rounded-full border border-black text-lg font-medium transition-transform flex items-center justify-center gap-2 active:scale-95 mb-10 hover:opacity-75">
-                            Wishlist
-                        </button> */}
-
-              <div>
-                <div className="text-lg font-bold md-5">Product Details</div>
-                <div className="text-md mb-5">
-                  {product?.attributes.description}
-                </div>
+              <div className="text-lg font-bold md-5">Product Details</div>
+              <div className="text-sm font-light mb-4">
+                {product?.attributes.description}
               </div>
+
+              <Button className="rounded-full py-4" onClick={handleCart}>
+                Add to cart
+              </Button>
             </div>
-            {/* right column end */}
           </div>
-        </Wrapper>
-      </div>
-    </div>
+        </>
+      </section>
+    </>
   )
 }
 
