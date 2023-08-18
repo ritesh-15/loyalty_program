@@ -1,6 +1,5 @@
 "use client"
 
-import Button from "@/app/components/button/Button"
 import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
 import { useWallet } from "@/app/store/WalletStore"
 import { formatWalletAddress } from "@/app/utils/formatWalletAddress"

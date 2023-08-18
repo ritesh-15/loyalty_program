@@ -10,8 +10,10 @@ import { useState } from "react"
 import Link from "next/link"
 import Button from "@/app/components/button/Button"
 import { ISellerOrders } from "@/app/interfaces/ISellerOrder"
+import useLoyaltyContract from "@/app/hooks/useLoyaltyContract"
 
-export default function page() {
+export default function SellerOrders() {
+  const {issueTokenToLoaylUser} = useLoyaltyContract()
   const [walletAddress, setWalletAddress] = useState("")
   const { data: session } = useSession()
   const user = session?.user as IUserSession
@@ -45,7 +47,7 @@ export default function page() {
     }
   )
 
-  console.log(orders)
+  
 
   return (
     <>
