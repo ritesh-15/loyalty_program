@@ -1,69 +1,49 @@
-"use client";
-import { v4 as uuidv4 } from "uuid";
-import React, { useState } from "react";
-import Image from "next/image";
-import Button from "../components/button/Button";
-import { BsChevronDoubleDown } from "react-icons/bs";
-import { AiOutlineCopy } from "react-icons/ai";
-import { toast, Toaster } from "react-hot-toast";
-import ReferralService from "../services/referral.service";
-import { useMutation, useQuery } from "react-query";
-import { useSession } from "next-auth/react";
-import { IUserSession } from "../interfaces/IUser";
-import qs from "qs";
+"use client"
+import { v4 as uuidv4 } from "uuid"
+import React, { useState } from "react"
+import Image from "next/image"
+import Button from "../components/button/Button"
+import { BsChevronDoubleDown } from "react-icons/bs"
+import { AiOutlineCopy } from "react-icons/ai"
+import { toast, Toaster } from "react-hot-toast"
+import ReferralService from "../services/referral.service"
+import { useMutation, useQuery } from "react-query"
+import { useSession } from "next-auth/react"
+import { IUserSession } from "../interfaces/IUser"
+import qs from "qs"
 
 const Referral = () => {
-    const [generatedId, setGeneratedId] = useState("");
-    const [isIdGenerated, setIsIdGenerated] = useState(false);
+  const [generatedId, setGeneratedId] = useState("")
+  const [isIdGenerated, setIsIdGenerated] = useState(false)
 
-    const { data: session } = useSession();
-    const user = session?.user as IUserSession;
+  const { data: session } = useSession()
+  const user = session?.user as IUserSession
 
-    const { mutateAsync: createReferral } = useMutation((data: any) =>
-        ReferralService.createReferral(user.token, data)
-    );
+  const { mutateAsync: createReferral } = useMutation((data: any) =>
+    ReferralService.createReferral(user.token, data)
+  )
 
-    // const query = qs.stringify({
-    //   fields : ["user_id","refferId"],
-    // })
+  const handleButtonClick = async () => {
+    const uniqueId = await uuidv4()
+    setGeneratedId(uniqueId)
+    setIsIdGenerated(true)
+    try {
+      const rf = await createReferral({
+        data: {
+          user_id: user.data.id,
+          refferId: uniqueId,
+        },
+      })
+    } catch (error: any) {
+      toast.error("Something went wrong please try again")
+      console.log("error ")
+    }
+  }
 
-    // const resp = useQuery(
-    //   ["referral"],
-    //   () => ReferralService.getReferral(user.token, query),
-    //   {
-    //     onSuccess:(data)=>{
-    //       console.log("here",data)
-    //     },
-    //     onError: (error) => {
-    //       console.log("error ",error)
-    //     },
-    //     enabled: user ? true : false,
-    //   }
-    // );
-
-    const handleButtonClick = async () => {
-        const uniqueId = await uuidv4();
-        setGeneratedId(uniqueId);
-        setIsIdGenerated(true);
-        console.log("id generated", generatedId);
-        console.log(user.token);
-        try {
-            const rf = await createReferral({
-                data: {
-                    user_id: user.data.id,
-                    refferId: uniqueId,
-                },
-            });
-            console.log(rf);
-        } catch (error: any) {
-            console.log("error ");
-        }
-    };
-
-    const handleCopy = () => {
-        navigator.clipboard.writeText(generatedId);
-        toast.success("Copied");
-    };
+  const handleCopy = () => {
+    navigator.clipboard.writeText(generatedId)
+    toast.success("Copied")
+  }
 
     return (
         <div className="px-4 md:px-8 lg:px-16 pt-28 pb-14 bg-blue-200">
@@ -138,12 +118,12 @@ const Referral = () => {
                     </div>
 
 
-                    {/* 4th div */}
-                    <div className="bg-blue-100 h-40 w-[70%] rounded-lg p-4 transition-transform"></div>
-                </div>
-            </div>
+          {/* 4th div */}
+          <div className="bg-blue-100 h-40 w-[70%] rounded-lg p-4 transition-transform"></div>
         </div>
-    );
-};
+      </div>
+    </div>
+  )
+}
 
-export default Referral;
+export default Referral
