@@ -8,41 +8,76 @@ import ConnectToMetamaskModal from "@/app/components/ConnectToMetamaskModal";
 import Modal from "@/app/components/Modal";
 import { useWallet } from "@/app/store/WalletStore";
 import { formatWalletAddress } from "@/app/utils/formatWalletAddress";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import qs from "qs";
 import ReferralService from "@/app/services/referral.service";
+import { ISingleReferral } from "@/app/services/ISingleReferral";
 
 export default function Register() {
   const { actions, states } = useRegister();
   const { isConnected, walletAddress } = useWallet();
-  const [referral, setReferral] = useState<boolean>(false);
-  const [referralId, setReferralId] = useState("");
+  const [hasId, setHasId] = useState<boolean>(false);
+  const [userReferralId, setUserReferralId] = useState("");
+  const [match, setMatch] = useState<ISingleReferral["data"][0] | null>(null);
 
   const query = qs.stringify({
-    fields: ["user_id", "refferId", "isAccountCreated"],
+    fields: ["refferId", "isAccountCreated"],
     filters: {
       refferId: {
-        $eq: referralId,
+        $eq: userReferralId,
       },
     },
   });
 
-  useQuery(["referral"], () => ReferralService.checkReferral(query), {
-    onSuccess({ data }) {
-      console.log("first");
-      if (data) {
-        console.log(data);
-      }
-    },
-    onError(error) {
-      console.log("error", error);
-    },
-    enabled: referral ? true : false,
-  });
+  useQuery(
+    ["referral"],
+    () => ReferralService.checkReferral<ISingleReferral>(query),
+    {
+      onSuccess(data) {
+        if (data.data.length > 0) {
+          setMatch(data.data[0]);
+        } else {
+          console.log("Referral code not found");
+        }
+      },
+      onError(error) {
+        console.log("error", error);
+      },
+      // enabled: hasId ? true : false,
+    }
+  );
 
-  const toggleReferrel = () => {
-    setReferral(true);
+  const handleReferral = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (!hasId || !match) {
+      console.log("code not matched");
+      return null;
+    }
+
+    if (match.attributes.isAccountCreated === false) {
+      // create  put request
+
+      const rfUpdation = updateReferral({
+        data: {
+          isAccountCreated: true,
+        },
+      }).then((response) => {
+        console.log(response);
+      });
+
+      // console.log(`rfUpdation`,rfUpdation);
+
+      console.log("you're good to go");
+    } else {
+      console.log("code already used");
+    }
   };
+
+  const { mutateAsync: updateReferral } = useMutation((data: any) =>
+    ReferralService.updateReferral(1, data)
+  );
 
   return (
     <>
@@ -94,7 +129,7 @@ export default function Register() {
               />
             </div>
 
-            {referral ? (
+            {hasId ? (
               <div className="mb-4">
                 <Input
                   placeholder="referral_code"
@@ -102,16 +137,16 @@ export default function Register() {
                   type="text"
                   name="Referral"
                   onChange={(e) => {
-                    setReferralId(e.target.value);
+                    setUserReferralId(e.target.value);
                   }}
-                  value={referralId}
+                  value={userReferralId}
                 />
               </div>
             ) : (
               <div className="mb-4 flex flex-col gap-1 p-2 w-fit">
                 <Input
                   title="Have referral code"
-                  onChange={toggleReferrel}
+                  onChange={() => setHasId(true)}
                   type="checkbox"
                 />
               </div>
@@ -124,19 +159,15 @@ export default function Register() {
               </div>
             )}
 
-            <Button
-              className="m-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                toggleReferrel;
-              }}
-            >
-              Check Referral Code
-            </Button>
+            {hasId && (
+              <Button className="m-4" onClick={(e) => handleReferral(e)}>
+                Check Referral Code
+              </Button>
+            )}
 
-            {/* <Button loading={states.isLoading} type="submit">
+            <Button loading={states.isLoading} type="submit">
               Register
-            </Button> */}
+            </Button>
           </form>
 
           <div className="mt-4">

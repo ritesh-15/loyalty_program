@@ -24,6 +24,11 @@ class ReferralService {
     });
     return res.data;
   }
+
+  static async updateReferral(id: number, data: any) {
+    const res = await api.put(`referrals/${id}`,data);
+    return res.data; 
+  }
 }
 
 export default ReferralService;
