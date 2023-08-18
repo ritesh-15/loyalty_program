@@ -191,7 +191,7 @@ export default function page() {
         <h1 className="text-xl font-bold">Settlements Transactions</h1>
 
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-left bg-white text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-white">
               <tr>
                 <th scope="col" className="px-6 py-3">

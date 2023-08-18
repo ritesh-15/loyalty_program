@@ -103,6 +103,16 @@ export default function useLoyaltyContract() {
     return contract.updateSettlementRate(value)
   }
 
+  const issueTokenToLoaylUser = async (value: string, userAddress: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.issueTokenToLoyalUser(ethers.parseEther(value), userAddress)
+  }
+
+  const getLoyalUserTokenHistory = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["TokenToLoyalUser"]())
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -121,5 +131,7 @@ export default function useLoyaltyContract() {
     getDecayPeriod,
     getSettlementRate,
     updateSettlementRate,
+    issueTokenToLoaylUser,
+    getLoyalUserTokenHistory,
   }
 }
