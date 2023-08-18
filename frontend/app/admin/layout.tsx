@@ -5,6 +5,7 @@ import { getCurrentUser } from "../utils/auth.utils"
 import { BsCoin } from "react-icons/bs"
 import { LiaSellsy } from "react-icons/lia"
 import { LuStore } from "react-icons/lu"
+import { PiUsersLight } from "react-icons/pi"
 
 export default async function AdminLayout({
   children,
@@ -34,6 +35,13 @@ export default async function AdminLayout({
       icon: <LiaSellsy />,
       title: "Sellers",
       redirectURL: "/admin/sellers",
+      isHomePage: false,
+      optionalURL: undefined,
+    },
+    {
+      icon: <PiUsersLight />,
+      title: "Referrals",
+      redirectURL: "/admin/referrals",
       isHomePage: false,
       optionalURL: undefined,
     },

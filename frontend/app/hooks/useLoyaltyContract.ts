@@ -113,6 +113,11 @@ export default function useLoyaltyContract() {
     return contract.queryFilter(contract.filters["TokenToLoyalUser"]())
   }
 
+  const giveRewardOnReferral = async (userAddress: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.referralReward(userAddress)
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -133,5 +138,6 @@ export default function useLoyaltyContract() {
     updateSettlementRate,
     issueTokenToLoaylUser,
     getLoyalUserTokenHistory,
+    giveRewardOnReferral,
   }
 }
