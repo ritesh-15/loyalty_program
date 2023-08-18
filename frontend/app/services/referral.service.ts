@@ -1,19 +1,19 @@
-import { api } from "../config/axios";
+import { api } from "../config/axios"
 
 class ReferralService {
   // for admin
-  static async getReferral<T>(token: string, query?: string) {
+  static async getRefferals<T>(token: string, query?: string) {
     const res = await api.get<T>(`/referrals?${query}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
-    return res.data;
+    })
+    return res.data
   }
 
   static async checkReferral<T>(query?: string) {
-    const res = await api.get<T>(`referrals?${query}`);
-    return res.data;
+    const res = await api.get<T>(`referrals?${query}`)
+    return res.data
   }
 
   static async createReferral(token: string, data: any) {
@@ -21,14 +21,14 @@ class ReferralService {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
-    return res.data;
+    })
+    return res.data
   }
 
   static async updateReferral(id: number, data: any) {
-    const res = await api.put(`referrals/${id}`,data);
-    return res.data; 
+    const res = await api.put(`referrals/${id}`, data)
+    return res.data
   }
 }
 
-export default ReferralService;
+export default ReferralService
