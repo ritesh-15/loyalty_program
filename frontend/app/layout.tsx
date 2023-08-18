@@ -21,7 +21,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Navbar />
-          {children}
+          <main className="max-w-[1300px] mx-auto w-[95%] mt-[90px]">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

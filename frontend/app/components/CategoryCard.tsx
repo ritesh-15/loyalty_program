@@ -1,55 +1,46 @@
-import React from "react";
-import Image from "next/image";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({
-    weight:"400",
-    subsets: ["latin"]
-})
+import React from "react"
+import Image from "next/image"
 
 const category = [
-  { name: "Fashion", image: "/assets/c1.jpg" },
-  { name: "Smartphones", image: "/assets/c2.jpg" },
-  { name: "Electronics", image: "/assets/c3.jpg" },
-  { name: "Grocery", image: "/assets/c4.jpg" },
-  { name: "Home & Furniture", image: "/assets/c6.jpg" },
-  { name: "Clothing", image: "/assets/c7.jpg" },
-  { name: "Books", image: "/assets/c8.jpg" },
-  { name: "Smartphones", image: "/assets/c9.jpg" },
+  { name: "Fashion", image: "/assets/c1.jpg", isDark: false },
+  { name: "Smartphones", image: "/assets/c2.jpg", isDark: true },
+  { name: "Electronics", image: "/assets/c3.jpg", isDark: true },
+  { name: "Grocery", image: "/assets/c4.jpg", isDark: false },
+  { name: "Home & Furniture", image: "/assets/c6.jpg", isDark: true },
+  { name: "Clothing", image: "/assets/c7.jpg", isDark: true },
+  { name: "Books", image: "/assets/c8.jpg", isDark: true },
+  { name: "Smartphones", image: "/assets/c9.jpg", isDark: true },
   //   { name: "Books", image: "/assets/c5.jpg" },
-];
+]
 
 const CategoryCard = () => {
-    return (
-      <div className="m-16">
-        <hr />
-        <div className={`${poppins.className} text-4xl text-center m-12`}>
-          Shop by category
-        </div>
-        <div className="grid grid-cols-4 gap-4 w-full h-auto">
-          {category.map((cat, index) => {
-            return (
-              <div
-                key={index}
-                className="bg-white shadow-md shadow-blue-50 rounded-md m-16 overflow-hidden flex flex-col"
-              >
+  return (
+    <div className="mt-16 border-t pt-12">
+      <h1 className={`text-3xl text-right mb-8`}>Shop by category</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {category.map((cat, index) => {
+          return (
+            <div key={index} className="flex flex-col">
+              <div className="relative w-full h-[300px] rounded-lg overflow-hidden flex items-center justify-center hover:opacity-50 text-white transition-opacity">
                 <Image
                   src={cat.image}
-                  height={300}
-                  width={300}
                   objectFit="cover"
                   objectPosition="center"
                   alt="brandlogo"
+                  className=""
+                  fill
                 />
-                <div className="p-4 flex flex-col flex-grow">
-                  <h2 className="text-center text-xl m-2">{cat.name}</h2>
-                </div>
+
+                <h1 className="absolute font-bold text-xl bottom-2 right-2">
+                  {cat.name}
+                </h1>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
-    );
+    </div>
+  )
 }
 
 export default CategoryCard
