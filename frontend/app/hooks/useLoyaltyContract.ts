@@ -118,6 +118,11 @@ export default function useLoyaltyContract() {
     return contract.referralReward(userAddress)
   }
 
+  const getRefferalRewardAmount = () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.getRefferalRewardRate()
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -139,5 +144,6 @@ export default function useLoyaltyContract() {
     issueTokenToLoaylUser,
     getLoyalUserTokenHistory,
     giveRewardOnReferral,
+    getRefferalRewardAmount,
   }
 }

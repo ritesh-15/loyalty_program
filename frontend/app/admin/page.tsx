@@ -1,12 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { FaBitcoin, FaCoins } from "react-icons/fa"
-import { IoMdPricetag } from "react-icons/io"
-import {
-  HiBuildingStorefront,
-  HiOutlineBuildingStorefront,
-} from "react-icons/hi2"
 import useLoyaltyContract from "../hooks/useLoyaltyContract"
 import { toast } from "react-hot-toast"
 import { useWallet } from "../store/WalletStore"
@@ -18,6 +12,7 @@ import { CiCoins1, CiMoneyBill, CiTimer } from "react-icons/ci"
 import { LiaBitcoin } from "react-icons/lia"
 import { AiOutlineShop, AiOutlineTags } from "react-icons/ai"
 import AdminCard from "../components/admin/AdminCard"
+import { GoCrossReference } from "react-icons/go"
 
 interface IIssuerTransaction {
   issuer: string
@@ -45,6 +40,7 @@ export default function page() {
     getDecayPeriod,
     updateSettlementRate,
     getSettlementRate,
+    getRefferalRewardAmount,
   } = useLoyaltyContract()
 
   const [loading, setLoading] = useState(true)
@@ -56,6 +52,7 @@ export default function page() {
     initialIssuerTokens: "",
     decayRate: "",
     settelmentRate: "",
+    referralRewardRate: "",
   })
 
   const [issuers, setIssuers] = useState<IIssuerTransaction[]>([])
@@ -73,6 +70,7 @@ export default function page() {
           initialIssuerTokens,
           decayPeriod,
           settlementRate,
+          referralRewardRate,
         ] = await Promise.all([
           getAccountBalance(walletAddress),
           totalSupply(),
@@ -81,6 +79,7 @@ export default function page() {
           getInitialIssuerTokens(),
           getDecayPeriod(),
           getSettlementRate(),
+          getRefferalRewardAmount(),
         ])
 
         const logs = await issuerTransactions()
@@ -116,6 +115,7 @@ export default function page() {
           ),
           decayRate: decayPeriod.toString(),
           settelmentRate: settlementRate.toString(),
+          referralRewardRate: ethers.formatEther(referralRewardRate.toString()),
         })
       } catch (error: any) {
         toast.error("Something went wrong")
@@ -184,6 +184,12 @@ export default function page() {
           title="Minimum order amount"
           value="1000"
           icon={<CiMoneyBill />}
+        />
+
+        <AdminCard
+          title="Refferal reward rate"
+          value={stats.referralRewardRate}
+          icon={<GoCrossReference />}
         />
       </div>
 

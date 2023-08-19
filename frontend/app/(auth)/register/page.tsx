@@ -19,7 +19,7 @@ export default function Register() {
 
   return (
     <>
-      <section className="min-h-screen w-full flex items-center justify-center bg-gray-50">
+      <section className="min-h-screen w-full flex items-center justify-center ">
         <div className="flex flex-col items-center bg-white p-4 rounded-md shadow-md w-[95%] max-w-[550px]">
           <h1 className="text-xl font-bold">Hey new to Meta market! 👋</h1>
           <p className="mt-2 max-w-[80%] text-center">
@@ -67,7 +67,7 @@ export default function Register() {
               />
             </div>
 
-            {states.hasId ? (
+            {states.hasId && (
               <div className="mb-4">
                 <Input
                   placeholder="referral_code"
@@ -81,15 +81,20 @@ export default function Register() {
                   error={states.referralError}
                 />
               </div>
-            ) : (
-              <div className="mb-4 flex flex-col gap-1 p-2 w-fit">
-                <Input
-                  title="Have referral code"
-                  onChange={() => actions.setHasId(true)}
-                  type="checkbox"
-                />
-              </div>
             )}
+
+            <label className="relative inline-flex items-center cursor-pointer mb-4">
+              <input
+                onChange={() => actions.setHasId(!states.hasId)}
+                type="checkbox"
+                value=""
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-transparent dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                Have an refferal code
+              </span>
+            </label>
 
             {walletAddress && (
               <div className="mb-4 flex flex-col gap-1 p-2 rounded-md border w-fit">

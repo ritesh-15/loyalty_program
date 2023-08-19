@@ -11,6 +11,7 @@ interface CartState {
   incrementQuantity: (pid: number, sid: number) => void
   decrementQuantity: (pid: number, sid: number) => void
   total: number
+  numberOfTokens: number
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -32,18 +33,22 @@ export const useCartStore = create<CartState>((set, get) => ({
           }
           return cartItem
         })
-        return { cartItems: updatedCartItems, total }
+        let numberOfTokens = (total * 0.5) / 100
+        if (numberOfTokens > 100) numberOfTokens = 100
+        return { cartItems: updatedCartItems, total, numberOfTokens }
       } else {
         const total = item.price * item.quantity + state.total
+        let numberOfTokens = (total * 0.5) / 100
+        if (numberOfTokens > 100) numberOfTokens = 100
         return {
           cartItems: [...state.cartItems, { ...item, quantity: 1 }],
           total,
+          numberOfTokens,
         }
       }
     }),
   clearCart: () => {
-    set({ cartItems: [], total: 0 })
-    console.log("cart cleared ")
+    set({ cartItems: [], total: 0, numberOfTokens: 0 })
   },
   removeFromCart: (productId) =>
     set((state) => {
@@ -52,11 +57,15 @@ export const useCartStore = create<CartState>((set, get) => ({
       )
       let total = state.total
       if (product) total = state.total - product?.quantity * product?.price
+
+      let numberOfTokens = (total * 0.5) / 100
+      if (numberOfTokens > 100) numberOfTokens = 100
       return {
         cartItems: state.cartItems.filter(
           (item) => item.productId !== productId
         ),
         total,
+        numberOfTokens,
       }
     }),
   getCart: () => {},
@@ -70,9 +79,13 @@ export const useCartStore = create<CartState>((set, get) => ({
           total += item.price
         }
       })
+
+      let numberOfTokens = (total * 0.5) / 100
+      if (numberOfTokens > 100) numberOfTokens = 100
       return {
         cartItems: items,
         total,
+        numberOfTokens,
       }
     })
   },
@@ -90,11 +103,16 @@ export const useCartStore = create<CartState>((set, get) => ({
           total -= item.price
         }
       })
+
+      let numberOfTokens = (total * 0.5) / 100
+      if (numberOfTokens > 100) numberOfTokens = 100
       return {
         cartItems: items,
         total,
+        numberOfTokens,
       }
     })
   },
   total: 0,
+  numberOfTokens: 0,
 }))
