@@ -5,7 +5,6 @@ import toast from "react-hot-toast"
 import useLoyaltyContract from "../hooks/useLoyaltyContract"
 import Button from "./button/Button"
 import Input from "./input/Input"
-import { FormEvent, useState } from "react"
 
 interface IProps {
   onClose: () => void
