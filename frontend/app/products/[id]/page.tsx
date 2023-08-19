@@ -15,14 +15,7 @@ import { ICartItem } from "@/app/interfaces/ICartItem"
 import { useCartStore } from "@/app/store/CartStore"
 import Button from "@/app/components/button/Button"
 
-interface SingleProductProps {
-  params: {
-    sellerId: number
-    productId: number
-  }
-}
-
-export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
+export default function SingleProduct() {
   const { data } = useSession()
   const user = data?.user as IUserSession
 
@@ -185,5 +178,3 @@ export const SingleProduct: React.FC<SingleProductProps> = ({ params }) => {
     </>
   )
 }
-
-export default SingleProduct
