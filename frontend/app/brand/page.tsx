@@ -79,7 +79,7 @@ export default function brand() {
     )
 
   return (
-    <section className="mt-12 mx-4">
+    <section className="mx-4">
       <div className="">
         <h1 className="text-2xl font-bold">Loyalty Program</h1>
         <p className="">Manage the activity of the loyalty program</p>

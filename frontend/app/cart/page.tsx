@@ -248,8 +248,8 @@ const Cart = () => {
           <h1 className="text-xl font-bold">Processing your order...</h1>
           <p className="mt-1 max-w-[75%] text-center">
             Congratulations you won{" "}
-            <span className="font-bold">{numberOfTokens} FC</span> reward coins.
-            Please confirm the meta mask transaction to awail rewards
+            <span className="font-bold">{wonedNumberOfTokens} FC</span> reward
+            coins. Please confirm the meta mask transaction to awail rewards
           </p>
           <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin mt-4"></div>
         </div>

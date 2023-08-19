@@ -48,11 +48,9 @@ export default async function AdminLayout({
   ]
 
   return (
-    <section className="flex h-screen overflow-y-hidden">
+    <section className="flex overflow-y-hidden min-h-screen">
       <AdminSidebar routes={routes} />
-      <div className="w-full min-h-screen overflow-y-auto mb-8 pt-16">
-        {children}
-      </div>
+      <div className="w-full">{children}</div>
     </section>
   )
 }
