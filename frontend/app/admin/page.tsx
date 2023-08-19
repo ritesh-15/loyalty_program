@@ -28,7 +28,7 @@ interface ISettlement {
   hash: string
 }
 
-export default function page() {
+export default function Admin() {
   const { walletAddress } = useWallet()
   const {
     getAccountBalance,

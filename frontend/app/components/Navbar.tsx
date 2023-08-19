@@ -1,42 +1,50 @@
-"use client"
-import React, { useState } from "react"
-import { FiShoppingCart } from "react-icons/fi"
-import { FaUserAlt } from "react-icons/fa"
-import { signOut, useSession } from "next-auth/react"
-import { IUserSession } from "../interfaces/IUser"
-import Link from "next/link"
-import { toast } from "react-hot-toast"
-import { useRouter } from "next/navigation"
-import { GoSearch } from "react-icons/go"
-import { CiShoppingCart, CiUser } from "react-icons/ci"
-import Button from "./button/Button"
-import { useCartStore } from "../store/CartStore"
+"use client";
+import React, { useState } from "react";
+import { FiShoppingCart } from "react-icons/fi";
+import { FaUserAlt } from "react-icons/fa";
+import { signOut, useSession } from "next-auth/react";
+import { IUserSession } from "../interfaces/IUser";
+import Link from "next/link";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { GoSearch } from "react-icons/go";
+import { CiShoppingCart, CiUser } from "react-icons/ci";
+import Button from "./button/Button";
+import { useCartStore } from "../store/CartStore";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const Navbar = () => {
-  const { data } = useSession()
-  const user = data?.user as IUserSession
+  const { data } = useSession();
+  const user = data?.user as IUserSession;
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false)
-  const { cartItems } = useCartStore()
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const { cartItems } = useCartStore();
 
   const toggleProfileDropdown = () => {
-    setShowProfileDropdown(!showProfileDropdown)
-  }
+    setShowProfileDropdown(!showProfileDropdown);
+  };
 
   const logout = async () => {
     try {
-      await signOut()
-      toast.success("Logged out successfully!")
-      router.push("/")
+      await signOut();
+      toast.success("Logged out successfully!");
+      router.push("/");
     } catch (e) {
-      toast.error("Something went wrong while logging you out!")
+      toast.error("Something went wrong while logging you out!");
     }
-  }
+  };
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-20 shadow-md bg-white">
+    <nav
+      className={`${poppins.className} fixed left-0 right-0 top-0 z-20 shadow-md bg-white`}
+    >
       <div className="flex items-center justify-between m-4 max-w-[1300px] mx-auto w-[95%]">
         <div>
           <Link href={"/"}>
@@ -111,7 +119,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

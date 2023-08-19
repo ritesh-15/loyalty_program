@@ -18,7 +18,7 @@ interface ILoyaltyTokenHistory {
   hash: string
 }
 
-export default function brand() {
+export default function Brand() {
   const { getAccountBalance, totalSupply, getLoyalUserTokenHistory } =
     useLoyaltyContract()
   const [loading, setLoding] = useState(true)
