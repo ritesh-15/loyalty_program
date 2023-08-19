@@ -18,7 +18,7 @@ export default function Referrals() {
 
   const { giveRewardOnReferral } = useLoyaltyContract()
 
-  const { mutateAsync: reward, isLoading } = useMutation(
+  const { mutateAsync: reward, isLoading: giveRewardLoading } = useMutation(
     (userAddress: string) => giveRewardOnReferral(userAddress)
   )
 
@@ -37,7 +37,7 @@ export default function Referrals() {
     { encodeValuesOnly: true }
   )
 
-  const { data: referrals } = useQuery(
+  const { data: referrals, isLoading } = useQuery(
     ["admin-referrals"],
     () => ReferralService.getRefferals<IAdminReferrals>(user.token, query),
     {
@@ -53,6 +53,13 @@ export default function Referrals() {
       toast.error("Someting went wrong please try again!")
     }
   }
+
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <>
@@ -116,7 +123,7 @@ export default function Referrals() {
         </div>
       </section>
 
-      <Modal open={isLoading}>
+      <Modal open={giveRewardLoading}>
         <div className="flex items-center justify-center h-full">
           <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
         </div>

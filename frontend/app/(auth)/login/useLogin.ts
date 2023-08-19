@@ -1,4 +1,5 @@
 import { IUserSession } from "@/app/interfaces/IUser"
+import { AxiosError } from "axios"
 import { useFormik } from "formik"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -70,7 +71,11 @@ export default function useLogin() {
         // base on user role navigate to particular page
         redirectToPage()
       } catch (error: any) {
-        toast.error(error.message)
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.error.message)
+        } else {
+          toast.error("Someting went wrong please try again!")
+        }
       } finally {
         setIsLoading(false)
       }

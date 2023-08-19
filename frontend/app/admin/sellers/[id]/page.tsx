@@ -112,10 +112,6 @@ export default function SellerDetails({ params }: IProps) {
       <div className="border-t mt-6 pt-6">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Loyalty Program</h1>
-
-          <Link href="/admin/transfer">
-            <Button className="w-fit">Transfer tokens</Button>
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 mt-8 gap-6">
@@ -130,45 +126,6 @@ export default function SellerDetails({ params }: IProps) {
             <p className="mt-4">{stats.supply}</p>
             <span className="font-semibold">Total Supply</span>
           </div>
-        </div>
-      </div>
-
-      <div className="border-t mt-6 pt-6">
-        <h1 className="text-xl font-bold mb-8">Latest Transactions</h1>
-
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-white">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Transaction ID
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Number of tokens
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Received / Deducted
-                </th>
-                <th scope="col" className="px-6 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  7864454fdf
-                </th>
-                <td className="px-6 py-4">4100</td>
-                <td className="px-6 py-4">
-                  <span className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                    Recevied
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
 

@@ -1,23 +1,17 @@
 "use client"
 
-import { ISelectSeller } from "@/app/admin/transfer/ISelectSeller"
 import Button from "@/app/components/button/Button"
-import { api } from "@/app/config/axios"
-import { IBrandProducts } from "@/app/interfaces/IBrandProducts"
-import { ISellerProduct } from "@/app/interfaces/ISellerProduct"
-import { ISellerWithProducts } from "@/app/interfaces/ISellerWithProducts"
+import { ISellerProducts } from "@/app/interfaces/ISellerProduct"
 import { IUserSession } from "@/app/interfaces/IUser"
 import ProductService from "@/app/services/product.service"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import qs from "qs"
-import { use } from "react"
 import { useQuery } from "react-query"
 
 export default function Products() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
-
 
   const query = qs.stringify(
     {
@@ -26,32 +20,36 @@ export default function Products() {
         user: {
           fields: ["username"],
         },
-        
       },
       filters: {
         $and: [
-            {
-                sellers:{
-                    id:{
-                        $in:user?.data?.seller?.id
-                    }
-                }
-            }
+          {
+            sellers: {
+              id: {
+                $in: user?.data?.seller?.id,
+              },
+            },
+          },
         ],
       },
     },
     { encodeValuesOnly: true }
   )
 
-  const { data: products } = useQuery(
+  const { data: products, isLoading } = useQuery(
     ["products", user?.data.seller?.id],
-    () => ProductService.getProducts<ISellerProduct>(user.token, query),
+    () => ProductService.getProducts<ISellerProducts>(user.token, query),
     {
       enabled: user !== undefined ? true : false,
     }
   )
 
-  console.log(products)
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <section className="mt-12 mx-4">
@@ -83,8 +81,11 @@ export default function Products() {
               </tr>
             </thead>
             <tbody>
-              {products?.data.map((product,index) => (
-                <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              {products?.data.map((product, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"

@@ -46,7 +46,7 @@ export default async function SellerLayout({
   ]
 
   return (
-    <section className="flex h-screen overflow-y-hidden bg-gray-50">
+    <section className="flex h-screen overflow-y-hidden">
       <AdminSidebar routes={routes} />
       <div className="w-full min-h-screen overflow-y-auto mb-8">{children}</div>
     </section>

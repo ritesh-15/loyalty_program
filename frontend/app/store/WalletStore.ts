@@ -97,23 +97,23 @@ export const useWallet = create<IWallet>((set, get) => ({
   getLoyaltyProgramContractSigned: async () => {
     const provider = new ethers.BrowserProvider(eth)
     const signer = await provider.getSigner()
-    return new ethers.Contract(
-      LOYALTY_PROGRAM_ADDRESS,
-      LoyaltyProgramABI,
-      signer
-    ) as unknown as any
-    // return LoyaltyProgram__factory.connect(LOYALTY_PROGRAM_ADDRESS, signer)
+    // return new ethers.Contract(
+    //   LOYALTY_PROGRAM_ADDRESS,
+    //   LoyaltyProgramABI,
+    //   signer
+    // ) as unknown as any
+    return LoyaltyProgram__factory.connect(LOYALTY_PROGRAM_ADDRESS, signer)
   },
   getTokenContractSigned: async () => {
     const provider = new ethers.BrowserProvider(eth)
     const signer = await provider.getSigner()
 
-    return new ethers.Contract(
-      TOKEN_CONTRACT_ADDRESS,
-      TokenABI,
-      signer
-    ) as unknown as any
+    // return new ethers.Contract(
+    //   TOKEN_CONTRACT_ADDRESS,
+    //   TokenABI,
+    //   signer
+    // ) as unknown as any
 
-    // return Token__factory.connect(TOKEN_CONTRACT_ADDRESS, signer)
+    return Token__factory.connect(TOKEN_CONTRACT_ADDRESS, signer)
   },
 }))

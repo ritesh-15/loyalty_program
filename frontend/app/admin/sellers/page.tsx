@@ -124,7 +124,7 @@ export default function Sellers() {
                         }
                         className="w-fit"
                       >
-                        Add Issuer
+                        Transfer Tokens
                       </Button>
                     </td>
                   </tr>
