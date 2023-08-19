@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import Image from "next/image"
 import Navbar from "../components/Navbar"
 import qs from "qs"
+import { useSession } from "next-auth/react"
 import { useQuery } from "react-query"
 import Link from "next/link"
 import SellerService from "../services/sellers.service"
@@ -22,7 +23,6 @@ const ProductsPage = () => {
   const { data } = useSession()
   const user = data?.user as IUserSession
 
-  const [products, setProducts] = useState<IProductWithSeller[]>([])
 
   const query = qs.stringify({
     fields: ["name", "location", "user"],
