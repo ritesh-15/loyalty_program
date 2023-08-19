@@ -12,12 +12,14 @@ interface IProps {
 }
 
 export default function LoyalUserToken({ onClose, walletAddress }: IProps) {
-  const {issueTokenToLoaylUser} = useLoyaltyContract()
+  const {issueTokenToLoaylUser, approveTokens} = useLoyaltyContract()
   const [amount,setAmount] = useState("")
 
   const send = async (e:FormEvent) => {
     e.preventDefault()
     try {
+     const tx =  await approveTokens(+amount)
+     await tx.wait()
       await issueTokenToLoaylUser(amount,walletAddress)
       toast.success("Issued token to user succesfully!")
       onClose()
