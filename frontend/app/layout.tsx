@@ -22,10 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Suspense fallback={<Loading/>}>
           <Navbar />
-          {children}
-          </Suspense>
+          <main className="max-w-[1300px] mx-auto w-[95%] mt-[100px]">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

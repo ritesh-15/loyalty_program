@@ -2,8 +2,6 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import Navbar from "../components/Navbar"
-import { useSession } from "next-auth/react"
-import { IUserSession } from "../interfaces/IUser"
 import qs from "qs"
 import { useQuery } from "react-query"
 import Link from "next/link"
@@ -20,11 +18,6 @@ interface IProductWithSeller {
 }
 
 const ProductsPage = () => {
-  const { data } = useSession()
-  const user = data?.user as IUserSession
-
-  const [products, setProducts] = useState<IProductWithSeller[]>([])
-
   const query = qs.stringify({
     fields: ["name", "location", "user"],
     populate: {
@@ -42,14 +35,17 @@ const ProductsPage = () => {
     },
   })
 
-  useQuery(
-    ["products-sellers"],
-    () => SellerService.getSellers<ISellerWithProducts>(user.token, query),
+  const { data: products, isLoading } = useQuery(
+    ["all-products"],
+    () => SellerService.fetchProducts<ISellerWithProducts>(query),
     {
-      onSuccess: ({ data }) => {
+      refetchOnWindowFocus: false,
+      select: ({ data }) => {
+        let temp: any[] = []
+
         data.map((seller) => {
-          setProducts((prev) => [
-            ...prev,
+          temp = [
+            ...temp,
             ...seller.attributes.products.data.map((product) => {
               return {
                 product,
@@ -60,77 +56,65 @@ const ProductsPage = () => {
                 },
               }
             }),
-          ])
+          ]
         })
+
+        return temp
       },
-      enabled: user ? true : false,
-      // staleTime: Infinity,
     }
   )
 
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center mt-16">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
+
   return (
     <section>
-      <Navbar />
-      <div className="p-28">
-        <h1 className={`text-4xl`}>Show all products</h1>
+      <h1 className={`text-3xl mt-32`}>Explore all products</h1>
 
-        <div className="bg-white">
-          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-            <h2 className="text-4xl">Products</h2>
-
-            <div className="m-4 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-              {products?.map((product, index) => {
-                return (
-                  <div className="m-4" key={index}>
-                    <Link
-                      href={`/products/[id]?sellerId=${product.seller.id}&productId=${product.product.id}`}
-                    >
-                      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                        <div className="flex justify-center items-center h-48">
-                          {product.product.attributes.images && (
-                            <Image
-                              src={product.product.attributes.images[0]}
-                              height={200}
-                              width={200}
-                              alt=""
-                            />
-                          )}
+      <>
+        <>
+          <div className="m-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {products?.map((product: any, index: any) => {
+              return (
+                <div className="hover:shadow-lg rounded-md p-4" key={index}>
+                  <Link
+                    href={`/products/${product.product.id}?sellerId=${product.seller.id}&productId=${product.product.id}`}
+                  >
+                    <div className="flex justify-center items-center">
+                      {product.product.attributes.images && (
+                        <div className="relative w-full h-[300px] rounded-md overflow-hidden">
+                          <Image
+                            src={product.product.attributes.images[0]}
+                            fill
+                            alt=""
+                            className="object-contain"
+                          />
                         </div>
-                      </div>
-                      <div>
-                        <h3 className="mt-4 text-sm text-gray-700">
-                          {product.product.attributes.name}
-                        </h3>
-                        <p className="mt-1 text-lg font-medium text-gray-900">
-                          ₹{product.product.attributes.price}
-                        </p>
-                      </div>
-                      <div className="flex flex-row justify-between">
-                        <p>{product.seller.name}</p>
-                        <p>{product.seller.location}</p>
-                      </div>
-                      <div>
-                        {
-                          product.product.attributes.brandId.data.attributes
-                            .name
-                        }
-                        {product.product.attributes.categories.data.map(
-                          (category, id) => {
-                            return (
-                              <div key={id}>{category.attributes.name}</div>
-                            )
-                          }
-                        )}
-                      </div>
-                      {product.product.id} -- {product.seller.id}
-                    </Link>
-                  </div>
-                )
-              })}
-            </div>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="mt-4 text-gray-700 text-xl font-bold text-ellipsis line-clamp-2">
+                        {product.product.attributes.name}
+                      </h3>
+                      <p className="mt-1 text-lg font-medium text-gray-900">
+                        ₹{product.product.attributes.price}
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between font-light text-sm">
+                      <p>{product.seller.name}</p>
+                      <p>{product.seller.location}</p>
+                    </div>
+                  </Link>
+                </div>
+              )
+            })}
           </div>
-        </div>
-      </div>
+        </>
+      </>
     </section>
   )
 }

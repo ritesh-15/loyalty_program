@@ -11,6 +11,12 @@ class ProductService {
     return res.data
   }
 
+  static async fetchProduct<T>(query?: string) {
+    const res = await api.get<T>(`/products?${query}`)
+
+    return res.data
+  }
+
   static async getProductById<T>(id: string, token: string, query?: string) {
     const res = await api.get<T>(`/products/${id}?${query}`, {
       headers: {

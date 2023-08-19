@@ -1,8 +1,8 @@
 import { ethers } from "hardhat"
 
 async function main() {
-  const INTIAL_TOKNE_SUPPLY = 70000000000000
-  const INITIAL_TOKEN_SUPPLY_TO_ISSUER = 200
+  const INTIAL_TOKNE_SUPPLY = 5000000000000
+  const INITIAL_TOKEN_SUPPLY_TO_ISSUER = 400
 
   const TokenContract = await ethers.getContractFactory("Token")
   const tokenContract = await TokenContract.deploy(
