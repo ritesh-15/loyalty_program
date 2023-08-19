@@ -4,9 +4,9 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md"
 import Link from "next/link"
 
 const beautyProducts = [
-  { tag: "Eye Makeup", image: "/assets/bt1.jpg" },
-  { tag: "Face Makeup", image: "/assets/bt2.jpg" },
-  { tag: "Hair Care", image: "/assets/bt3.jpg" },
+  { tag: "Eye Makeup", image: "/assets/bt5.jpg" },
+  { tag: "Face Makeup", image: "/assets/bt3.jpg" },
+  { tag: "Hair Care", image: "/assets/bt4.jpg" },
 ]
 
 const clothProducts = [
