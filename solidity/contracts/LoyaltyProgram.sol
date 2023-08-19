@@ -91,6 +91,16 @@ contract LoyaltyProgram is Ownable {
         _actionToTokenRatio["REFERAL"] = 10 * 10 ** 18;
     }
 
+    // get refferal reward rate
+    function getRefferalRewardRate() external view returns (uint256) {
+        return _actionToTokenRatio["REFERAL"];
+    }
+
+    // updaate referral reward rate
+    function updateReferralRewardRate(uint256 reward) external onlyOwner {
+        _actionToTokenRatio["REFERAL"] = reward;
+    }
+
     // update settlement rate
     function updateSettlementRate(uint256 _newRate) external onlyOwner {
         settlementRate = _newRate;
@@ -161,6 +171,9 @@ contract LoyaltyProgram is Ownable {
         );
 
         require(_numberOfTokens > 0, "Number of tokens must be greater than 0");
+
+        // setting the limit of transfering the tokens to be 100 even if order amount is large
+        if (_numberOfTokens > 100 ether) _numberOfTokens = 100;
 
         // reward user for purchse
         require(
@@ -235,7 +248,7 @@ contract LoyaltyProgram is Ownable {
         _lastTokenUsedByUser[msg.sender] = block.timestamp;
 
         // initial the settlement between the brand and platform (i.e transfer some tokens from brand to platform)
-        settlement(settlementTokens, msg.sender);
+        settlement(settlementTokens, msg.sender, _transferTo);
 
         emit TokensTransferred(
             msg.sender,
@@ -274,13 +287,17 @@ contract LoyaltyProgram is Ownable {
         return 0;
     }
 
-    function settlement(uint256 _tokens, address _trasferFrom) internal {
+    function settlement(
+        uint256 _tokens,
+        address _trasferFrom,
+        address brandAddress
+    ) internal {
         // calculate settelment tokens
         require(
             token.transferFrom(_trasferFrom, _admin, _tokens),
             "Tokens not trasfered to the admin account!"
         );
 
-        emit SettlementRecord(_trasferFrom, _tokens, block.timestamp);
+        emit SettlementRecord(brandAddress, _tokens, block.timestamp);
     }
 }

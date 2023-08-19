@@ -38,9 +38,7 @@ export default function AdminSidebar({ routes }: IProps) {
   }
 
   return (
-    <div className="h-full mt-8 max-w-[300px] bg-white shadow-lg fixed top-0 bottom-0 left-0 md:relative border-r w-full p-4">
-      <h1 className="font-bold  text-xl">Metamarket</h1>
-
+    <div className="h-full mt-8 max-w-[300px] bg-white shadow-lg fixed top-0 bottom-0 left-0 md:relative border-r w-full p-2">
       <ul className="mt-8 flex flex-col gap-3">
         {routes.map((route, key) => (
           <Link href={route.redirectURL} key={key}>

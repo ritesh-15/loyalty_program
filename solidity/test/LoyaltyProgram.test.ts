@@ -165,10 +165,7 @@ describe("LoyaltyProgram", async () => {
       const orderAmount = 3000
       const tokens = ethers.parseEther(`${(orderAmount * 0.25) / 100}`)
 
-      // await tokenContract.approve(loyaltyContractAddress, tokens)
-
-      const a = await tokenContract.allowance(admin, loyaltyContractAddress)
-      console.log(ethers.formatEther(a))
+      await tokenContract.connect(bob).approve(loyaltyContractAddress, tokens)
 
       await expect(
         loyaltyProgram
@@ -253,6 +250,40 @@ describe("LoyaltyProgram", async () => {
     it("should able to get the reward at user account", async () => {
       const balance = await loyaltyProgram.accountBalance(tom)
       expect(balance).to.be.equal(ethers.parseEther("10"))
+    })
+
+    it("should able to get the amount of referral reward", async () => {
+      const reward = await loyaltyProgram.getRefferalRewardRate()
+      expect(
+        reward,
+        "Reward amount not matched with inital reward rate"
+      ).to.equal(ethers.parseEther("10"))
+    })
+
+    it("should not  able to set the reward reate if not admin", async () => {
+      await expect(
+        loyaltyProgram
+          .connect(brand)
+          .updateReferralRewardRate(ethers.parseEther("25")),
+        "Reward amount not matched with inital reward rate"
+      ).to.be.revertedWith("Ownable: caller is not the owner")
+    })
+
+    it("should able to set the reward reate if admin", async () => {
+      expect(
+        loyaltyProgram
+          .connect(admin)
+          .updateReferralRewardRate(ethers.parseEther("25")),
+        "Reward amount not matched with inital reward rate"
+      )
+    })
+
+    it("should able to get the latest amount of referral reward", async () => {
+      const reward = await loyaltyProgram.getRefferalRewardRate()
+      expect(
+        reward,
+        "Reward amount not matched with inital reward rate"
+      ).to.equal(ethers.parseEther("25"))
     })
   })
 })
