@@ -1,7 +1,5 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { Poppins } from "next/font/google"
-import Navbar from "../components/Navbar"
 import { RxTokens } from "react-icons/rx"
 import { useSession } from "next-auth/react"
 import { IUserSession } from "../interfaces/IUser"
@@ -18,9 +16,9 @@ import OrderService from "../services/order.service"
 import { useRouter } from "next/navigation"
 import Button from "../components/button/Button"
 import Link from "next/link"
-import { PiHandCoinsThin } from "react-icons/pi"
 import AdminCard from "../components/admin/AdminCard"
 import { FaCoins } from "react-icons/fa"
+import { GrFormView } from "react-icons/gr"
 
 const Rewards = () => {
   const { data } = useSession()
@@ -159,7 +157,7 @@ const Rewards = () => {
     }
   }
 
-  if (loading || isLoading)
+  if (isLoading)
     return (
       <div className="flex items-center justify-center mt-16">
         <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
@@ -188,15 +186,29 @@ const Rewards = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2">
-            <AdminCard
-              title="Wallet Balance"
-              icon={<FaCoins />}
-              value={`${stats.balance} FC`}
-            />
+          <div className="flex flex-col">
+            {loading ? (
+              <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+            ) : (
+              <div className="w-full max-w-[450px]">
+                <AdminCard
+                  title="Wallet Balance"
+                  icon={<FaCoins />}
+                  value={`${stats.balance} FC`}
+                />
+              </div>
+            )}
+
+            <Link
+              href="/rewards/rules"
+              className="mt-4 items-center flex gap-1"
+            >
+              <GrFormView className="text-xl" />
+              <small> View rules and guidelines</small>
+            </Link>
           </div>
 
-          <div className="mt-16">
+          <div className="mt-16 mb-12">
             <h1 className="text-3xl text-left left-10">
               Exciting Rewards Only for you!
             </h1>
@@ -205,11 +217,16 @@ const Rewards = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {rewards?.data.map((reward, index) => {
               return (
-                <div className="hover:shadow-lg rounded-md p-4" key={index}>
-                  <Link
-                    href={`/products/${reward.attributes.product.data.id}?sellerId=${reward.attributes.seller.data.id}&productId=${reward.attributes.product.data.id}`}
-                  >
-                    <div className="flex justify-center items-center">
+                <div
+                  className="hover:shadow-lg rounded-md p-4 relative"
+                  key={index}
+                >
+                  <div className="absolute p-4 w-[45px] h-[45px] flex items-center justify-center rounded-full bg-primary text-sm text-white z-20 left-0 top-0 text-center">
+                    {reward.attributes.points} FC
+                  </div>
+
+                  <div className="flex flex-col justify-between h-full">
+                    <div className="flex items-center flex-col">
                       <div className="relative w-full h-[300px] rounded-md overflow-hidden">
                         <Image
                           src={
@@ -221,15 +238,42 @@ const Rewards = () => {
                         />
                       </div>
                     </div>
+
                     <div>
                       <h3 className="mt-4 text-gray-700 text-lg font-bold text-ellipsis line-clamp-2">
                         {reward.attributes.product.data.attributes.name}
                       </h3>
-                      <p className="mt-1 text-lg font-medium text-gray-900">
-                        ₹{reward.attributes.product.data.attributes.price}
-                      </p>
+                      <div className="flex gap-2 items-center">
+                        <p className="text-lg font-medium text-gray-900">
+                          ₹
+                          {calculateDiscount(
+                            reward.attributes.product.data.attributes.price,
+                            reward.attributes.discount
+                          )}
+                        </p>
+                        <small className="line-through">
+                          ₹{reward.attributes.product.data.attributes.price}
+                        </small>
+                        <small className="text-green-500">
+                          {reward.attributes.discount}%
+                        </small>
+                      </div>
                     </div>
-                  </Link>
+
+                    <div className="flex mt-4 gap-4 items-center">
+                      <Link
+                        href={`/products/${reward.attributes.product.data.id}?sellerId=${reward.attributes.seller.data.id}&productId=${reward.attributes.product.data.id}`}
+                        className="block w-full"
+                      >
+                        <Button className="bg-transparent text-primary border border-primary">
+                          View
+                        </Button>
+                      </Link>
+                      <Button onClick={() => handleOrder(reward)} className="">
+                        Claim Now
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               )
             })}

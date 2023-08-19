@@ -28,7 +28,7 @@ interface ISettlement {
   hash: string
 }
 
-export default function page() {
+export default function Admin() {
   const { walletAddress } = useWallet()
   const {
     getAccountBalance,
@@ -41,6 +41,7 @@ export default function page() {
     updateSettlementRate,
     getSettlementRate,
     getRefferalRewardAmount,
+    updateRefferalReward,
   } = useLoyaltyContract()
 
   const [loading, setLoading] = useState(true)
@@ -71,6 +72,7 @@ export default function page() {
           decayPeriod,
           settlementRate,
           referralRewardRate,
+          logs,
         ] = await Promise.all([
           getAccountBalance(walletAddress),
           totalSupply(),
@@ -80,9 +82,8 @@ export default function page() {
           getDecayPeriod(),
           getSettlementRate(),
           getRefferalRewardAmount(),
+          issuerTransactions(),
         ])
-
-        const logs = await issuerTransactions()
 
         setIssuers(
           logs.map(({ args }) => {
@@ -190,6 +191,10 @@ export default function page() {
           title="Refferal reward rate"
           value={stats.referralRewardRate}
           icon={<GoCrossReference />}
+          isEditable
+          modalTitle="Update referral reward rate"
+          modalDescription="Enter the new referral reward rate to be used for transfer tokens for referrals"
+          updateFunction={updateRefferalReward}
         />
       </div>
 

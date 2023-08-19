@@ -138,7 +138,7 @@ export default function Brands() {
                         }
                         className="w-fit"
                       >
-                        Add Issuer
+                        Transfer Tokens
                       </Button>
                     </td>
                   </tr>

@@ -67,7 +67,7 @@ export default function RewardHistory() {
   )
 
   return (
-    <section className="pt-28 w-[95%] mx-auto">
+    <section className="">
       <div className="flex items-center justify-between">
         <div className="">
           <h1 className="text-2xl font-bold">Rewards History</h1>

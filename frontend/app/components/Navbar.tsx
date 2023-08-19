@@ -86,7 +86,7 @@ const Navbar = () => {
                       </li>
 
                       <li className="px-4 py-2 cursor-pointer hover:bg-gray-100">
-                        <Link href={"/referral"}>Refer a friend</Link>
+                        <Link href={"/referral"}>Refer and earn 🪙</Link>
                       </li>
 
                       <li

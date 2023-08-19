@@ -78,7 +78,7 @@ export default function useLoyaltyContract() {
     return contract.queryFilter(contract.filters["GetTokenOnOrder"]())
   }
 
-  const getSettlementsTransactions = () => {
+  const getSettlementsTransactions = async () => {
     const contract = getLoyaltyProgramContract()
     return contract.queryFilter(contract.filters["SettlementRecord"]())
   }
@@ -123,6 +123,16 @@ export default function useLoyaltyContract() {
     return contract.getRefferalRewardRate()
   }
 
+  const updateRefferalReward = async (amount: string) => {
+    const contract = await getLoyaltyProgramContractSigned()
+    return contract.updateReferralRewardRate(ethers.parseEther(amount))
+  }
+
+  const getTokenTransferedTransactions = async () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["TokensTransferred"]())
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -145,5 +155,7 @@ export default function useLoyaltyContract() {
     getLoyalUserTokenHistory,
     giveRewardOnReferral,
     getRefferalRewardAmount,
+    getTokenTransferedTransactions,
+    updateRefferalReward,
   }
 }

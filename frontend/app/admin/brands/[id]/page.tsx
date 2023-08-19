@@ -6,6 +6,7 @@ import { IBrandDetails } from "@/app/interfaces/IBrandDetails"
 import { IUserSession } from "@/app/interfaces/IUser"
 import BrandService from "@/app/services/brand.service"
 import { useWallet } from "@/app/store/WalletStore"
+import { formatWalletAddress } from "@/app/utils/formatWalletAddress"
 import { ethers } from "ethers"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -23,12 +24,23 @@ interface IProps {
   }
 }
 
+interface IIssuerTransaction {
+  user: string
+  brandAddress: string
+  tokens: string
+  timestamp: string
+  hash: string
+}
+
 export default function BrandDetails({ params }: IProps) {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
   const { walletAddress } = useWallet()
-  const { getAccountBalance, totalSupply } = useLoyaltyContract()
+  const { getAccountBalance, totalSupply, getTokenTransferedTransactions } =
+    useLoyaltyContract()
+
+  const [transactions, setTransactions] = useState<IIssuerTransaction[]>([])
   const [loading, setLoading] = useState(true)
 
   const [stats, setStats] = useState({
@@ -61,17 +73,35 @@ export default function BrandDetails({ params }: IProps) {
     if (!walletAddress || !brand) return
     ;(async () => {
       try {
-        const [balance, supply] = await Promise.all([
+        const [balance, supply, transactions] = await Promise.all([
           getAccountBalance(
             brand.data.attributes.user.data.attributes.walletAddress
           ),
           totalSupply(),
+          getTokenTransferedTransactions(),
         ])
 
         setStats({
           accountBalance: ethers.formatEther(`${balance}`),
           supply: ethers.formatEther(supply.toString()),
         })
+
+        const brandTransactions = transactions.filter(
+          (tx) =>
+            tx.args[1].toLowerCase() === user.data.walletAddress.toLowerCase()
+        )
+
+        setTransactions(
+          brandTransactions.map(({ args, blockHash }) => {
+            return {
+              user: args[0],
+              brandAddress: args[1],
+              tokens: ethers.formatEther(args[2].toString()),
+              timestamp: args[3].toString(),
+              hash: blockHash,
+            }
+          })
+        )
       } catch (error: any) {
         toast.error("Something went wrong")
       } finally {
@@ -117,10 +147,6 @@ export default function BrandDetails({ params }: IProps) {
       <div className="border-t mt-6 pt-6">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Loyalty Program</h1>
-
-          <Link href="/admin/transfer">
-            <Button className="w-fit">Transfer tokens</Button>
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 mt-8 gap-6">
@@ -146,32 +172,43 @@ export default function BrandDetails({ params }: IProps) {
             <thead className="text-xs text-gray-700 uppercase bg-white">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Transaction ID
+                  Transaction Hash
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  User Address
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Number of tokens
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Received / Deducted
+                  Status
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  7864454fdf
-                </th>
-                <td className="px-6 py-4">4100</td>
-                <td className="px-6 py-4">
-                  <span className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
-                    Recevied
-                  </span>
-                </td>
-              </tr>
+              {transactions.map(
+                ({ brandAddress, hash, timestamp, tokens, user }) => (
+                  <tr
+                    key={hash}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {formatWalletAddress(hash)}
+                    </th>
+                    <td className="px-6 py-4">{formatWalletAddress(user)}</td>
+                    <td className="px-6 py-4">{tokens}</td>
+                    <td className="px-6 py-4">
+                      <span className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                        Recevied
+                      </span>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

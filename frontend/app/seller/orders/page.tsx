@@ -11,7 +11,7 @@ import Link from "next/link"
 import Button from "@/app/components/button/Button"
 import { ISellerOrders } from "@/app/interfaces/ISellerOrder"
 
-export default function page() {
+export default function Order() {
   const [walletAddress, setWalletAddress] = useState("")
   const { data: session } = useSession()
   const user = session?.user as IUserSession

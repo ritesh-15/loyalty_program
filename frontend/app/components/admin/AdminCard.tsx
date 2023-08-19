@@ -33,8 +33,8 @@ export default function AdminCard({
     setLoading(true)
     try {
       await updateFunction(updatedValue)
+      setOpen(false)
     } catch (e: any) {
-      console.log(e.message)
       toast.error("Something went wrong please try again!")
     } finally {
       setLoading(false)
@@ -65,7 +65,7 @@ export default function AdminCard({
             onChange={(e) => setUpdatedValue(e.target.value)}
           />
           <div className="flex items-center gap-1 mt-4 justify-end">
-            <Button className=" w-fit" onClick={onClick}>
+            <Button loading={loading} className=" w-fit" onClick={onClick}>
               Update
             </Button>
             <Button
