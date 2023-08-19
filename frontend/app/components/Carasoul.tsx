@@ -1,52 +1,44 @@
-"use client";
-import Image from "next/image";
-import { useState,useEffect } from "react";
-import Swipe from "react-easy-swipe";
-import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+"use client"
+import Image from "next/image"
+import { useState, useEffect } from "react"
+import Swipe from "react-easy-swipe"
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
 
 const images = [
+  "/assets/img4.jpg",
   "/assets/img1.jpg",
   "/assets/img2.jpg",
   "/assets/img3.jpg",
-  "/assets/img4.jpg",
   "/assets/img2.jpg",
-];
+]
 
 export default function Carousel() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0)
   const handleNextSlide = () => {
-    let newSlide = currentSlide === images.length - 1 ? 0 : currentSlide + 1;
-    setCurrentSlide(newSlide);
-  };
+    let newSlide = currentSlide === images.length - 1 ? 0 : currentSlide + 1
+    setCurrentSlide(newSlide)
+  }
 
   const handlePrevSlide = () => {
-    let newSlide = currentSlide === 0 ? images.length - 1 : currentSlide - 1;
-    setCurrentSlide(newSlide);
-  };
-
-  useEffect(() => {
-    setInterval(()=>{
-      // handleNextSlide()
-    },3000)
-    
-  }, [])
-  
+    const newSlide = (currentSlide + 1) % images.length
+    setCurrentSlide(newSlide)
+  }
 
   return (
-    <div className="p-28 pb-8">
+    <div className="pb-8 relative">
       <AiOutlineLeft
         onClick={handlePrevSlide}
-        className="absolute left-2 m-auto text-5xl  mt-40 cursor-pointer text-gray-400 z-20"
+        className="absolute w-[30px] h-[30px] left-2 z-10 bg-[rgba(0,0,0,0.2)] rounded-full p-1 m-auto text-3xl mt-40 cursor-pointer"
       />
       <AiOutlineRight
         onClick={handleNextSlide}
-        className="absolute right-2 m-auto text-5xl mt-40 cursor-pointer text-gray-400 z-20"
+        className="absolute w-[30px] h-[30px] right-2 z-10 bg-[rgba(0,0,0,0.2)] rounded-full p-1 m-auto text-3xl mt-40 cursor-pointer"
       />
       <div className="w-full h-[50vh] flex overflow-hidden relative m-auto">
         <Swipe
           onSwipeLeft={handleNextSlide}
           onSwipeRight={handlePrevSlide}
-          className="relative z-10 w-full h-full"
+          className="relative w-full h-full"
         >
           {images.map((image, index) => {
             if (index === currentSlide) {
@@ -62,7 +54,7 @@ export default function Carousel() {
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
-                    className="animate-fadeIn w-max"
+                    className="animate-fadeIn w-full rounded-md"
                     alt="image not present"
                   />
                   <div
@@ -72,15 +64,15 @@ export default function Carousel() {
                         : "h-4 w-4 bg-gray-300 rounded-full mx-2 mb-2 cursor-pointer"
                     }
                     onClick={() => {
-                      setCurrentSlide(index);
+                      setCurrentSlide(index)
                     }}
                   />
                 </div>
-              );
+              )
             }
           })}
         </Swipe>
       </div>
     </div>
-  );
+  )
 }

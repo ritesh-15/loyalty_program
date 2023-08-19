@@ -5,6 +5,7 @@ import { getCurrentUser } from "../utils/auth.utils"
 import { BsCoin } from "react-icons/bs"
 import { LiaSellsy } from "react-icons/lia"
 import { LuStore } from "react-icons/lu"
+import { PiUsersLight } from "react-icons/pi"
 
 export default async function AdminLayout({
   children,
@@ -37,10 +38,17 @@ export default async function AdminLayout({
       isHomePage: false,
       optionalURL: undefined,
     },
+    {
+      icon: <PiUsersLight />,
+      title: "Referrals",
+      redirectURL: "/admin/referrals",
+      isHomePage: false,
+      optionalURL: undefined,
+    },
   ]
 
   return (
-    <section className="flex h-screen overflow-y-hidden bg-gray-50">
+    <section className="flex h-screen overflow-y-hidden">
       <AdminSidebar routes={routes} />
       <div className="w-full min-h-screen overflow-y-auto mb-8 pt-16">
         {children}

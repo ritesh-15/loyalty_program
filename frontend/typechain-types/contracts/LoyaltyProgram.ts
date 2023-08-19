@@ -30,6 +30,7 @@ export interface LoyaltyProgramInterface extends Interface {
       | "addIssuer"
       | "buyProductOrClaimReward"
       | "decayPeriod"
+      | "getRefferalRewardRate"
       | "getTokensOnOrderPurchase"
       | "initialIssuerTokens"
       | "issueTokenToLoyalUser"
@@ -41,6 +42,7 @@ export interface LoyaltyProgramInterface extends Interface {
       | "settlementRate"
       | "transferOwnership"
       | "updateDecayPeriod"
+      | "updateReferralRewardRate"
       | "updateSettlementRate"
   ): FunctionFragment;
 
@@ -70,6 +72,10 @@ export interface LoyaltyProgramInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "decayPeriod",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRefferalRewardRate",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -114,6 +120,10 @@ export interface LoyaltyProgramInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateReferralRewardRate",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateSettlementRate",
     values: [BigNumberish]
   ): string;
@@ -129,6 +139,10 @@ export interface LoyaltyProgramInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "decayPeriod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRefferalRewardRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -170,6 +184,10 @@ export interface LoyaltyProgramInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "updateDecayPeriod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateReferralRewardRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -408,6 +426,8 @@ export interface LoyaltyProgram extends BaseContract {
 
   decayPeriod: TypedContractMethod<[], [bigint], "view">;
 
+  getRefferalRewardRate: TypedContractMethod<[], [bigint], "view">;
+
   getTokensOnOrderPurchase: TypedContractMethod<
     [_orderAmount: BigNumberish, _numberOfTokens: BigNumberish],
     [void],
@@ -454,6 +474,12 @@ export interface LoyaltyProgram extends BaseContract {
     "nonpayable"
   >;
 
+  updateReferralRewardRate: TypedContractMethod<
+    [reward: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   updateSettlementRate: TypedContractMethod<
     [_newRate: BigNumberish],
     [void],
@@ -479,6 +505,9 @@ export interface LoyaltyProgram extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "decayPeriod"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getRefferalRewardRate"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getTokensOnOrderPurchase"
@@ -521,6 +550,9 @@ export interface LoyaltyProgram extends BaseContract {
   getFunction(
     nameOrSignature: "updateDecayPeriod"
   ): TypedContractMethod<[_period: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateReferralRewardRate"
+  ): TypedContractMethod<[reward: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "updateSettlementRate"
   ): TypedContractMethod<[_newRate: BigNumberish], [void], "nonpayable">;

@@ -18,6 +18,9 @@ import OrderService from "../services/order.service"
 import { useRouter } from "next/navigation"
 import Button from "../components/button/Button"
 import Link from "next/link"
+import { PiHandCoinsThin } from "react-icons/pi"
+import AdminCard from "../components/admin/AdminCard"
+import { FaCoins } from "react-icons/fa"
 
 const Rewards = () => {
   const { data } = useSession()
@@ -69,7 +72,7 @@ const Rewards = () => {
     { encodeValuesOnly: true }
   )
 
-  const { data: rewards } = useQuery(
+  const { data: rewards, isLoading } = useQuery(
     ["rewards"],
     () => RewardService.getRewards<IRewards>(user.token, query),
     {
@@ -137,8 +140,6 @@ const Rewards = () => {
         },
       })
 
-      // TODO
-
       await createOrderItem({
         data: {
           orderId: order.data.id,
@@ -158,15 +159,21 @@ const Rewards = () => {
     }
   }
 
+  if (loading || isLoading)
+    return (
+      <div className="flex items-center justify-center mt-16">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
+
   return (
     <>
-      <section>
-        <Navbar />
-        <div className="p-28">
-          <div className="text-center flex items-center justify-between">
-            <div className="flex flex-row text-4xl">
+      <section className="mb-4">
+        <div className="">
+          <div className="text-center flex items-center justify-between mb-4">
+            <div className="flex flex-row text-2xl items-center gap-2 ">
               <RxTokens />
-              <p className="translate-x-4 font-serif ">Rewards</p>
+              <p className="">Rewards</p>
             </div>
 
             <div>
@@ -181,67 +188,48 @@ const Rewards = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 mt-16 mb-8 shadow-md">
-            <h2 className="text-lg font-semibold mb-2">Wallet Balance</h2>
-            {loading ? (
-              <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
-            ) : (
-              <div className="flex items-center">
-                <span className="text-2xl font-bold mr-2" id="wallet-balance">
-                  {stats.balance} FC
-                </span>
-              </div>
-            )}
+          <div className="grid grid-cols-2">
+            <AdminCard
+              title="Wallet Balance"
+              icon={<FaCoins />}
+              value={`${stats.balance} FC`}
+            />
           </div>
 
-          <div className="m-8">
+          <div className="mt-16">
             <h1 className="text-3xl text-left left-10">
               Exciting Rewards Only for you!
             </h1>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 m-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {rewards?.data.map((reward, index) => {
               return (
-                <div key={index}>
-                  <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                    {reward.attributes.product.data.attributes.images && (
-                      <div className="flex justify-center items-center h-48">
-                        <a href="#">
-                          <Image
-                            className="rounded-t-lg"
-                            src={
-                              reward.attributes.product.data.attributes
-                                .images[0]
-                            }
-                            alt=""
-                            height={100}
-                            width={100}
-                          />
-                        </a>
+                <div className="hover:shadow-lg rounded-md p-4" key={index}>
+                  <Link
+                    href={`/products/${reward.attributes.product.data.id}?sellerId=${reward.attributes.seller.data.id}&productId=${reward.attributes.product.data.id}`}
+                  >
+                    <div className="flex justify-center items-center">
+                      <div className="relative w-full h-[300px] rounded-md overflow-hidden">
+                        <Image
+                          src={
+                            reward.attributes.product.data.attributes.images[0]
+                          }
+                          fill
+                          alt=""
+                          className="object-contain"
+                        />
                       </div>
-                    )}
-                    <a href="#">
-                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        {reward.attributes.discount}% worth{" "}
-                        {reward.attributes.points}$ Tokens
-                      </h5>
-                      <h3 className="text-xl font-sans">
+                    </div>
+                    <div>
+                      <h3 className="mt-4 text-gray-700 text-lg font-bold text-ellipsis line-clamp-2">
                         {reward.attributes.product.data.attributes.name}
                       </h3>
-                    </a>
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                      {reward.attributes.product.data.attributes.description}
-                      <br />
-                    </p>
-                    <span>
-                      {calculateDiscount(
-                        reward.attributes.product.data.attributes.price,
-                        reward.attributes.discount
-                      )}
-                    </span>
-                    <Button onClick={() => handleOrder(reward)}>Buy now</Button>
-                  </div>
+                      <p className="mt-1 text-lg font-medium text-gray-900">
+                        ₹{reward.attributes.product.data.attributes.price}
+                      </p>
+                    </div>
+                  </Link>
                 </div>
               )
             })}
@@ -253,7 +241,7 @@ const Rewards = () => {
         <div className="flex items-center flex-col justify-center">
           <h1 className="text-xl font-bold">Processing your order...</h1>
           <p className="mt-1 max-w-[75%] text-center">
-            You got {modalState.discount} by making use of {modalState.tokens}{" "}
+            You got {modalState.discount}% by making use of {modalState.tokens}{" "}
             FC your tokens congratulations!
           </p>
           <div className="w-[55px] h-[55px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin mt-4"></div>

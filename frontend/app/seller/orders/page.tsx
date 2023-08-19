@@ -101,6 +101,10 @@ export default function SellerOrders() {
                       {order?.attributes?.numberOfTokens}
                     </td>
 
+                    <td className="px-6 py-4">
+                      {order?.attributes?.userId.data.attributes.username}
+                    </td>
+
                     <td className="flex items-center px-6 py-4 space-x-3">
                       <Button
                         onClick={() =>

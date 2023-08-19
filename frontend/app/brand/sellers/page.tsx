@@ -33,15 +33,19 @@ export default function page() {
   )
 
   const { data: sellers, isLoading } = useQuery(
-    ["brand-sellers", user?.data.brandId?.id],
+    ["brand-sellers"],
     () => SellerService.getSellers<ISellers>(user.token, query),
     {
-      enabled: user?.data.brandId !== undefined ? true : false,
-      cacheTime: 0,
+      enabled: user !== undefined ? true : false,
     }
   )
 
-  if (isLoading || !sellers) return <div>Loding...</div>
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <section className="mt-12 mx-4">
@@ -87,7 +91,7 @@ export default function page() {
                   </th>
                   <td className="px-6 py-4">{seller.attributes.location}</td>
                   <td className="px-6 py-4">
-                    {seller.attributes.user.data.attributes.username}
+                    {seller?.attributes?.user?.data.attributes.username}
                   </td>
                   <td className="flex items-center px-6 py-4 space-x-3">
                     <Link

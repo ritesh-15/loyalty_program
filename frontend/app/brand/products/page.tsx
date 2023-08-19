@@ -38,11 +38,15 @@ export default function Products() {
     () => ProductService.getProducts<IBrandProducts>(user.token, query),
     {
       enabled: user?.data.brandId !== undefined ? true : false,
-      cacheTime: 0,
     }
   )
 
-  if (isLoading) return <div>Loding...</div>
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-[75px] h-[75px] rounded-full border-2 border-transparent border-r-primary border-b-primary border-l-primary animate-spin"></div>
+      </div>
+    )
 
   return (
     <section className="mt-12 mx-4">
