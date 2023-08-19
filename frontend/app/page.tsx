@@ -1,21 +1,22 @@
-import Image from "next/image"
-import Navbar from "./components/Navbar"
-import CategoryCard from "./components/CategoryCard"
-import BrandCard from "./components/BrandCard"
-import Carasoul from "./components/Carasoul"
-import { useSession } from "next-auth/react"
-import ProductList from "./components/ProductList"
+import React, { Suspense } from "react";
+const Navbar = React.lazy(() => import("@/app/components/Navbar"));
+const Carasoul = React.lazy(() => import("@/app/components/Carasoul"));
+const BrandCard = React.lazy(() => import("@/app/components/BrandCard"));
+const CategoryCard = React.lazy(() => import("@/app/components/CategoryCard"));
+const ProductList = React.lazy(() => import("@/app/components/ProductList"));
 
 export default function Home() {
   return (
-    <div>
-      {/* Page 1 */}
-      <Navbar/> 
-      <Carasoul/>
-      <BrandCard/>
-      {/* Page 2 */}
-      <CategoryCard/>
-      <ProductList/>
-    </div>
-  )
+    <Suspense>
+      <div>
+        {/* Page 1 */}
+        <Navbar />
+        <Carasoul />
+        <BrandCard />
+        {/* Page 2 */}
+        <CategoryCard />
+        <ProductList />
+      </div>
+    </Suspense>
+  );
 }

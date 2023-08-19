@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Swipe from "react-easy-swipe";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
@@ -25,61 +25,67 @@ export default function Carousel() {
   };
 
   useEffect(() => {
-    setInterval(()=>{
+    setInterval(() => {
       // handleNextSlide()
-    },3000)
-    
-  }, [])
-  
+    }, 3000);
+  }, []);
 
   return (
-    <div className="p-28 pb-8 -z-0">
-      <AiOutlineLeft
+    <div className="pt-28 pb-8">
+      {/* <AiOutlineLeft
         onClick={handlePrevSlide}
-        className="absolute left-2 m-auto text-5xl  mt-40 cursor-pointer text-gray-400"
-      />
+        size={40}
+        className="float-left m-auto text-5xl  mt-40 cursor-pointer text-gray-400"
+        />
       <AiOutlineRight
         onClick={handleNextSlide}
-        className="absolute right-2 m-auto text-5xl mt-40 cursor-pointer text-gray-400"
+        className="float-right right-2 m-auto text-5xl mt-40 cursor-pointer text-gray-400"
+      /> */}
+      <AiOutlineLeft
+        size={40}
+        className="float-left mt-40 cursor-pointer text-gray-400"
       />
-      <div className="w-full h-[50vh] flex overflow-hidden relative m-auto">
-        <Swipe
-          onSwipeLeft={handleNextSlide}
-          onSwipeRight={handlePrevSlide}
-          className="relative z-10 w-full h-full"
-        >
-          {images.map((image, index) => {
-            if (index === currentSlide) {
-              return (
-                <div
+      <AiOutlineRight
+        size={40}
+        className="float-right mt-40 cursor-pointer text-gray-400"
+      />
+
+      <div
+        // className="relative"
+        className="h-[45vh] w-[120vh] flex m-auto relative"
+      >
+        {images.map((image, index) => {
+          if (index === currentSlide) {
+            return (
+              <div
+                key={index}
+                className="duration-700 ease-in-out"
+                data-carousel-item
+              >
+                <Image
                   key={index}
-                  className="duration-700 ease-in-out"
-                  data-carousel-item
-                >
-                  <Image
-                    key={index}
-                    src={image}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
-                    className="animate-fadeIn w-max"
-                    alt="image not present"
-                  />
-                  <div
-                    className={
-                      index === currentSlide
-                        ? "h-4 w-4 bg-gray-700 rounded-full mx-2 mb-2 cursor-pointer"
-                        : "h-4 w-4 bg-gray-300 rounded-full mx-2 mb-2 cursor-pointer"
-                    }
-                    onClick={() => {
-                      setCurrentSlide(index);
-                    }}
-                  />
-                </div>
-              );
-            }
-          })}
-        </Swipe>
+                  src={image}
+                  layout="fill"
+                  objectFit="cover"
+                  objectPosition="center"
+                  className="animate-fadeIn w-max"
+                  alt="image not present"
+                />
+                Image
+                <div
+                  className={
+                    index === currentSlide
+                      ? "h-4 w-4 bg-gray-700 rounded-full mx-2 mb-2 cursor-pointer"
+                      : "h-4 w-4 bg-gray-300 rounded-full mx-2 mb-2 cursor-pointer"
+                  }
+                  onClick={() => {
+                    setCurrentSlide(index);
+                  }}
+                />
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );
