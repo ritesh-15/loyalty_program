@@ -3,16 +3,43 @@ import Image from "next/image"
 import { Poppins } from "next/font/google"
 
 const brands = [
-  { name: "H&M", logo: "/assets/b1.png" },
-  { name: "Calvin Klein", logo: "/assets/b2.png" },
-  { name: "Nike", logo: "/assets/b3.png" },
-  { name: "Champion", logo: "/assets/b4.png" },
-  { name: "Sapphire", logo: "/assets/b5.png" },
-  { name: "Levi's", logo: "/assets/b6.png" },
-  { name: "Adidas", logo: "/assets/b7.png" },
-  { name: "Nautica", logo: "/assets/b8.png" },
-  { name: "Puma", logo: "/assets/b9.png" },
-]
+  {
+    name: "H&M",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514023/Metamarket/HomePageUI/b1_r0jhxc.png",
+  },
+  {
+    name: "Calvin Klein",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514023/Metamarket/HomePageUI/b2_ytvl6l.png",
+  },
+  {
+    name: "Nike",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514023/Metamarket/HomePageUI/b3_znyfm8.png",
+  },
+  {
+    name: "Champion",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514023/Metamarket/HomePageUI/b4_nkp7tb.png",
+  },
+  {
+    name: "Sapphire",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514023/Metamarket/HomePageUI/b5_egxd9i.png",
+  },
+  {
+    name: "Levi's",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514024/Metamarket/HomePageUI/b6_msucys.png",
+  },
+  {
+    name: "Adidas",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514024/Metamarket/HomePageUI/b7_vmwagq.png",
+  },
+  {
+    name: "Nautica",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514024/Metamarket/HomePageUI/b8_lmadv5.png",
+  },
+  {
+    name: "Puma",
+    logo: "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514024/Metamarket/HomePageUI/b9_rsrpsz.png",
+  },
+];
 
 const BrandCard = () => {
   return (

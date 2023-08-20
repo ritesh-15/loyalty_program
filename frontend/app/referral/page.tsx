@@ -76,7 +76,14 @@ const Referral = () => {
             )}
           </div>
           <div className="flex-shrink-0 pl-5">
-            <Image src={"/assets/refer.png"} alt="" height={300} width={300} />
+            <Image
+              src={
+                "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514042/Metamarket/HomePageUI/refer_th2dmf.png"
+              }
+              alt=""
+              height={300}
+              width={300}
+            />
           </div>
         </div>
 
@@ -115,7 +122,7 @@ const Referral = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Referral

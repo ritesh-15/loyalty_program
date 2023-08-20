@@ -5,12 +5,11 @@ import Swipe from "react-easy-swipe"
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
 
 const images = [
-  "/assets/img4.jpg",
-  "/assets/img1.jpg",
-  "/assets/img2.jpg",
-  "/assets/img3.jpg",
-  "/assets/img2.jpg",
-]
+  "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514040/Metamarket/HomePageUI/img4_pjng7f.jpg",
+  "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514037/Metamarket/HomePageUI/img3_isyrte.jpg",
+  "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514037/Metamarket/HomePageUI/img2_v6pocq.jpg",
+  "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514034/Metamarket/HomePageUI/img1_hbpxfr.jpg",
+];
 
 export default function Carousel() {
   const [currentSlide, setCurrentSlide] = useState(0)
