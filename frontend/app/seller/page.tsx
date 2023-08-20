@@ -18,7 +18,7 @@ interface ILoyaltyTokenHistory {
   hash: string
 }
 
-export default function seller() {
+export default function Seller() {
   const { getAccountBalance, totalSupply, getLoyalUserTokenHistory } =
     useLoyaltyContract()
   const [loading, setLoding] = useState(true)

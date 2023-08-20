@@ -88,7 +88,8 @@ export default function BrandDetails({ params }: IProps) {
 
         const brandTransactions = transactions.filter(
           (tx) =>
-            tx.args[1].toLowerCase() === user.data.walletAddress.toLowerCase()
+            tx.args[1].toLowerCase() ===
+            brand.data.attributes.user.data.attributes.walletAddress.toLowerCase()
         )
 
         setTransactions(

@@ -7,6 +7,8 @@ import { IAdminReferrals } from "@/app/interfaces/IAdminReferrals"
 import { IUserSession } from "@/app/interfaces/IUser"
 import ReferralService from "@/app/services/referral.service"
 import { formatWalletAddress } from "@/app/utils/formatWalletAddress"
+import { ethers } from "ethers"
+import moment from "moment"
 import { useSession } from "next-auth/react"
 import qs from "qs"
 import { toast } from "react-hot-toast"
@@ -16,10 +18,28 @@ export default function Referrals() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 
-  const { giveRewardOnReferral } = useLoyaltyContract()
+  const { giveRewardOnReferral, getReferralsTransactions } =
+    useLoyaltyContract()
 
   const { mutateAsync: reward, isLoading: giveRewardLoading } = useMutation(
     (userAddress: string) => giveRewardOnReferral(userAddress)
+  )
+
+  const { data: referralTransactions } = useQuery(
+    ["referrals-transactions"],
+    () => getReferralsTransactions(),
+    {
+      select(data) {
+        return data.map(({ args, blockHash }) => {
+          return {
+            user: args[0],
+            tokens: ethers.formatEther(args[1].toString()),
+            timestamp: args[2].toString(),
+            hash: blockHash,
+          }
+        })
+      },
+    }
   )
 
   const query = qs.stringify(
@@ -117,6 +137,53 @@ export default function Referrals() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <h1 className="text-xl font-bold mb-4">Referral Transactions</h1>
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-white">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Transaction hash
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    User address
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Tokens transfered
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Timestamp
+                  </th>
+                  <th scope="col" className="px-6 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {referralTransactions?.map(
+                  ({ hash, timestamp, tokens, user }) => (
+                    <tr
+                      key={hash}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {formatWalletAddress(hash)}
+                      </th>
+                      <td className="px-6 py-4">{formatWalletAddress(user)}</td>
+                      <td className="px-6 py-4">{tokens.toString()}</td>
+                      <td className="px-6 py-4">
+                        {moment.unix(+timestamp).format("DD MM YYYY")}
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>

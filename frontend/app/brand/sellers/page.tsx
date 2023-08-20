@@ -9,7 +9,7 @@ import Link from "next/link"
 import qs from "qs"
 import { useQuery } from "react-query"
 
-export default function page() {
+export default function Seller() {
   const { data: session } = useSession()
   const user = session?.user as IUserSession
 

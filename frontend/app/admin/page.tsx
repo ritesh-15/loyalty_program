@@ -28,7 +28,7 @@ interface ISettlement {
   hash: string
 }
 
-export default function page() {
+export default function Admin() {
   const { walletAddress } = useWallet()
   const {
     getAccountBalance,
@@ -177,7 +177,7 @@ export default function page() {
 
         <AdminCard
           title="Decay time"
-          value={stats.decayRate}
+          value={"30 days"}
           icon={<CiTimer />}
         />
 

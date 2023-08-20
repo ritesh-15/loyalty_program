@@ -22,9 +22,8 @@ const ProductDetailCarousel: React.FC<ProductDetailCarouselProps> = ({
       >
         {images.map((image, index) => {
           return (
-            <div className="relative w-full h-[550px] md:max-w-[450px] overflow-hidden rounded-md">
+            <div key={index} className="relative w-full h-[550px] md:max-w-[450px] overflow-hidden rounded-md">
               <Image
-                key={index}
                 src={image}
                 alt=""
                 fill

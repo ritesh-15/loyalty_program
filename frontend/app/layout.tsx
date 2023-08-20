@@ -1,8 +1,10 @@
 import "./globals.css"
+import React, { Suspense } from "react";
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import Navbar from "./components/Navbar"
+const Navbar = React.lazy(()=>import('@/app/components/Navbar'))
 import Providers from "./providers/Providers"
+import Loading from "./components/Loading";
 
 const inter = Inter({ subsets: ["latin"] })
 
