@@ -7,10 +7,9 @@ import { BsChevronDoubleDown } from "react-icons/bs"
 import { AiOutlineCopy } from "react-icons/ai"
 import { toast, Toaster } from "react-hot-toast"
 import ReferralService from "../services/referral.service"
-import { useMutation, useQuery } from "react-query"
+import { useMutation } from "react-query"
 import { useSession } from "next-auth/react"
 import { IUserSession } from "../interfaces/IUser"
-import qs from "qs"
 
 const Referral = () => {
   const [generatedId, setGeneratedId] = useState("")
@@ -46,11 +45,11 @@ const Referral = () => {
   }
 
   return (
-    <div className="px-4 md:px-8 lg:px-16 pt-28 pb-14 bg-blue-200">
+    <div className="pt-12 pb-14">
       <Toaster />
       <div className="flex flex-col">
         {/* 1st div */}
-        <div className="bg-blue-100 h-60 rounded-lg p-4 mb-4 flex items-center">
+        <div className="bg-white shadow-md h-60 rounded-lg p-4 mb-4 flex items-center">
           <div className="flex-grow ml-20">
             <div className="text-3xl font-bold font-sans">
               Refer Friends
@@ -58,11 +57,11 @@ const Referral = () => {
               Earn Coins
             </div>
             <div className="text-lg mt-2">
-              Earn 5 Coins for every client you introduce. Join the program and
-              win exciting prizes.
+              Earn 20 FC tokens for every client you introduce. Join the program
+              and win exciting prizes.
             </div>
             {isIdGenerated ? (
-              <div className="text-lg p-2 text-pink-800 flex flex-row space-x-3">
+              <div className="text-lg mt-4 gap-2 text-pink-800 flex items-center flex-rows">
                 <p>Referrel code is generated below</p>
                 <BsChevronDoubleDown size="20" />
               </div> // Button will be hidden when ID is generated
@@ -71,7 +70,7 @@ const Referral = () => {
                 className="py-2 max-w-sm mt-5 px-6 rounded-full bg-black text-white text-lg font-medium mb-3 hover:opacity-75"
                 onClick={handleButtonClick}
               >
-                Generate Link
+                Generate Code
               </Button>
             )}
           </div>
@@ -88,7 +87,7 @@ const Referral = () => {
         </div>
 
         {/* 2nd div */}
-        <div className={`bg-blue-100 h-20 rounded-lg p-4 mb-4`}>
+        <div className={`h-20 rounded-lg p-4 mb-4`}>
           <div
             className={`${isIdGenerated ? "opacity-100" : "opacity-0"}`}
             style={{ transition: "opacity 1s" }}
@@ -111,14 +110,6 @@ const Referral = () => {
               </div>
             )}
           </div>
-        </div>
-
-        <div className="flex">
-          {/* 3rd div */}
-          <div className="bg-blue-100 h-40 w-[30%] rounded-lg p-4 mr-4 transition-transform"></div>
-
-          {/* 4th div */}
-          <div className="bg-blue-100 h-40 w-[70%] rounded-lg p-4 transition-transform"></div>
         </div>
       </div>
     </div>

@@ -15,8 +15,6 @@ import { ICartItem } from "@/app/interfaces/ICartItem"
 import { useCartStore } from "@/app/store/CartStore"
 import Button from "@/app/components/button/Button"
 
-
-
 export default function SingleProduct() {
   const { data } = useSession()
   const user = data?.user as IUserSession
@@ -180,4 +178,3 @@ export default function SingleProduct() {
     </>
   )
 }
-

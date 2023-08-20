@@ -133,6 +133,11 @@ export default function useLoyaltyContract() {
     return contract.queryFilter(contract.filters["TokensTransferred"]())
   }
 
+  const getReferralsTransactions = async () => {
+    const contract = getLoyaltyProgramContract()
+    return contract.queryFilter(contract.filters["Refferal"]())
+  }
+
   return {
     getAccountBalance,
     totalSupply,
@@ -157,5 +162,6 @@ export default function useLoyaltyContract() {
     getRefferalRewardAmount,
     getTokenTransferedTransactions,
     updateRefferalReward,
+    getReferralsTransactions,
   }
 }

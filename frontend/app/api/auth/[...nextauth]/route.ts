@@ -59,9 +59,8 @@ const authOptions: AuthOptions = {
         } catch (err: any) {
           if (err instanceof AxiosError) {
             throw new Error(err.response?.data.error.message)
-          } else {
-            throw new Error(err)
           }
+          throw new Error("Something went wrong!")
         }
       },
     }),

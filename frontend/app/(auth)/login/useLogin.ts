@@ -71,11 +71,8 @@ export default function useLogin() {
         // base on user role navigate to particular page
         redirectToPage()
       } catch (error: any) {
-        if (error instanceof AxiosError) {
-          toast.error(error.response?.data.error.message)
-        } else {
-          toast.error("Someting went wrong please try again!")
-        }
+        console.log(error)
+        if (error !== "Something went wrong!") toast.error(error.message)
       } finally {
         setIsLoading(false)
       }

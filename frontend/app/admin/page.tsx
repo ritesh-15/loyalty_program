@@ -177,7 +177,7 @@ export default function Admin() {
 
         <AdminCard
           title="Decay time"
-          value={stats.decayRate}
+          value={"30 days"}
           icon={<CiTimer />}
         />
 
