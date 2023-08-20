@@ -8,7 +8,7 @@ export default function ConnectToMetamaskModal() {
 
   return (
     <div className="flex items-center flex-col">
-      <h1 className="text-xl font-bold">Let&aposs connect your metamask</h1>
+      <h1 className="text-xl font-bold">Let&#39;s connect your metamask</h1>
       <p className="text-center max-w-[75%] mt-2">
         To get access of rewards and purchase product through the tokens you
         will require to connect your meta mask

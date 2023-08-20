@@ -4,24 +4,68 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md"
 import Link from "next/link"
 
 const beautyProducts = [
-  { tag: "Eye Makeup", image: "/assets/bt5.jpg" },
-  { tag: "Face Makeup", image: "/assets/bt3.jpg" },
-  { tag: "Hair Care", image: "/assets/bt4.jpg" },
-]
+  {
+    tag: "Eye Makeup",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514027/Metamarket/HomePageUI/bt5_ep9kk3.jpg",
+  },
+  {
+    tag: "Face Makeup",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514028/Metamarket/HomePageUI/bt3_alktal.jpg",
+  },
+  {
+    tag: "Hair Care",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514026/Metamarket/HomePageUI/bt4_wzh2vj.jpg",
+  },
+];
 
 const clothProducts = [
-  { tag: "T-Shirts", image: "/assets/j1.jpg" },
-  { tag: "Tinted Jeans", image: "/assets/j2.jpg" },
-  { tag: "Cargos", image: "/assets/j3.jpg" },
-  { tag: "Trousers", image: "/assets/j4.jpg" },
-]
+  {
+    tag: "T-Shirts",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514043/Metamarket/HomePageUI/j1_wz6otm.jpg",
+  },
+  {
+    tag: "Tinted Jeans",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514040/Metamarket/HomePageUI/j2_dojy1l.jpg",
+  },
+  {
+    tag: "Cargos",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514041/Metamarket/HomePageUI/j3_jpbwlz.jpg",
+  },
+  {
+    tag: "Trousers",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514043/Metamarket/HomePageUI/j4_sme50g.jpg",
+  },
+];
 
 const shoeProducts = [
-  { tag: "Sneakers", image: "/assets/s1.jpg" },
-  { tag: "Sports", image: "/assets/s2.jpg" },
-  { tag: "Formal", image: "/assets/s3.jpg" },
-  { tag: "Casual", image: "/assets/s4.jpg" },
-]
+  {
+    tag: "Sneakers",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514044/Metamarket/HomePageUI/s1_s2l4gn.jpg",
+  },
+  {
+    tag: "Sports",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514043/Metamarket/HomePageUI/s2_oujfqo.jpg  ",
+  },
+  {
+    tag: "Formal",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514049/Metamarket/HomePageUI/s3_sjb9wh.jpg",
+  },
+  {
+    tag: "Casual",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514045/Metamarket/HomePageUI/s4_e7umoe.jpg",
+  },
+];
 
 const ProductList = () => {
   return (

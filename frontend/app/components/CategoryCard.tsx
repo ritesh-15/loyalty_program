@@ -2,16 +2,55 @@ import React from "react"
 import Image from "next/image"
 
 const category = [
-  { name: "Fashion", image: "/assets/c1.jpg", isDark: false },
-  { name: "Smartphones", image: "/assets/c2.jpg", isDark: true },
-  { name: "Electronics", image: "/assets/c3.jpg", isDark: true },
-  { name: "Grocery", image: "/assets/c4.jpg", isDark: false },
-  { name: "Home & Furniture", image: "/assets/c6.jpg", isDark: true },
-  { name: "Clothing", image: "/assets/c7.jpg", isDark: true },
-  { name: "Books", image: "/assets/c8.jpg", isDark: true },
-  { name: "Smartphones", image: "/assets/c9.jpg", isDark: true },
-  //   { name: "Books", image: "/assets/c5.jpg" },
-]
+  {
+    name: "Fashion",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514028/Metamarket/HomePageUI/c1_peymex.jpg",
+    isDark: false,
+  },
+  {
+    name: "Smartphones",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514033/Metamarket/HomePageUI/c2_ryz2et.jpg",
+    isDark: true,
+  },
+  {
+    name: "Electronics",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514037/Metamarket/HomePageUI/c3_nvxsqb.jpg",
+    isDark: true,
+  },
+  {
+    name: "Grocery",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514034/Metamarket/HomePageUI/c4_j8mo8a.jpg",
+    isDark: false,
+  },
+  {
+    name: "Home & Furniture",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514030/Metamarket/HomePageUI/c6_m2gpsj.jpg",
+    isDark: true,
+  },
+  {
+    name: "Clothing",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514037/Metamarket/HomePageUI/c7_zvnwha.jpg",
+    isDark: true,
+  },
+  {
+    name: "Books",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514033/Metamarket/HomePageUI/c8_f1qmbt.jpg",
+    isDark: true,
+  },
+  {
+    name: "Smartphones",
+    image:
+      "https://res.cloudinary.com/dq4vpg3fh/image/upload/v1692514042/Metamarket/HomePageUI/c9_dcjodj.jpg",
+    isDark: true,
+  },
+];
 
 const CategoryCard = () => {
   return (
