@@ -26,18 +26,17 @@ E-commerce platforms often struggle with user retention and engagement. Traditio
 - Blockchain: Polygon (Matic)
 - Smart Contract: Solidity
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/7e50c547-919e-4d1b-ab0c-206feb90dee0" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/71dbee46-d54d-4ac6-b5dc-11a6604c56de" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/7c789aff-aa49-4e5e-a23f-921da583bc52" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/5ff599f2-fe77-4e0e-a09d-c1c9ad6b3f5b" alt="Polygon" style="max-width:300px; height:150px; object-fit:contain;"/>
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/9cb9df9a-61c4-4b96-98e3-5be938211fbd" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/8da9e37d-4286-4b46-8b85-7949d235d861" alt="Tailwind" style="max-width:300px; height:150px; object-fit:contain;"/>
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/c1575dbc-a5f9-484a-b12c-9515cae0aed7" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/afd5270b-e8b9-411b-9f35-50237b10a22f" alt="Typescript" style="max-width:300px; height:150px; object-fit:contain;"/>
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/ddf0e8b5-f298-4a0e-ae0e-51d41aaaede0" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/909a66c2-bd68-4cf8-a9fa-83fce5f08f3b" alt="Solidity" style="max-width:300px; height:150px; object-fit:contain;"/>
 
-<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/ae5b6836-9b6a-4d04-8ede-927bbe2f5af9" alt="NextJS" style="max-width:300px; height:150px; object-fit:contain;"/>
-
+<img src="https://github.com/ritesh-15/flipkart_grid_5.0/assets/82861420/15fb6982-68a7-4bb8-8c0d-61bb87a599bc" alt="Strapi" style="max-width:300px; height:150px; object-fit:contain;"/>
 
 
 
