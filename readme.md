@@ -74,6 +74,8 @@ Access the deployed Loyalty and Rewards Program application at: [https://flipkar
 
 To interact with the blockchain components of our application, such as earning and redeeming tokens, make sure you have the Metamask extension installed on your browser. Metamask provides a secure wallet and facilitates seamless communication between your browser and the blockchain network.
 
+- The application gives an error if you dont have an metamask wallet installed on your browser
+
 ## Don't Forget to Give a Star ⭐
 
 If you find this project interesting or useful, please consider giving it a star. It helps support the project and motivate us to continue improving it.
