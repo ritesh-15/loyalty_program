@@ -1,4 +1,4 @@
-# Loyalty and Rewards Program for Flipkart Grid 5.0
+# Loyalty and Rewards Program
 
 Welcome to the Loyalty and Rewards Program repository! This project aims to revolutionize customer engagement in E-commerce platforms by leveraging the power of blockchain technology. Our goal is to enhance security, transparency, and user experience through a seamless loyalty program.
 
