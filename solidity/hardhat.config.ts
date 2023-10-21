@@ -10,6 +10,10 @@ const config: HardhatUserConfig = {
       url: process.env.ALCHEMY_URL,
       accounts: [process.env.ACCOUNT_PRIVATE_KEY || ""],
     },
+    fugi: {
+      url: process.env.AVALANCH_NETWORK,
+      accounts: [process.env.ACCOUNT_PRIVATE_KEY || ""],
+    },
   },
 }
 
