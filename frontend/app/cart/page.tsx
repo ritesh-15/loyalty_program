@@ -39,6 +39,7 @@ const Cart = () => {
   const transferTokensToUserAccount = async (numberOfTokens: number) => {
     try {
       await getTokenOnOrder(user.data.walletAddress, numberOfTokens)
+      toast.success("Tokens transfered successfully!")
     } catch (e: any) {
       toast.error("Couldn't transfer tokens to your account")
     }

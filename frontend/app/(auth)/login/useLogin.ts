@@ -68,6 +68,8 @@ export default function useLogin() {
 
         if (res?.error) throw new Error(res.error)
 
+        console.log(res)
+
         // base on user role navigate to particular page
         redirectToPage()
       } catch (error: any) {

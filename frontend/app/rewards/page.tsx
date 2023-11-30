@@ -83,7 +83,6 @@ const Rewards = () => {
     ;(async () => {
       try {
         const balance = await getAccountBalance(user.data.walletAddress)
-        console.log(balance)
         setStats({
           balance: ethers.formatEther(balance.toString()),
         })
