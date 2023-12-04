@@ -18,15 +18,11 @@ const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log(credentials)
-
         try {
           const res = await AuthService.login({
             identifier: credentials?.email,
             password: credentials?.password,
           })
-
-          console.log(res)
 
           const query = qs.stringify(
             {
@@ -61,7 +57,7 @@ const authOptions: AuthOptions = {
             ...data,
           }
         } catch (err: any) {
-          console.log(err)
+          console.log("Next JS Route Error", err)
           if (err instanceof AxiosError) {
             throw new Error(err.response?.data.error.message)
           }

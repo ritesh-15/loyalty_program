@@ -28,6 +28,12 @@
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user",
       "mappedBy": "brandId"
+    },
+    "sellers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::seller.seller",
+      "inversedBy": "brands"
     }
   }
 }
