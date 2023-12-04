@@ -119,6 +119,7 @@ export default function Admin() {
           referralRewardRate: ethers.formatEther(referralRewardRate.toString()),
         })
       } catch (error: any) {
+        console.log(error)
         toast.error("Something went wrong")
       } finally {
         setLoading(false)
@@ -175,11 +176,7 @@ export default function Admin() {
           updateFunction={updateSettlementRate}
         />
 
-        <AdminCard
-          title="Decay time"
-          value={"30 days"}
-          icon={<CiTimer />}
-        />
+        <AdminCard title="Decay time" value={"30 days"} icon={<CiTimer />} />
 
         <AdminCard
           title="Minimum order amount"

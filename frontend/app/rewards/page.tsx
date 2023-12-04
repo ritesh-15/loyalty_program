@@ -88,6 +88,7 @@ const Rewards = () => {
           balance: ethers.formatEther(balance.toString()),
         })
       } catch (e) {
+        console.log(e)
         toast.error("Someting went wrong")
       } finally {
         setLoading(false)
@@ -229,14 +230,18 @@ const Rewards = () => {
                   <div className="flex flex-col justify-between h-full">
                     <div className="flex items-center flex-col">
                       <div className="relative w-full h-[300px] rounded-md overflow-hidden">
-                        <Image
-                          src={
-                            reward.attributes.product.data.attributes.images[0]
-                          }
-                          fill
-                          alt=""
-                          className="object-contain"
-                        />
+                        {reward.attributes.product.data.attributes.images
+                          .length && (
+                          <Image
+                            src={
+                              reward.attributes.product.data.attributes
+                                .images[0]
+                            }
+                            fill
+                            alt=""
+                            className="object-contain"
+                          />
+                        )}
                       </div>
                     </div>
 

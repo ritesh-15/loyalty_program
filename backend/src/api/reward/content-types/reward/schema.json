@@ -23,6 +23,12 @@
     "points": {
       "type": "integer",
       "required": true
+    },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::seller.seller",
+      "inversedBy": "rewards"
     }
   }
 }

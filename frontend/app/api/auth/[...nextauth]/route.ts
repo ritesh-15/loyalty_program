@@ -57,6 +57,7 @@ const authOptions: AuthOptions = {
             ...data,
           }
         } catch (err: any) {
+          console.log("Next JS Route Error", err)
           if (err instanceof AxiosError) {
             throw new Error(err.response?.data.error.message)
           }

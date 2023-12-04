@@ -75,7 +75,7 @@ export const useWallet = create<IWallet>((set, get) => ({
   },
   getLoyaltyProgramContract: () => {
     const provider = new ethers.JsonRpcProvider(
-      "https://avalanche-fuji.infura.io/v3/1dad14a070bf4fb6982150d9372a27e3"
+      "https://polygon-mumbai.g.alchemy.com/v2/5rHFCUzjNhiqyDZSHVWGrBBzRgmieG-y"
     )
 
     const contract = LoyaltyProgram__factory.connect(
@@ -87,7 +87,7 @@ export const useWallet = create<IWallet>((set, get) => ({
   },
   getTokenContract: () => {
     const provider = new ethers.JsonRpcProvider(
-      "https://avalanche-fuji.infura.io/v3/1dad14a070bf4fb6982150d9372a27e3"
+      "https://polygon-mumbai.g.alchemy.com/v2/5rHFCUzjNhiqyDZSHVWGrBBzRgmieG-y"
     )
 
     const contract = Token__factory.connect(TOKEN_CONTRACT_ADDRESS, provider)

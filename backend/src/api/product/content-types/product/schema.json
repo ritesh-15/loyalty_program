@@ -51,10 +51,7 @@
       "inversedBy": "products"
     },
     "images": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::image.image",
-      "mappedBy": "product"
+      "type": "json"
     }
   }
 }
